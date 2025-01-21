@@ -1,0 +1,304 @@
+@charset "utf-8";
+/* reset */
+html {overflow-y:scroll;}
+body,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,table,th,td,form,fieldset,legend,input,textarea,button,select,figure,figcaption{margin:0;padding:0}
+body,input,textarea,select,button,table{font-family:'돋움',Dotum,helvetica,sans-serif;font-size:12px;line-height:18px;color:#333;}
+img{border:0}
+ul,ol{list-style:none}
+fieldset{border:none}
+fieldset legend {position:absolute;visibility:hidden;overflow:hidden;width:0;height:0;margin:0;padding:0;font:0/0 Arial;}
+label {cursor:pointer;}
+button{cursor:pointer}
+header,hgroup,article,nav,footer,figure,figcaption,canvas,section,time{display:block}
+hr {clear:both;display:none;}
+em {font-style:normal;}
+li img, dd img {vertical-align:top;}
+*html body img {margin:none; padding:none;} /*for IE 6*/
+
+a{color:#333;text-decoration:none}
+a:hover,a:active{text-decoration:underline}
+
+table caption {visibility:hidden; overflow:hidden; width:0; height:0; margin:0; padding:0; font:0/0 Arial;}
+input[type="radio"], input[type="checkbox"] {vertical-align:middle !important; margin:-2px 3px 0 0 !important;}
+input.input {height:18px; padding:0 5px; border:1px solid #9c979b; color:#979797;}
+
+/* user layout */
+.zipcode_wrap .title {
+	height:32px;
+	padding:0 15px;
+	background:#363c4a;
+	border-bottom:1px solid #1f1f29;
+}
+.zipcode_wrap .title h1 {color:#fff; font-size:14px; text-shadow:1px 1px #000; line-height:32px;}
+.zipcode_wrap .container {padding:10px 8px;}
+.zipcode_wrap .tab {margin-bottom:18px; border-bottom:1px solid #666;}
+.zipcode_wrap .tab ul {width:416px; height:31px;}
+.zipcode_wrap .tab li {float:left; position:relative; width:206px; height:30px; text-align:center; border:1px solid #ccc; border-bottom:0; background:#eee; z-index:0;}
+.zipcode_wrap .tab li.on {border:1px solid #666;border-bottom:0;background-color:#fff;height:31px;z-index:1;}
+.zipcode_wrap .tab li a {display:block;padding:7px 0;font-size:13px;line-height:14px;letter-spacing:-1px;color:#666;text-decoration:none;}
+.zipcode_wrap .tab li.on a {font-weight:bold;color:#333;}
+.zipcode_wrap .content .type {margin-bottom:8px;}
+.zipcode_wrap .search-area {
+	margin:0 0 15px 0;
+	padding:15px 20px;
+	background-color:#f7f7f7;
+	border-top:1px solid #ccc;
+	border-bottom:1px solid #ccc;
+}
+.zipcode_wrap .search-area .word span {
+	*vertical-align:3px;
+}
+.zipcode_wrap .search-area .search img {
+	vertical-align:top;
+}
+.zipcode_wrap .result {
+	margin-top:18px;
+}
+.zipcode_wrap .result > p {
+	line-height:14px;
+	margin:20px 0 8px;
+	color:#666;
+}
+.zipcode_wrap .result .none {
+	padding:20px 0;
+	margin:0;
+	border-top:2px solid #666;
+	border-bottom:1px solid #acacac;
+	text-align:center;
+	color:#333;
+}
+.zipcode_wrap .result .none strong {
+	display:block;
+	margin-bottom:8px;
+}
+.zipcode_wrap .result .list {
+	border-top:2px solid #666;
+	border-bottom:1px solid #acacac;
+}
+.zipcode_wrap .result .list li {
+	overflow:hidden;
+	*margin-top:-5px;
+	padding:8px 10px 7px;
+	border-top:1px solid #e1e1e1;
+}
+.zipcode_wrap .result .list li:first-child {
+	border-top:0;
+	*padding:13px 10px 7px;
+}
+.zipcode_wrap .result .list li span {
+	display:inline-block;
+	height:32px;
+	float:left;
+	color:#666;
+	text-align:left;
+	line-height:16px;
+}
+.zipcode_wrap .result .list li span em {
+	display:block;
+	color:#333;
+}
+.zipcode_wrap .result .list li a {
+	display:block;
+	float:right;
+	margin-top:4px;
+}
+.zipcode_wrap .result > strong {
+	display:block;
+	margin-bottom:7px;
+}
+.zipcode_wrap .result .input_txt {
+	border-top:2px solid #666;
+	border-bottom:1px solid #acacac;
+}
+.zipcode_wrap .result .input_txt li {
+	padding:10px 0;
+}
+.zipcode_wrap .result .input_txt li:first-child {
+	border-bottom:1px solid #e1e1e1;
+}
+.zipcode_wrap .result .input_txt input.zip-code {
+	font-family:Tahoma;
+}
+.zipcode_wrap .result .input_txt p {
+	margin-bottom:6px;
+}
+.zipcode_wrap .result .input_txt .address {
+	margin:6px 0;
+}
+.zipcode_wrap .content div.zip-code p span {
+	color:#999;
+}
+.zipcode_wrap .content div.zip-code .word input[type="text"] {
+	*margin-top:-1px;
+}
+.zipcode_wrap .content div.zip-code .search-area a.search {
+}
+.zipcode_wrap .content div.zip-code .postresult {
+	padding:0;
+	overflow-y:auto;
+	overflow-x:hidden;
+}
+.zipcode_wrap .content div.zip-code .postresult ul {
+	overflow:hidden;
+	width:100%;
+}
+.zipcode_wrap .content div.zip-code .postresult li a {
+	width:100%;
+}
+.zipcode_wrap .content div.zip-code .postresult li a span {
+	margin-right:10px;
+	*margin-right:26px;
+	padding-right:4px;
+}
+.zipcode_wrap .content div.zip-code .postresult-none {
+	height:111px;
+	text-align:center;
+}
+.zipcode_wrap .content div.zip-code .postresult-none p {
+	padding:48px 0;
+}
+/* 도로명 새주소로 찾기 */
+.zipcode_wrap .street-name .search-area ul {
+	overflow:hidden;
+}
+.zipcode_wrap .street-name .search-area li {
+	float:left;
+	width:150px;
+	margin-right:15px;
+}
+.zipcode_wrap .street-name .search-area label span {
+	display:inline-block;
+	width:37px;
+	line-height:16px;
+	padding-top:3px;
+	vertical-align:top;
+}
+.zipcode_wrap .street-name .search-area .selectors,
+.zipcode_wrap .street-name .search-area .word {
+	height:20px;
+}
+.zipcode_wrap .street-name .search-area .selectors {
+	/* margin-bottom:10px; */
+}
+.zipcode_wrap .street-name .search-area .selectors .selectbox,
+.zipcode_wrap .street-name .search-area .selectors select {
+	margin-right:12px;
+}
+.zipcode_wrap .street-name .search-area .word {
+	padding-top:10px; /* 2013-06-17 eun */
+}
+.zipcode_wrap .street-name .search-area .word .first {
+	display:inline-block;
+	margin-right:19px;
+	padding-right:33px;
+	*padding-right:38px; /* 2013-05-30 eun */
+	background:url('images/adress_plus.gif') no-repeat 100% 6px;
+}
+.zipcode_wrap .street-name .search-area .word input[type="text"] {
+	*margin-top:-1px;
+	padding:2px 5px;
+	padding:4px 5px 0 \0/IE9;
+	*padding:4px 5px 0;
+	height:14px;
+	vertical-align:top;
+	font:11px/14px Dotum;
+}
+.zipcode_wrap .street-name .ex {
+	color:#666;
+	letter-spacing:-1px; /* 2013-05-30 eun */
+}
+.zipcode_wrap .street-name .notice {
+	margin-top:18px;
+	color:#999;
+}
+.zipcode_wrap .street-name .notice a {
+	color:#416de9;
+}
+.zipcode_wrap .content .street-name .type label {
+	margin-right:12px;
+}
+.zipcode_wrap .content .street-name .type input[type="radio"] {
+	vertical-align:-1px;
+	margin-right:2px;
+}
+.zipcode_wrap .content .street-name .type label em {
+	color:#dc2c09;
+}
+.zipcode_wrap .button-area {
+	margin:0 8px;
+	padding:10px 0 23px;
+	border-top:2px solid #363c4a;
+	text-align:center;
+}
+.zipcode_wrap .button-area a.button {
+	vertical-align:top;
+	padding:0 3px 0 0;
+}
+.zipcode_wrap .button-area a.button span {
+	padding:0;
+	width:67px;
+}
+.zipcode_wrap .pagination {
+	margin-top:15px;
+	text-align:center;
+}
+.zipcode_wrap .pagination span.pages a,
+.zipcode_wrap .pagination span.pages strong {
+	display:inline-block;
+	margin-right:3px;
+	width:19px;
+	height:18px;
+	border:1px solid #dddddd;
+	font:bold 12px/18px Tahoma;
+}
+.zipcode_wrap .pagination span.pages strong {
+	border:1px solid #f00f00;
+	color:#f00f00;
+}
+.zipcode_wrap .pagination .prev,
+.zipcode_wrap .pagination .next {
+	display:inline-block;
+	background-image:url('https://pics.auction.co.kr/common/sprite_pagination.gif');
+	background-repeat:no-repeat;
+	text-decoration:none;
+	*font:11px/14px Dotum;
+	letter-spacing:-1px;
+}
+.zipcode_wrap .pagination .prev {
+	padding-left:11px;
+	margin-right:4px;
+	background-position: 0 -58px;
+}
+.zipcode_wrap .pagination .next {
+	padding-right:11px;
+	margin-left:4px;
+	background-position: 100% -28px;
+}
+
+/* 우편번호 검색결과 */
+.postresult{
+	border:1px solid #999;
+	padding:1px;
+	margin-top:10px;
+}
+div.postresult ul li {
+}
+div.postresult ul li a{
+	color:#7c7c7c;
+	display:block;
+	padding:4px 3px 2px;
+	line-height:1.25em;
+}
+div.postresult ul li a:hover{
+	color:#333;
+	background:#EAEAEA;
+	text-decoration:none;
+}
+div.postresult ul li a span{
+	display:block;
+	text-align:right;
+	cursor:pointer;
+	margin-top:-16px;
+}
+*html div.postresult ul li a span{margin-top:-19px;}
+*:first-child+html div.postresult ul li a span{margin-top:-19px;}

@@ -1,0 +1,51 @@
+@charset "euc-kr";
+@import url(color.css);
+@import url(common.css);
+@import url(board.css);
+body {
+	margin: 0;
+	padding: 0;
+	font-size: 12px;
+/*	font-size: 0.75em;*/
+	line-height: 1.4; /*normal*/
+	font-family:Dotum, "µ¸¿ò", Verdana, Arial, sans-serif;
+	/* part 1 of 2 centering hack */
+	background: #ffffff;
+}
+
+td.padding20 { padding:0px 0px 0px 20px}
+div.padding10 { padding:10px 10px 10px 10px}
+li.list_a { list-style:url(../images/dd_a.gif)}
+
+input.sbar {border-top:1px solid #2786df; border-bottom:1px solid #2786df; border-left:none; border-right:none; padding:3px; background:#fdfdfc}
+input.loginbar {border-top:1px solid #cfcbc3; border-bottom:1px solid #cfcbc3; border-left:none; border-right:none; padding:2px; background:#fff}
+input.pwbar {border-top:1px solid #cfcbc3; border-bottom:1px solid #cfcbc3; border-left:none; border-right:none; height:16px; background:#fff}
+
+p.m_book_name { font-size:12px; font-weight:bold; color:#121212;}
+p.m_book_author { font-size:11px;  color:#787878;}
+p.m_book_price { font-size:11px; color:#cc4902; font-weight:bold;}
+p.m_book_exp {font-size:11px; color:#777777; padding:5px 0px 3px 0px;}
+
+p.book_name { font-size:12px; font-weight:bold; color:#121212;}
+p.book_teacher { font-size:11px;  color:#1978d2;}
+p.book_price { font-size:11px; color:#cc4902;}
+
+#mp_jumun_tab th { background:#e6f1f8; border-top:1px solid #98c8e6; color:#7f7f7f; font-weight:bold; font-size:12px;}
+#mp_jumun_tab tr { padding:3px 0px 3px 0px; background:url(../images/line_b.gif) bottom repeat-x; }
+/*
+#today_contents {
+	position:absolute;
+	left:50%;
+	margin-left:-338px;
+	top:0px;
+	visibility:hidden;
+}
+*/
+#category_tab { position:absolute; left:20px; top:-30px; text-align:left; visibility: hidden;}
+
+li.none { list-style:none;}
+div.book_class { position:absolute; visibility:hidden;}
+
+/**/
+
+input#noborder {border:0;}

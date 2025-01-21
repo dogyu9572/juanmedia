@@ -1,0 +1,79 @@
+<?php
+header('Content-Type: text/html; charset=utf-8');
+session_start();
+include $_SERVER['DOCUMENT_ROOT'] . "/common/conf/config.inc.php";
+
+
+$_SESSION['uName']		= "지현수";
+$_SESSION['uBirth']		= "";
+$_SESSION['uMobile']	= "01066440123";
+$_SESSION['uDi']	= "jidowqj12ijdj2oi1jdi2joidjj38j8j898j9390j9d0";
+
+if ($_SESSION["SEAR_TYPE"] == "search_id"){
+	$link_url = "/member/search_id_ok.php";
+}elseif ($_SESSION["SEAR_TYPE"] == "search_pw"){ 
+	$link_url = "/member/search_pw_form.php";
+}elseif ($_SESSION["SEAR_TYPE"] == "infocheck"){
+	$link_url = "/mypage/privacy.php";
+}elseif ($_SESSION["SEAR_TYPE"] == "pwedit"){
+	$link_url = "/mypage/identify.php";
+}elseif ($_SESSION["SEAR_TYPE"] == "evaluation_join"){	## 접수용
+	$link_url = "/other_kcia/page/industry_evaluation_apply.php";
+	
+	$userID = "M".$_SESSION['uDi']."EV";
+
+	$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["NAME"]		= $_SESSION['uName'];	## 이름
+	$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["TEL"]		= $_SESSION['uMobile'];	## 핸드폰
+	$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["USERCODE"]	= $userID;				## 접수용 아이디
+}else if ($_SESSION["SEAR_TYPE"] == "social_join" || $_SESSION["SEAR_TYPE"] == "member_edit"){	## 소셜 본인인증용/ 회원 정보 변경 용
+
+	$name		= $_SESSION['uName'];	## 이름
+	$tel		= $_SESSION['uMobile'];	## 핸드폰
+	$nickname	= "M".$_SESSION['uDi']."EV";				## 접수용 아이디
+?>
+<script>
+	opener.document.getElementById('user_name').value = '<?=$name?>';
+	opener.document.getElementById('mobile').value = '<?=$tel?>';
+	opener.document.getElementById('nickname').value = '<?=$nickname?>';
+	window.close();
+</script>
+<?php
+	exit;
+
+}else{		## 회원가입
+	$link_url = "/member/join.php";
+}
+
+unset($_SESSION["SEAR_TYPE"]);
+?>
+<html>
+<head>
+<script src="//code.jquery.com/jquery-latest.min.js"></script>
+<script>
+$( document ).ready(function() {
+	msubmit();
+});	
+function msubmit() {
+	window.opener.location.href = "<?= $link_url ?>";
+	window.close();
+}
+function onButton() {
+	window.open("<?= $link_url ?>","");
+	window.close();
+}
+</script>
+<title>NICE평가정보 - CheckPlus 본인인증</title>
+<style>
+	.box0106{width:100%;margin:0 auto;text-align:center;font-family:'Noto Sans KR'}
+	p.txt0106 {font-size:20px;color:#666666;line-height:30px;margin-top:150px;font-weight:600;}
+	button.btn0106 {background:#9c263a;width:60%;height:60px;color:#fff;font-size:16px;outline:0;border:0;border-radius:5px;margin-top:50px;font-weight:600;cursor:pointer;}
+</style>
+</head>
+<body>
+	<div class="box0106">
+			<p class="txt0106">본인인증이 완료 되었습니다.<br>
+			확인버튼을 눌러주세요.</p>
+			<button class="btn0106" onclick="onButton()">확인</button>
+	</div>
+</body>
+</html>

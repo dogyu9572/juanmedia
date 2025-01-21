@@ -1,0 +1,50 @@
+@charset "utf-8";
+/* basic.css는 태그의 기본속성을 초기화하고 사이트의 전체적인 기본 스타일을 정의합니다. */
+html {overflow-y:scroll;}
+html, body {height:100%;}
+body,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,form,fieldset,legend,input,textarea,button,select,figure,figcaption{margin:0;padding:0}
+body,table,input,textarea,select{font-family:'나눔고딕',NanumGothic,'맑은고딕',Malgun Gothic,'돋움',Dotum,helvetica,sans-serif;font-size:12px;line-height:18px;color:#555;}
+img{border:0}
+ul,ol{list-style:none}
+hr {clear:both;display:none;}
+li img, dd img {vertical-align:top;}
+*html body img {margin:none; padding:none;} /*for IE 6*/
+fieldset {border:1px solid #ccc; padding:10px;}
+legend {font-weight:bold;}
+legend:before {content:"[ "}
+legend:after {content:" ]"}
+table caption {visibility:hidden; overflow:hidden; width:0; height:0; margin:0; padding:0; font:0/0 Arial;}
+input[type="radio"], input[type="checkbox"] {vertical-align:middle !important; margin:-2px 3px 0 0 !important;}
+a{color:#555;text-decoration:none}
+a:hover,a:active{text-decoration:underline}
+select {border:1px solid #b7b7b7;}
+
+/* user class */
+.clfix{*zoom:1;} /*for ie 5.5-7*/
+.clfix:after {/* content:" ";  */display:block; clear:both;}
+
+.clear{clear:both;}
+.hide {position:absolute; width:1px; height:1px; left:0; top:0; font-size:0; line-height:0; text-indent:-9999%;}
+
+.pointer {cursor:pointer;} 
+html { filter: expression(document.execCommand("BackgroundImageCache", false, true));} 
+
+.input {background:#fff; height:18px; border:1px solid #ccc;}
+.textarea {background:#fff; border:1px solid #ccc;}
+
+.fl {float:left;}
+.fr {float:right;}
+
+.space-center {text-align:center !important;}
+.space-right {text-align:right !important;}
+.space-left {text-align:left !important;}
+
+.mgb5 {margin-bottom:5px;}
+.mgb10 {margin-bottom:10px;}
+.mgb20 {margin-bottom:20px;}
+.mgb30{margin-bottom:30px;}
+
+#admin-header .newtop li a{width:101px !important;display:inline-block;}
+
+/* png24 */
+.png24 {tmp:expression(setPng24(this));} /* FOR IMG ONLY */

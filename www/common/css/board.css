@@ -1,0 +1,53 @@
+/*order - table*/
+#order_tab th {  border-bottom:1px solid #92badf; padding:5px 0px 5px 0px; font-weight:bold; color:#525252; font-size:13px;}
+#order_tab td { border-bottom:1px solid #dfdfdf; padding:5px 0px 5px 0px;}
+#order_tab input { border:1px solid #dfdfdf; background:#ffffff;}
+#order_tab textarea { border:1px solid #dfdfdf; background:#ffffff;}
+.check_lside {float:left; width:95px;}
+#order_tab .check {float:left;margin:0px 0px 0px 65px; padding-top:10px; color:#3793ce; vertical-align:middle}
+
+/* board */
+#list_tab {clear:both;margin:0 auto;}
+#list_tab td {color:#555555;padding:5px 3px 5px 3px; border-bottom: 1px dotted #b4b4b4;}
+#list_tab th {height: 30px;border:none; vertical-align:middle; border-top: 2px solid #8a8a8a; border-bottom: 1px solid #8a8a8a;}
+#list_tab select , textarea, input {color:#555555; font-size:12px; background:#FFFFFF}
+#list_tab input {border:1px solid #dedede; }
+#list_tab .inset {border: inset;}
+#list_tab .tfoot_td {height:6px;}
+#list_tab .noborder {border:0;}
+
+/*contents table*/
+#contents_tab {clear:both;}
+#contents_tab th {height: 30px;border:none; vertical-align:middle; border-top: 2px solid #8a8a8a; border-bottom: 1px solid #8a8a8a;}
+#contents_tab td {color:#555555;padding:5px 3px 5px 3px; border-bottom: 1px dotted #b4b4b4;}
+#contents_tab .contents {padding:20px; line-height:19px;}
+#contents_tab input {border: 1px inset #dfdfdf;}
+#contents_tab textarea {border: 1px inset #dfdfdf; color:#555555; background:#FFFFFF}
+#contents_tab .tfoot_td {height:6px;}
+
+/*write table*/
+#write_tab {clear:both;}
+#write_tab th { font-weight:bold; color:#555555;}
+#write_tab td {color:#555555;padding:5px 3px 5px 3px; border-bottom: 1px dotted #b4b4b4;}
+#write_tab .contents {padding:20px; line-height:19px;}
+#write_tab input {border: 1px solid #dfdfdf;}
+#write_tab textarea {border: 1px solid #dfdfdf; color:#555555; background:#FFFFFF}
+#write_tab .tfoot_td {height:6px;}
+
+/*join*/
+#join_tab {clear:both;margin:0 auto;}
+#join_tab th {height:34px;}
+#join_tab td {padding:5px 5px 5px 3px; font-size:11px; *border-bottom: 1px solid #dfdfdf;*}
+#join_tab img { vertical-align:absmiddle;}
+#join_tab input, textarea { border: 1px solid #dfdfdf; background:#ffffff;  font-size:12px;}
+
+#cart_tab {clear:both;}
+#cart_tab th { border-top:2px solid #92badf; border-bottom:1px solid #92badf; background:none;}
+#cart_tab tr { background:url(../images/line_b.gif) bottom repeat-x;}
+
+/***********************************************************************************************************/
+
+
+/*line table*/
+div.line_tab td { background:url(../images/line_b.gif) bottom repeat-x;  padding:3px 0px 3px 0px;}
+

@@ -1,0 +1,204 @@
+<?PHP
+include $_SERVER['DOCUMENT_ROOT'] . "/backoffice/pub/inc/admin_top.php";
+include "./menu.php";
+
+if(!in_array("homepage_manage",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTH"]) && $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]!="ROOT"):
+//	jsMsg("권한이 없습니다.");
+//	jsHistory("-1");
+endif;
+
+include_once $_SERVER['DOCUMENT_ROOT'] . "/module/board/board.lib.php";	//일정관리 형식
+include_once $_SERVER['DOCUMENT_ROOT'] . "/module/calendar/calendar.lib.php";	//일정관리 형식
+
+//DB연결
+$dblink = SetConn($_conf_db["main_db"]);
+
+$week = array("일", "월", "화", "수", "목", "금", "토");
+
+if(!$_GET['sYear']){
+    $_GET['sYear'] = date("Y");
+}
+if(!$_GET['sMonth']){
+    $_GET['sMonth'] = date("m");
+}
+$cal_date = $_GET['sYear'].'-'.$_GET['sMonth'].'-01';
+
+//날짜를 - 구분자로 배열로 만듬
+$arrDate = explode("-",$cal_date);
+
+$arrSolarCalendar = getDiarySet(intval($arrDate[0]), intval($arrDate[1]), intval($arrDate[2]));
+
+$searchID = $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"];
+if($searchID=="homepage"){
+    $searchID = "";
+}
+$arrBoardList = getBoardListScheduleBooking("booking", $arrSolarCalendar['first_before'], $arrSolarCalendar['last_after'], $searchID);
+$arrCalculateList = getBoardListScheduleCalculate("calculate", $arrSolarCalendar['first_before'], $arrSolarCalendar['last_after'], "");
+
+//$arrBoardCount = getBoardListCount("conference", $_GET['sYear']);
+
+$prev_date = date("Y-m-d",strtotime($cal_date.'-1 month'));			//days, month, year
+$next_date = date("Y-m-d",strtotime($cal_date.'+1 month'));			//days, month, year
+
+
+?>
+    <style type="text/css">
+        .other{background:#e6e6e6;}
+    </style>
+    <script type="text/javascript">
+        <!--
+        function fnBookingUrl(scal){
+            location.href="/backoffice/module/board/board_view.php?boardid=booking&scsdate="+scal+"&scedate="+scal;
+        }
+        function fnCalculateUrl(scal){
+            location.href="/backoffice/module/board/board_view.php?boardid=calculate&scsdate="+scal+"&scedate="+scal;
+        }
+        //-->
+    </script>
+    <div class="container">
+
+        <div class="title">알림현황</div>
+
+        <div class="inbox write_tbl schedule_wrap">
+            <div class="schedule_area">
+                <div class="years">
+                    <button type="button" onclick="location.href='<?=$_SERVER["PHP_SELF"]?>?sYear=<?=substr($prev_date,0,4)?>&sMonth=<?=substr($prev_date,5,2)?>'" class="btn prev">이전</button>
+                    <span><?=str_replace("-",". ",substr($cal_date,0,7))?></span>
+                    <button type="button" onclick="location.href='<?=$_SERVER["PHP_SELF"]?>?sYear=<?=substr($next_date,0,4)?>&sMonth=<?=substr($next_date,5,2)?>'" class="btn next">다음</button>
+                    <button type="button" onclick="location.href='<?=$_SERVER["PHP_SELF"]?>'" class="btn today">오늘</button>
+                </div>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>일</th>
+                        <th>월</th>
+                        <th>화</th>
+                        <th>수</th>
+                        <th>목</th>
+                        <th>금</th>
+                        <th>토</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?
+                    for($i=0;$i<count($arrSolarCalendar["box"]);$i++){
+                        echo "<tr>";
+                        for($j=0;$j<7;$j++){
+                            $cal_txt = "";
+                            //국경일, 법정공휴일, 일요일의 경우
+                            if($arrLunarCalendar[$arrSolarCalendar["box"][$i][$j]][holiday]=="1" || $j==0){
+                                $cal_class = "cal_sun";
+                                $cal_txt = "";
+                                //토요일의 경우
+                            }else if($j==6){
+                                $cal_class = "cal_sat";
+                            }else{
+                                $cal_class = "cal_day";
+                            }
+
+                            ################################################### 당월데이터 확인 ################################################### ST
+                            $cal_td = "other";
+                            if(substr($cal_date,0,7)==substr($arrSolarCalendar["box"][$i][$j],0,7)){
+                                $cal_td = "";
+                            }
+                            if($arrSolarCalendar["box"][$i][$j]==date("Y-m-d")) {
+                                $cal_td = "today";
+                            }
+                            ################################################### 당월데이터 확인 ################################################### ED
+                            $cal_txt = "";
+                            if(is_array($arrBoardList["list"][$arrSolarCalendar["box"][$i][$j]])){
+                                $ti = 0;
+                                foreach($arrBoardList["list"][$arrSolarCalendar["box"][$i][$j]] AS $key => $val){
+                                    $ti++;
+                                }
+                                $cal_txt = "<a href=\"javascript:fnBookingUrl('".$arrSolarCalendar["box"][$i][$j]."');\">+".$ti."(부킹)</a>";
+                            }
+                            if(is_array($arrCalculateList["list"][$arrSolarCalendar["box"][$i][$j]])){
+                                $ti = 0;
+                                foreach($arrCalculateList["list"][$arrSolarCalendar["box"][$i][$j]] AS $key => $val){
+                                    $ti++;
+                                }
+                                $cal_txt .= "<a href=\"javascript:fnCalculateUrl('".$arrSolarCalendar["box"][$i][$j]."');\">+".$ti."(정산)</a>";
+                            }
+
+
+
+                            ?>
+                            <?	if($cal_class=="cal_sun"){		?>
+                                <td class="<?=$cal_td?>"><span class="day"><?=substr($arrSolarCalendar["box"][$i][$j],-2)?></span><div class="list"><?=$cal_txt?></div></td>
+                            <?	}else{							?>
+                                <td class="<?=$cal_td?>"><span class="day"><?=substr($arrSolarCalendar["box"][$i][$j],-2)?></span><div class="list"><?=$cal_txt?></div></td>
+                                <?
+                            }
+                        }
+                    }
+                    ?>
+                    </tbody>
+                </table>
+            </div>
+            <div class="week_area">
+                <table>
+                    <?
+                    for($i=0;$i<count($arrSolarCalendar["box"]);$i++){
+                        for($j=0;$j<7;$j++){
+                            if(is_array($arrBoardList["list"][$arrSolarCalendar["box"][$i][$j]])){
+                                foreach($arrBoardList["list"][$arrSolarCalendar["box"][$i][$j]] AS $key => $val){
+                                    $userType = $arrBoardList["list"][$arrSolarCalendar["box"][$i][$j]][$key]['booking_type'];
+                                    $userTypeTxt = "";
+                                    if($userType=="C"){
+                                        $userTypeTxt = "기업";
+                                    }else if($userType=="P"){
+                                        $userTypeTxt = "개인";
+                                    }else if($userType=="H"){
+                                        $userTypeTxt = "호텔";
+                                    }else if($userType=="O"){
+                                        $userTypeTxt = "OTA";
+                                    }
+
+                                    echo "<tr><th><a href=\"/backoffice/module/board/board_view.php?boardid=booking&mode=modify&idx=".$arrBoardList["list"][$arrSolarCalendar["box"][$i][$j]][$key]['idx']."\">".str_replace("-","/",substr($arrSolarCalendar["box"][$i][$j],-5))." (".weekday($arrSolarCalendar["box"][$i][$j]).")</a></th>
+							<td><a href=\"/backoffice/module/board/board_view.php?boardid=booking&mode=modify&idx=".$arrBoardList["list"][$arrSolarCalendar["box"][$i][$j]][$key]['idx']."\">(부킹)".$arrBoardList["list"][$arrSolarCalendar["box"][$i][$j]][$key]['etc_2']." | ".$userTypeTxt." | ".$arrBoardList["list"][$arrSolarCalendar["box"][$i][$j]][$key]['r_user']."</a></td></tr>";
+                                }
+                            }
+
+                            if(is_array($arrCalculateList["list"][$arrSolarCalendar["box"][$i][$j]])){
+                                foreach($arrCalculateList["list"][$arrSolarCalendar["box"][$i][$j]] AS $key => $val){
+                                    echo "<tr><th><a href=\"/backoffice/module/board/board_view.php?boardid=calculate&mode=modify&idx=".$arrCalculateList["list"][$arrSolarCalendar["box"][$i][$j]][$key]['idx']."\">".str_replace("-","/",substr($arrSolarCalendar["box"][$i][$j],-5))." (".weekday($arrSolarCalendar["box"][$i][$j]).")</a></th>
+							<td><a href=\"/backoffice/module/board/board_view.php?boardid=calculate&mode=modify&idx=".$arrCalculateList["list"][$arrSolarCalendar["box"][$i][$j]][$key]['idx']."\">(정산)".$arrCalculateList["list"][$arrSolarCalendar["box"][$i][$j]][$key]['etc_2']." | ".$arrCalculateList["list"][$arrSolarCalendar["box"][$i][$j]][$key]['tour_type']." | ".$arrCalculateList["list"][$arrSolarCalendar["box"][$i][$j]][$key]['guide_idx']."</a></td></tr>";
+                                }
+                            }
+                        }
+                    }
+                    ?>
+                    <!--	<tr class="sat">
+                            <th>08/03<br>(토)</th>
+                            <td>등록된 일정이 없습니다.</td>
+                        </tr>
+                        <tr class="sun">
+                            <th>08/04<br>(일)</th>
+                            <td>등록된 일정이 없습니다.</td>
+                        </tr>
+                        <tr>
+                            <th>08/05<br>(월)</th>
+                            <td>등록된 일정이 없습니다.</td>
+                        </tr>
+                        <tr>
+                            <th>08/06<br>(화)</th>
+                            <td>등록된 일정이 없습니다.</td>
+                        </tr>
+                        <tr>
+                            <th>08/07<br>(수)</th>
+                            <td>등록된 일정이 없습니다.</td>
+                        </tr>
+                        <tr>
+                            <th>08/08<br>(목)</th>
+                            <td>등록된 일정이 없습니다.</td>
+                        </tr>-->
+                </table>
+            </div>
+        </div> <!-- //inbox -->
+
+    </div>
+<?php
+######################################################## 디자인 ED
+include $_SERVER['DOCUMENT_ROOT'] . "/backoffice/pub/inc/footer.php";
+?>

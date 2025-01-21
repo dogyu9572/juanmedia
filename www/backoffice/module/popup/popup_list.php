@@ -1,0 +1,249 @@
+<?PHP
+include $_SERVER['DOCUMENT_ROOT'] . "/backoffice/pub/inc/admin_top.php";
+include "./menu.php";
+
+include $_SERVER['DOCUMENT_ROOT'] . "/module/popup/popup.lib.php";
+if(!in_array("board_manage",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTH"]) && $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]!="ROOT"):
+	jsMsg("권한이 없습니다.");
+	jsHistory("-1");
+endif;
+
+//DB연결
+$dblink = SetConn($_conf_db["main_db"]);
+
+$scale = 10;
+if($_GET['page_size']){
+	$scale = $_GET['page_size'];	
+}
+$pagescale = 10;
+
+if(!isset($_REQUEST['offset'])){
+	$_REQUEST['offset']=0;
+	$offset = "0";
+}else{
+	$offset = $_REQUEST['offset'];
+}
+
+$arrList = getAdminPopupList(mysqli_real_escape_string($dblink,$_GET["sw"]),mysqli_real_escape_string($dblink,$_GET["sk"]), $scale, $_REQUEST['offset']);
+
+//$arrList = getArticleList($_conf_tbl["popup"], $scale, $_REQUEST['offset'], "");
+//_DEBUG($arrList);
+
+//DB해제
+SetDisConn($dblink);
+
+$arrCategory = array(
+	"1" => "주안영상미디어센터",
+	"2" => "KCIA",
+	"3" => "KIMA",
+	"4" => "문화연예시상식"
+);
+?>
+<script language="javascript">
+function delPopup(idx){
+	var cfm;
+	cfm =false;
+	cfm = confirm("이 팝업를 삭제 하시겠습니까?");
+	if(cfm==true){
+		document.frmPopupHidden.idx.value = idx;
+		document.frmPopupHidden.submit();
+	}
+}
+
+function popupView(idx){
+	obj = window.open("/module/popup/popup.php?idx="+idx,"popup","width=100,height=100,toolbars=0,menubars=0,scrollbars=0");
+}
+</script>
+<div class="container">
+
+	<div class="title">팝업 목록</div>
+
+	<form name="form1" method="get" action="<?=$_SERVER["PHP_SELF"]?>">
+		<input type="hidden" name="page_size" id="page_size" value="<?=$scale?>" >
+		<div class="inbox top_search">		
+			<!--		<dl>
+				<dt>구분</dt>
+				<dd><select name="category" class="text" onchange="document.form1.submit()" style="width:120px;">
+				<option value="">전체</option>			
+				<option value="ko" <?=$_GET['category']=="ko"?"selected":""?>>국문</option>
+				<option value="en" <?=$_GET['category']=="en"?"selected":""?>>영문</option>
+				
+				</select></dd>
+			</dl>
+			<dl>
+				<dt>업체구분</dt>
+				<dd><select name="" id=""><option value="">전체</option></select></dd>
+			</dl>
+			<dl>
+				<dt>회비현황</dt>
+				<dd><select name="" id=""><option value="">전체</option></select></dd>
+			</dl>
+			<dl>
+				<dt>보유신기술</dt>
+				<dd><select name="" id=""><option value="">전체</option></select></dd>
+			</dl>
+			<dl class="w2">
+				<dt>업태</dt>
+				<dd><select name="" id=""><option value="">전체</option></select></dd>
+			</dl>
+			<dl class="w2">
+				<dt>창립기념일</dt>
+				<dd><input type="text" id="datepicker1" /><em>~</em><input type="text" id="datepicker2" /></dd>
+			</dl>	-->
+			<dl>
+				<dt>등록일</dt>
+				<dd><input type="text" class="datepicker" name="sdate" value="<?=$_GET['sdate']?>" autocomplete="off"/><em>~</em><input type="text" class="datepicker" name="edate" value="<?=$_GET['edate']?>" autocomplete="off"/></dd>
+			</dl>
+			<dl class="search_wrap">
+				<dt>검색어</dt>
+				<dd>
+					<select name="sw" style="width:120px;">
+						<option value='all'<?=$_GET['sw']=="all"?" selected='selected'":""?>>전체</option>
+						<option value='s'<?=$_GET['sw']=="s"?" selected='selected'":""?>>팝업제목</option>
+						<option value='c'<?=$_GET['sw']=="c"?" selected='selected'":""?>>팝업내용</option>
+					</select>	
+					<input type="text" name="sk" value="<?=$_GET['sk']?>" onkeypress="if( event.keyCode == 13 ){document.form1.submit()}" />
+					<button type="button" class="search" onclick="document.form1.submit()">검색</button>
+				</dd>
+			</dl>
+		</div>
+	</form>
+	<div class="inbox">
+		<div class="bdr_top">
+			<div class="left">
+				<div class="total">Total : <strong><?=number_format($arrList['total'])?></strong></div>				
+			</div>
+			<div class="bdr_right">
+				<div class="count">
+					<select name="page_size" onchange="document.getElementById('page_size').value = this.value;document.form1.submit()" style="width:60px;">
+						<option value="100"	<?=$scale=="100"?'selected':""?>>100</option>
+						<option value="50"	<?=$scale=="50"?'selected':""?>>50</option>
+						<option value="40"	<?=$scale=="40"?'selected':""?>>40</option>
+						<option value="30"	<?=$scale=="30"?'selected':""?>>30</option>
+						<option value="20"	<?=$scale=="20"?'selected':""?>>20</option>
+						<option value="15"	<?=$scale=="15"?'selected':""?>>15</option>
+						<option value="10"	<?=$scale=="10"?'selected':""?>>10</option>
+						<option value="1"	<?=$scale=="1"?'selected':""?>>1</option>
+					</select>
+					개씩 보기
+				</div>
+				<div class="btns">
+					<a href="./popup_add.php" class="btn">신규등록</a>
+				</div>
+			</div>
+		</div>
+<!-- over_tbl : 테이블을 좌우로 스크롤 할 때 사용합니다. -->
+<!-- mo_break_tbl : 767px 이하에서 테이블 구조를 깰 때 사용합니다. -->
+		<div class="over_tbl mo_break_tbl">
+			<div class="bdr_list tac">
+				<table>
+					<colgroup class="pc_vw">
+						<col class="w4p">
+						<col class="w10p">
+						<col class="w6p">
+						<col class="w10p">
+						<col class="w10p">
+						<col class="w10p">
+						<col class="w10p">
+						<col class="w10p">
+						<col class="w10p">
+						<col class="w10p">
+					</colgroup>
+					<thead>
+						<tr>							
+							<th class="pc_vw">No.</th>
+							<th class="pc_vw">구분</th>
+							<th class="pc_vw">PC/MO</th>
+							<th class="pc_vw">이미지</th>
+							<th class="pc_vw">팝업제목</th>
+							<th class="pc_vw">팝업타입</th>
+							<th class="pc_vw">시작일</th>
+							<th class="pc_vw">종료일</th>
+							<th class="pc_vw">등록일</th>
+							<th class="pc_vw">관리</th>
+						</tr>
+					</thead>
+					<tbody>
+					<?
+					if($arrList['list']['total'] > 0){
+						for ($i=0;$i<$arrList['list']['total'];$i++){
+					?>
+						<tr>
+							<td><i class="mo_vw">No.</i><?=$arrList['total']-$offset-$i?></td>
+							<td><i class="mo_vw">구분</i><?=$arrCategory[$arrList['list'][$i]['category']]?></td>
+							<td><i class="mo_vw">PC/MO</i><?=$arrList['list'][$i]['device']?></td>
+							<td><i class="mo_vw">이미지</i><img src="/uploaded/popup/<?=$arrList['list'][$i]['p_image']?>" style="max-width:100px;"></td>
+							<td><i class="mo_vw">팝업제목</i><a href="popup_info.php?idx=<?=$arrList['list'][$i]['idx']?>" class="linktxt"><?=$arrList['list'][$i]['subject']?></a></td>
+							<td><i class="mo_vw">팝업타입</i><?=$arrList['list'][$i]['p_type']?></td>
+							<td><i class="mo_vw">시작일</i><?=$arrList['list'][$i]['s_date']?></td>
+							<td><i class="mo_vw">종료일</i><?=$arrList['list'][$i]['e_date']?></td>
+							<td><i class="mo_vw">등록일</i><?=$arrList['list'][$i]['w_date']?></td>							
+							<td class="mono_btm"><i class="mo_vw">관리</i>
+								<div class="btns">
+									<a href="popup_info.php?idx=<?=$arrList['list'][$i]['idx']?>" class="btn modi">수정</a>
+									<button type="button" class="btn del" onclick="delPopup('<?=$arrList['list'][$i]['idx']?>');">삭제</button>
+								</div>
+							</td>
+						</tr>
+					<?
+						}
+					}else{
+					?>
+					<tr height="100">
+						<td colspan="8">등록된 팝업이 없습니다.</td>
+					</tr>
+					<?}?>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="bdr_btm">
+			<div class="paging">			
+			<?
+			############### paging ############### ST
+			$queryString = explode("&",$_SERVER['QUERY_STRING']);
+			$reQueryString = "";
+			$comma = "";
+			for($i=0;$i<count($queryString);$i++){
+				if(strpos($queryString[$i],"offset=")===false){
+					$reQueryString .= $comma.$queryString[$i];
+					$comma = "&";
+				}
+			}
+			//	echo pageNavigationUser($arrBoardList["total"],$arrBoardInfo["list"][0]["scale"],$arrBoardInfo["list"][0]["pagescale"],$_GET['offset'],$reQueryString);
+			echo pageNavigationBackoffice($arrList['total'], $scale, $pagescale, $_GET['offset'], $reQueryString);
+			############### paging ############### ED
+			?>
+			</div>
+<!-- 			<div class="btns">
+				<a href="./popup_add.php" class="btn">신규등록</a>
+			</div> -->
+		</div>
+	</div>
+
+</div>
+<script>
+$(document).ready(function(){
+//달력
+	$(".datepicker").datepicker({
+		dateFormat: 'yy-mm-dd',
+		showMonthAfterYear:true,
+		showOn: "both",
+		buttonImage: "/images/icon_month.gif", 
+        buttonImageOnly: true,
+		changeYear: true,
+		changeMonth: true,
+		yearRange: 'c-100:c+10',
+		yearSuffix: "년 ",
+		monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+		dayNamesMin: ['일','월','화','수','목','금','토']
+	});
+});
+</script>
+<form name="frmPopupHidden" method="post" action="popup_evn.php">
+<input type="hidden" name="evnMode" value="deletePopup">
+<input type="hidden" name="idx">
+</form>
+
+<?php include("pub/inc/footer.php") ?>

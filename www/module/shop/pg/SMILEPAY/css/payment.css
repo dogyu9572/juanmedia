@@ -1,0 +1,127 @@
+/* CSS Document */
+/*-----------결제창 CSS-----------*/
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+        overflow:hidden;
+}
+.input06 {
+	font-sixe: 11px;
+	font-family: "DotumChe";
+	border: none;
+	padding: 0;
+	margin: 0;
+	vertical-align:text-top;
+}
+.step {
+	font-size:14px;
+	font-family:DotumChe;
+	text-decoration:none;
+	font-weight:bold;
+	color: #FFF;
+	padding-right:5px;
+}
+.step2 {
+	font-size:12px;
+	font-family:DotumChe;
+	text-decoration:none;
+	font-weight:bold;
+	color: #0059ab;
+	padding-right:5px;
+}
+
+/*카드선택*/
+.box02{
+	font-size:11px;
+	color:#005bac;
+	font-family: "Gulim";
+	font-weight: bold;
+}
+/*이벤트광고*/
+.event{
+	font-size:12px;
+	color:#17446b;
+	font-weight:bold;
+	font-family: "GulimChe";
+}
+.event02 {
+	color: #00abff;
+}
+/*상품명*/
+.boxnaming{
+	font-size:12px;
+	color:#8d8d8d;
+	font-family:"GulimChe";
+	font-weight: bold;
+}
+/*상품금액*/
+.boxprice{
+	font-size:16px;
+	color:#00abff;
+	font:"GulimChe";
+	font-weight:bold;
+}
+/*결제 테이블*/
+.boxbody{
+	font-size:11px;
+	color:#616161;
+	font-family:"Gulim";
+	padding-left:10px;
+	text-align:left;
+}
+.style1 {
+	color: #FFFFFF;
+	font-weight: bold;
+}
+.style2 {font-size: 12pt}
+.style3 {
+	color: #FF0000;
+	font-weight: bold;
+}
+.style4 {
+	font-size: 12px;
+	color: #FFFFFF;
+	font-weight: bold;
+}
+.style5 {
+	color: #000000;
+	font-weight: bold;
+}
+.style8 {
+		color: #FF0000; 
+		font-weight: bold; 
+}
+.style9 {
+	color: #000000;
+	font-weight: bold;
+}
+.style12 {color: #FF0000}
+.style10 {color: #333333; font-weight: bold; }
+.style15 {color: #FF0000}
+
+/*tab이미지*/
+ .tabimg01{		/*card*/
+ background-image: url("../images/nav01.jpg"); 
+ }
+
+ .tabimg01_on{
+ background-image: url("../images/nav01_ov.jpg"); 
+ }
+
+ .tabimg02{		/*bank*/
+ background-image: url("../images/nav02.jpg"); 
+ }
+
+ .tabimg02_on{
+ background-image: url("../images/nav02_ov.jpg"); 
+ }
+
+ .tabimg03{		/*vbank*/
+ background-image: url("../images/nav03.jpg"); 
+ }
+
+ .tabimg03_on{
+ background-image: url("../images/nav03_ov.jpg"); 
+ }

@@ -1,0 +1,45 @@
+/*text - color*/
+span.ksn78 {font-size:11px;color:#787878;}
+span.ksnw {font-size:11px;color:#fff;}
+span.ksbsora {font-size:11px;color:#2083ad; font-weight:bold;}
+span.spoint {font-size:11px; font-family:Tahoma, Verdana, Arial; color:#bb3802;}
+span.bprice {font-size:12px; font-weight:bold; color:#ff0000;}
+span.knb {font-size:12px; font-weight:bold; color:#555;}
+span.kbb {font-size:14px; color:#000; font-weight:bold;}
+span.brown {font-size:12px; color:#684e47;}
+/*p - color*/
+p.s78 {font-size:11px;color:#787878;}
+p.soil { color:#684e47; }
+p.sora {font-size:11px; color:#4fb0cb; padding:3px 0px 3px 0px;}
+
+/*link-color*/
+a:link {
+	font-size: 12px;
+	font-family:Dotum, "µ¸¿ò", Verdana, Arial, sans-serif;
+	color: #555;
+	text-decoration: none;
+}
+a:visited {
+	font-size: 12px;
+	font-family:Dotum, "µ¸¿ò", Verdana, Arial, sans-serif;
+	color: #555;
+	text-decoration: none;
+}
+a:hover {
+	font-size: 12px;
+	font-family:Dotum, "µ¸¿ò", Verdana, Arial, sans-serif;
+	color: #6ba526;
+	text-decoration: none;
+}
+
+a.sn:link {font-size:11px;color:#787878;text-decoration:none;}
+a.sn:visited{font-size:11px;color:#787878;text-decoration:none;}
+a.sn:hover {font-size:11px;color:#0072bc;text-decoration:none;}
+
+a.bluen:link {font-size:12px;color:#1869b5;text-decoration:none;}
+a.bluen:visited{font-size:12px;color:#1869b5;text-decoration:none;}
+a.bluen:hover {font-size:12px;color:#1869b5;text-decoration:underline;}
+
+a.ksl:link {font-size:11px;color:#787878;text-decoration:none;}
+a.ksl:visited{font-size:11px;color:#787878;text-decoration:none;}
+a.ksl:hover {font-size:11px;color:#0072bc;text-decoration:underline;}

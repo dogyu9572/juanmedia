@@ -1,0 +1,49 @@
+.label {
+  page-break-before:always;
+  border: 1px solid #eee;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 5px;
+}
+
+.qr {
+  display: flex;
+}
+.price {
+  font-weight: 800;
+}
+
+.label.page {
+  width: 146px;
+  height: 70px;
+  font-size: 8px;
+  display: block;
+  padding: 5px;
+}
+
+.label.page .price {
+  font-size: 11px;
+}
+
+.label.page .qr img {
+/*   width: 70px; */
+	width: 35px;
+}
+
+.label.acc {
+  width: 115px;
+  height: 37px;
+  font-size: 6px;
+  justify-content: space-around;
+  line-height: 11px;
+  /* padding: 2px 0; */
+}
+
+.label.acc .price {
+  font-size: 9px;
+}
+
+.label.acc .qr img {
+  width: 20px;
+}

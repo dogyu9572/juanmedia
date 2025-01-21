@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8" />
+</head>
+<body>
+<?
+include $_SERVER[DOCUMENT_ROOT] . "/include/headHtml.php"; 
+include_once $_SERVER[DOCUMENT_ROOT] . "/module/member/member.lib.php"; 
+
+############################################################################################################### token ST
+
+$restAPIKey = "78dcf8d5ca1a7bf34c86ce9e5e9361aa"; // 본인의 REST API KEY를 입력해주세요
+$callbacURI = urlencode("http://".$_SERVER['SERVER_NAME']."/_callback/kakao_callback.php"); // 본인의 Call Back URL을 입력해주세요
+// Get the code from kakao server
+$authorize_code = $_GET['code'];		// 서버로 부터 토큰을 발급받을 수 있는 코드를 받아옵니다.
+
+// POST the code to get an access token
+$ch = curl_init();
+
+curl_setopt($ch, CURLOPT_URL,"https://kauth.kakao.com/oauth/token");
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS,
+"grant_type=authorization_code&client_id=$restAPIKey&redirect_uri=$callbacURI&code=$authorize_code");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+$server_output = curl_exec ($ch);
+curl_close ($ch);
+
+$server_output 	=  json_decode($server_output, true);
+$access_token 	=  $server_output['access_token'];
+############################################################################################################### token ED
+
+// POST the access token to get user info
+$ch = curl_init();
+
+curl_setopt($ch, CURLOPT_URL,"https://kapi.kakao.com/v2/user/me");
+curl_setopt($ch, CURLOPT_POST, 0);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Authorization: Bearer '.$access_token
+));
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+$server_output = curl_exec ($ch);
+//####################var_dump($server_output); // Kakao API 서버로 부터 받아온 값
+$server_output =  json_decode($server_output, true);
+
+curl_close ($ch);
+
+$kakao_id				= $server_output['id'];
+$kakao_email			= $server_output['kaccount_email']; // 이메일
+$kakao_nickname 		= $server_output['properties']['nickname'];
+$kakao_profile_image    = $server_output['properties']['profile_image'];
+$kakao_thumbnail_image 	= $server_output['properties']['thumbnail_image'];	// 이미지
+
+$dblink = SetConn($_conf_db["main_db"]);
+$RS = loginMember("kakao_".$kakao_id, $kakao_id."@pwd");
+SetDisConn($dblink);
+
+//######################exit;
+
+if($RS["list"][0]["join_type"]=="kakao"){	// 로그인 아이디 존재 (유)
+?>
+<form action='/module/member/member_evn.php' method='post' name='loginForm'>
+<input type="hidden" name="evnMode" value="userLogin">
+<input type="hidden" name="rt_url" value="<?=$_SESSION['CB_RT_URL']?>">
+<input type="hidden" id="id" name="id" value="kakao_<?=$kakao_id?>" />
+<input type="hidden" id="pw" name="pw" value="<?=$kakao_id?>@pwd" />
+</form>
+<script type="text/javascript">
+<!--
+document.loginForm.submit();
+//-->
+</script>
+<?
+}else{
+	$_SESSION['kakao']['email']	= $kakao_email;
+	$_SESSION['kakao']['name']	= $kakao_nickname;
+	$_SESSION['kakao']['id']	= $kakao_id;
+
+	// 여기서 회원검색후 네이버가입회원이면 로그인 but 네이버아이디로 회원가입페이지로 이동시킨다
+	// 이메일계정이 존재하면 이미 가입된 계정 표시후 롤백
+?>
+<script type="text/javascript">
+<!--
+var con_txt = confirm("카카오 로그인 연동중입니다. 회원가입페이지로 이동합니다.");
+if(con_txt==true)	{
+	location.href="/include/join_kakao.php";
+}else{
+	location.href="/";
+}
+//-->
+</script>
+<?	
+}
+/*
+echo "//id:".$kakao_id."//nick:".$kakao_nickname;
+echo "<br/>//email:".$kakao_email."//사진:".$kakao_profile_image;
+*/
+?>
+</body>
+</html>

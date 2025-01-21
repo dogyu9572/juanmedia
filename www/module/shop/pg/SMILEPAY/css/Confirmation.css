@@ -1,0 +1,188 @@
+/* CSS Document */
+
+/*-----------영수증내용 폰트-----------*/
+.Confirmation01 {
+	font-family: "Dotum";
+	font-size: 14px;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+.Confirmation01_2 {
+	font-family: "DotumChe";
+	font-size: 14px;
+	font-weight: bold;
+	color: #47443c;
+}
+.Confirmation02 {
+	font-family: "DotumChe";
+	font-size: 12px;
+	font-weight: bold;
+	color: #e2e1e1;
+}
+.Confirmation02_2 {
+	font-family: "DotumChe";
+	font-size: 12px;
+	font-weight: normal;
+	color: #6d6b66;
+}
+.Confirmation03 {
+	font-family: "DotumChe";
+	font-size: 12px;
+	font-weight: bold;
+	color: #717171;
+}
+.Confirmation04 {
+	font-family: "DotumChe";
+	font-size: 15px;
+	font-weight: bold;
+	color: #000000;
+}
+.Confirmation05 {
+	font-family: "DotumChe";
+	font-size: 15px;
+	font-weight: normal;
+	color: #000000;
+}
+
+
+/*-----------영수증div배치순서-----------*/
+
+div.testBox1 {
+	position:absolute;
+	z-index:2;
+	top: 159px;
+	left: 38px;
+	width: 250px;
+
+}
+div.testBox2 {
+	position:absolute;
+	z-index:1;
+	top: 158px;
+
+
+}
+div.testBox3 {
+	position:absolute;
+	z-index:4;
+	top: 411px;
+	left: 38px;
+
+
+}
+div.testBox4 {
+	position:absolute;
+	z-index:3;
+	top: 410px;
+
+
+}
+div.testBox5 {
+	position:absolute;
+	z-index:6;
+	top: 721px;
+	left: 38px;
+
+
+}
+div.testBox6 {
+	position:absolute;
+	z-index:5;
+	top: 720px;
+	width: 256px;
+
+
+
+}
+div.testBox1_1 {
+	position:absolute;
+	z-index:1;
+	top: 154px;
+
+
+
+}
+div.testBox2_1 {
+	position:absolute;
+	z-index:2;
+	left: 41px;
+	top: 152px;
+
+
+
+
+}
+div.testBox3_1 {
+	position:absolute;
+	z-index:3;
+	top: 483px;
+
+
+}
+div.testBox4_1 {
+	position:absolute;
+	z-index:4;
+	left: 40px;
+	top: 482px;
+
+
+
+
+}
+div.testBox1_2 {
+	position:absolute;
+	z-index:1;
+	top: 160px;
+
+
+
+}
+div.testBox2_2 {
+	position:absolute;
+	z-index:2;
+	left: 66px;
+	top: 162px;
+	width: 265px;
+
+
+
+
+}
+div.testBox3_2 {
+	position:absolute;
+	z-index:3;
+	top: 275px;
+	left: 64px;
+
+
+}
+div.testBox4_2 {
+	position:absolute;
+	z-index:4;
+	left: 66px;
+	top: 277px;
+	width: 248px;
+
+
+
+
+}
+div.testBox5_2 {
+	position:absolute;
+	z-index:5;
+	top: 447px;
+	left: 64px;
+
+
+}
+div.testBox6_2 {
+	position:absolute;
+	z-index:6;
+	left: 66px;
+	top: 449px;
+	width: 289px;
+
+
+
+
+}

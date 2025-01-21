@@ -1,0 +1,18 @@
+<svg id="그룹_37310" data-name="그룹 37310" xmlns="http://www.w3.org/2000/svg" width="45" height="45" viewBox="0 0 45 45">
+  <rect id="사각형_13884" data-name="사각형 13884" width="3" height="3" transform="translate(18)" fill="#666"/>
+  <path id="패스_71254" data-name="패스 71254" d="M353,0V3h-3V6h6V0Z" transform="translate(-329 0)" fill="#666"/>
+  <rect id="사각형_13885" data-name="사각형 13885" width="3" height="3" transform="translate(6 6)" fill="#666"/>
+  <rect id="사각형_13886" data-name="사각형 13886" width="3" height="3" transform="translate(36 6)" fill="#666"/>
+  <path id="패스_71255" data-name="패스 71255" d="M3,9V3h9v9H3ZM0,0V15H15V0Z" fill="#666"/>
+  <path id="패스_71256" data-name="패스 71256" d="M503,9V3h9v9h-9Zm-3-9V15h15V0Z" transform="translate(-470)" fill="#666"/>
+  <path id="패스_71257" data-name="패스 71257" d="M309,112v-9h-3v3h-3v-6h-3v9h3v3h3v3h6v-3Z" transform="translate(-282 -94)" fill="#666"/>
+  <path id="패스_71258" data-name="패스 71258" d="M3,300H0v3H3v6H9v-3H6v-6Z" transform="translate(0 -282)" fill="#666"/>
+  <path id="패스_71259" data-name="패스 71259" d="M559,300h-6v3h-3v3h6v-3h3v6h3v-9Z" transform="translate(-517 -282)" fill="#666"/>
+  <rect id="사각형_13887" data-name="사각형 13887" width="3" height="3" transform="translate(30 30)" fill="#666"/>
+  <path id="패스_71260" data-name="패스 71260" d="M603,450h-3v6h9v-3h-3v-3Z" transform="translate(-564.001 -423)" fill="#666"/>
+  <path id="패스_71261" data-name="패스 71261" d="M168,306v3h-3v-3h-6v-3h-3v-3h-3v3h-3v3h3v3h3v3h3v-3h3v6h-3v3h6v-3h3v-3h3v-6Z" transform="translate(-141 -282)" fill="#666"/>
+  <rect id="사각형_13888" data-name="사각형 13888" width="3" height="3" transform="translate(6 36)" fill="#666"/>
+  <path id="패스_71262" data-name="패스 71262" d="M3,509v-6h9v9H3Zm9-9H0v15H15V500Z" transform="translate(0 -470)" fill="#666"/>
+  <path id="패스_71263" data-name="패스 71263" d="M309,550v9h-3v-3h-6v6h12v-6h3v6h3v-6h3v-3h-9v-3Z" transform="translate(-282 -517)" fill="#666"/>
+  <path id="패스_71264" data-name="패스 71264" d="M653,600v6h-3v3h6v-9Z" transform="translate(-611 -564)" fill="#666"/>
+</svg>

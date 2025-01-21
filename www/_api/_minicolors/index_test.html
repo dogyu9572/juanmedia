@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>jQuery MiniColors</title>
+  <meta charset="utf-8">
+
+  <!-- jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+
+  <!-- MiniColors -->
+  <script src="jquery.minicolors.js"></script>
+  <link rel="stylesheet" href="jquery.minicolors.css">
+
+
+  <script>
+    $(document).ready( function() {
+
+      $('.picker').each( function() {
+        $(this).minicolors({
+          control: $(this).attr('data-control') || 'hue',
+          defaultValue: $(this).attr('data-defaultValue') || '',
+          format: $(this).attr('data-format') || 'hex',
+          keywords: $(this).attr('data-keywords') || '',
+          inline: $(this).attr('data-inline') === 'true',
+          letterCase: $(this).attr('data-letterCase') || 'lowercase',
+          opacity: $(this).attr('data-opacity'),
+          position: $(this).attr('data-position') || 'bottom',
+          swatches: $(this).attr('data-swatches') ? $(this).attr('data-swatches').split('|') : [],
+          change: function(value, opacity) {
+            if( !value ) return;
+            if( opacity ) value += ', ' + opacity;
+            if( typeof console === 'object' ) {
+              console.log(value);
+            }
+          },
+          theme: 'bootstrap'
+        });
+
+      });
+
+    });
+  </script>
+</head>
+<body>
+
+<input type="text" class="picker" data-control="hue" value="#ff6161">
+
+</body>
+</html>

@@ -1,0 +1,316 @@
+<?PHP
+include $_SERVER['DOCUMENT_ROOT'] . "/backoffice/pub/inc/pop_top.php";
+
+include_once $_SERVER ['DOCUMENT_ROOT'] . "/module/member/member.lib.php";
+include_once $_SERVER ['DOCUMENT_ROOT'] . "/module/coupon/coupon.lib.php";
+
+if (! in_array ( "member_manage", $_SESSION [$_SITE ["DOMAIN"]] ["ADMIN"] ["AUTH"] ) && $_SESSION [$_SITE ["DOMAIN"]] ["ADMIN"] ["GRADE"] != "ROOT") :
+    jsMsg ( "권한이 없습니다." );
+    jsHistory ( "-1" );
+
+endif;
+
+if($_GET['page_size']){
+    $scale = $_GET['page_size'];
+}else{
+    $scale = 20;
+}
+
+// DB연결
+$dblink = SetConn ( $_conf_db ["main_db"] );
+
+$subQuery = "";
+if($_GET['join_type']){
+    $subQuery .= " AND join_type='".$_GET['join_type']."' ";
+}
+if($_GET['job']){
+    $subQuery .= " AND job='".$_GET['job']."' ";
+}
+if($_GET['email_accept']){
+    $subQuery .= " AND email_accept='".$_GET['email_accept']."' ";
+}
+if($_GET['sms_accept']){
+    $subQuery .= " AND sms_accept='".$_GET['sms_accept']."' ";
+}
+
+$arrList = getMemberListOrderJoin ( mysqli_real_escape_string ( $GLOBALS ['dblink'], $_REQUEST ['jb'] ),  mysqli_real_escape_string ( $GLOBALS ['dblink'], $_REQUEST ['sw'] ), mysqli_real_escape_string ( $GLOBALS ['dblink'], $_REQUEST ['sk'] ), $scale, $_REQUEST ['offset'] , $subQuery);
+// _DEBUG($arrList);
+
+$arrLevel = getArticleList ( $_conf_tbl ["member_level"], 0, 0, "order by level_no desc " );
+
+for($i = 0; $i < $arrLevel["total"]; $i ++) {
+    $arrayLevel[$arrLevel["list"][$i]['level_no']] = $arrLevel["list"][$i]['level_name'];
+}
+
+$arrCouponList = getCouponListAdmin(0, 0, "Y");
+
+// DB해제
+SetDisConn ( $dblink );
+?>
+    <script type="text/javascript">
+        <!--
+        // 선택 삭제시 singleSelect=true 값 변경 false
+        function getSelections(){
+            var ss = "";
+            var comma = "";
+            var rows = $('input:checkbox[name=chk_list]:checked');
+
+            for(var i=0; i<rows.length; i++){
+                var row = rows[i];
+                //ss.push(row.idx);
+                ss += comma+row.value;
+                comma = ",";
+            }
+            if(rows.length>0){
+                //alert(ss);
+                fnAddMsds(ss);
+            }else{
+                alert('선택된 항목이 없습니다.');
+            }
+        }
+        function fnAddMsds(ss){
+            parent.fnMemberSelect(ss,'<?=$_GET['fname']?>');
+        }
+        $(function(){
+            $(".check_all").click(function(){
+                var chk = $(this).is(":checked");//.attr('checked');
+                if(chk) $(".chk_list").prop('checked', true);
+                else  $(".chk_list").prop('checked', false);
+            });
+        });
+        //-->
+    </script>
+    <div class="container">
+
+        <div class="title">회원 LIST</div>
+
+        <form name="frmSort" method="get" action="pop_member.php">
+            <input type="hidden" name="fname" value="<?=$_REQUEST['fname']?>"  />
+            <div class="inbox top_search">
+<!--                <dl>-->
+<!--                    <dt>회원정렬</dt>-->
+<!--                    <dd>-->
+<!--                        <select name="orderby" id="" style="width:120px;" onchange="document.frmSort.submit()" >-->
+<!--                            <option value="">회원가입날짜</option>                           -->
+<!--                        </select>-->
+<!--                    </dd>-->
+<!--                </dl>-->
+                <dl>
+                    <dt>가입구분</dt>
+                    <dd>
+                        <select name="join_type" id="" style="width:100px;">
+                            <option value="">전체</option>
+                            <option value="homepage" <?=$_GET['join_type']=="homepage"?"selected":""?>>일반</option>
+                            <option value="naver"  <?=$_GET['join_type']=="naver"?"selected":""?>>네이버</option>
+                            <option value="kakao"  <?=$_GET['join_type']=="kakao"?"selected":""?>>카카오</option>
+                            <option value="google"  <?=$_GET['join_type']=="google"?"selected":""?>>구글</option>
+                        </select>
+                    </dd>
+                </dl>
+                <dl>
+                    <dt>회원등급</dt>
+                    <dd>
+                        <select name="user_level" id="" style="width:100px;">
+                            <option value="">전체</option>
+                            <?for ($i=0;$i<$arrLevel['total'];$i++) {?>
+                                <option value="<?=$arrLevel['list'][$i]['level_no']?>"<?=$arrLevel['list'][$i]['level_no']==$_GET["user_level"]?" selected":""?>><?=$arrLevel['list'][$i]['level_name']?></option>
+                            <?}?>
+
+                        </select>
+                    </dd>
+                </dl>
+                <dl class="w2">
+                    <dt>등록일</dt>
+                    <dd><input type="text" class="datepicker" name="s_date" value="<?=$_REQUEST['s_date']?>"  /><em>~</em><input type="text" class="datepicker" name="e_date" value="<?=$_REQUEST['e_date']?>" /></dd>
+                </dl>
+                <dl class="search_wrap">
+                    <dt>검색어</dt>
+                    <dd>
+                        <select name="sw" style="width:100px;">
+                            <option value="all" <?=$_REQUEST['sw']=="all"?" selected":""?>>전체</option>
+                            <option value="name" <?=$_REQUEST['sw']=="name"?" selected":""?>>이름</option>
+                            <option value="id" <?=$_REQUEST['sw']=="id"?" selected":""?>>아이디</option>
+                            <option value="hp" <?=$_REQUEST['sw']=="hp"?" selected":""?>>휴대폰 번호 뒷 4자리</option>
+                            <option value="email" <?=$_REQUEST['sw']=="email"?" selected":""?>>이메일</option>
+                        </select>
+                        <input type="text" name="sk" value="<?=$_GET['sk']?>" onkeypress="if( event.keyCode == 13 ){document.frmSort.submit()}"/>
+                        <button type="button" class="search" onclick="document.frmSort.submit()">검색</button>
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="inbox">
+                <div class="bdr_top">
+                    <div class="left">
+                        <div class="total">Total : <strong><?=number_format($arrList['total'])?></strong></div>
+                        <div class="down">
+
+                        </div>
+                    </div>
+
+                    <div class="count">
+                        <select name="page_size" onchange="document.frmSort.submit()" style="width:100px;">
+                            <option value="100" <?if($scale=="100"){echo 'selected="selected"';}?>>100</option>
+                            <option value="50" <?if($scale=="50"){echo 'selected="selected"';}?>>50</option>
+                            <option value="40" <?if($scale=="40"){echo 'selected="selected"';}?>>40</option>
+                            <option value="30" <?if($scale=="30"){echo 'selected="selected"';}?>>30</option>
+                            <option value="20" <?if($scale=="20"){echo 'selected="selected"';}?>>20</option>
+                            <option value="15" <?if($scale=="15"){echo 'selected="selected"';}?>>15</option>
+                            <option value="10" <?if($scale=="10"){echo 'selected="selected"';}?>>10</option>
+                        </select>
+                        개씩 보기
+                    </div>
+                </div>
+        </form>
+        <!-- over_tbl : 테이블을 좌우로 스크롤 할 때 사용합니다. -->
+        <!-- mo_break_tbl : 767px 이하에서 테이블 구조를 깰 때 사용합니다. -->
+        <div class="over_tbl mo_break_tbl">
+            <div class="bdr_list tac">
+                <table>
+                    <colgroup class="pc_vw">
+                        <col class="w4p">
+                        <col class="w6p">
+                        <col class="w6p">
+                        <col class="w6p">
+                        <col class="w15p">
+                        <col class="w15p">
+                        <col class="w10p">
+                        <col class="w12p">
+                        <col class="w13p">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th><label class="check notxt"><input type="checkbox" name="" id="allCheck"><i></i></label></th>
+                        <th class="pc_vw">No.</th>
+                        <th class="pc_vw">가입</th>
+                        <th class="pc_vw">회원상태</th>
+                        <th class="pc_vw">이메일(아이디)</th>
+                        <th class="pc_vw">이름</th>
+                        <th class="pc_vw">연락처</th>
+                        <th class="pc_vw">가입날짜</th>
+                        <th class="pc_vw">관리</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?
+                    $arrLevel = getArticleList ( $_conf_tbl ["member_level"], 0, 0, "order by level_no desc " );
+                    for($i = 0; $i < $arrLevel["total"]; $i ++) {
+                        $arrayLevel[$arrLevel["list"][$i]['level_no']] = $arrLevel["list"][$i]['level_name'];
+                    }
+
+                    if($arrList['list']['total'] > 0){
+                        for ($i=0;$i<$arrList['list']['total'];$i++){
+                            if($arrList['list'][$i]['join_type']=="kakao"){
+                                $joinType = "카카오";
+                            }else if($arrList['list'][$i]['join_type']=="naver"){
+                                $joinType = "네이버";
+                            }else{
+                                $joinType = "일반";
+                            }
+
+                            if ($arrList['list'][$i]['before'] == 'Y') {
+                                $user_name = base64_decode($arrList['list'][$i]['user_name']);
+                                $mobile = base64_decode($arrList['list'][$i]['mobile']);
+                                $email = base64_decode($arrList['list'][$i]['email']);
+                            }
+                            else {
+                                $user_name = $arrList['list'][$i]['user_name'];
+                                $mobile = $arrList['list'][$i]['mobile'];
+                                $email = $arrList['list'][$i]['email'];
+                            }
+
+                            $level_name = $arrayLevel[$arrList['list'][$i]['user_level']];
+                            
+                            ?>
+                            <tr>
+                                <td class="chkbox"><label class="check notxt"><input type="checkbox" value="<?=$arrList["list"][$i]['idx']?>" name="chk_list"><i></i></label></td>
+                                <td><i class="mo_vw">No.</i><?=number_format($arrList['total']-$i-$_REQUEST['offset'])?></td>
+                                <td><i class="mo_vw">가입구분</i><?=$joinType?></td>
+                                <td><i class="mo_vw">회원등급</i><?=$level_name?></td>
+                                <td><i class="mo_vw">ID(아이디)</i><?=$arrList['list'][$i]['user_id']?></td>
+                                <td><i class="mo_vw">이름</i><?=$user_name?></td>
+                                <td><i class="mo_vw">연락처</i><?=$mobile?></td>
+                                <td><i class="mo_vw">등록일</i><?=$arrList['list'][$i]['wdate']?></td>
+                                <td class="mono_btm"><i class="mo_vw">관리</i>
+                                    <div class="btns">
+                                        <a href="javascript:void(0);" onclick="fnAddMsds('<?=$arrList['list'][$i]['user_id']?>')" class="btn perf">등록</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <?
+                        }
+                    }else{
+                        ?>
+                        <tr height="100">
+                            <td colspan="12">등록된 데이터가 없습니다.</td>
+                        </tr>
+                    <?}?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bdr_btm">
+            <div class="paging">
+                <?
+                ############### paging ############### ST
+                $queryString = explode("&",$_SERVER['QUERY_STRING']);
+                $reQueryString = "";
+                $comma = "";
+                for($i=0;$i<count($queryString);$i++){
+                    if(strpos($queryString[$i],"offset=")===false){
+                        $reQueryString .= $comma.$queryString[$i];
+                        $comma = "&";
+                    }
+                }
+                echo pageNavigationBackoffice($arrList["total"],$scale,10,$_GET['offset'],$reQueryString);
+                ############### paging ############### ED
+                ?>
+            </div>
+            <div class="btns">
+                <a href="javascript:void(0);" onclick="getSelections()" class="btn btn_del">선택등록</a>
+            </div>
+        </div>
+    </div>
+    </div>
+    <form name="frmContentsHidden" method="post" action="member_evn.php">
+        <input type="hidden" name="evnMode" value="delete">
+        <input type="hidden" name="user_id">
+        <input type="hidden" name="returnURL" value="<?=$_SERVER['REQUEST_URI']?>">
+    </form>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(document).ready(function(){
+//달력
+            $(".datepicker").datepicker({
+                dateFormat: 'yy-mm-dd',
+                showMonthAfterYear:true,
+                showOn: "both",
+                buttonImage: "/images/icon_month.gif",
+                buttonImageOnly: true,
+                changeYear: true,
+                changeMonth: true,
+                yearRange: 'c-100:c+10',
+                yearSuffix: "년 ",
+                monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+                dayNamesMin: ['일','월','화','수','목','금','토']
+            });
+//체크박스
+            var $allCheck = $('#allCheck');
+            $allCheck.change(function () {
+                var $this = $(this);
+                var checked = $this.prop('checked');
+                $('input[name="chk_list"]').prop('checked', checked);
+            });
+            var boxes = $('input[name="chk_list"]');
+            boxes.change(function () {
+                var boxLength = boxes.length;
+                var checkedLength = $('input[name="chk_list"]:checked').length;
+                var selectallCheck = (boxLength == checkedLength);
+                $allCheck.prop('checked', selectallCheck);
+            });
+        });
+        //]]>
+    </script>
+
+<?php include("pub/inc/footer.php") ?>

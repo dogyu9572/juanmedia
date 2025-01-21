@@ -1,0 +1,279 @@
+<?php
+//DB Config
+$_conf_db = array(
+    "main_db"=>array(
+        "host"=>"127.0.0.1",
+    	"db"=>"juanpg",
+    	"user"=>"juanpg",
+        "password"=>"juanpg@123"
+    )
+);
+
+//TABLE Config
+$_conf_tbl = array(
+	"admin" => "tbl_admin",						//관리자정보
+	"admin_login_log" => "tbl_admin_login_log",	//관리자 로그인 히스토리
+	"admin_menu_code" => "tbl_admin_menu_code",			//관리자 권한 구분 코드
+	"board_info" => "tbl_board_info",			//게시판 설정
+	"board_files" => "tbl_board_files",			//게시판 첨부파일
+	"comment" => "tbl_comment",			//게시판 댓글목록
+	"zipcode" => "tbl_zipcode",			//우편번호
+	"member" => "tbl_member",			//회원정보
+	"member_baby" => "tbl_member_baby",			//회원자녀정보
+	"member_level" => "tbl_member_level",			//회원 등급
+	"member_address" => "tbl_member_address",			//회원주소록
+	"online_form" => "tbl_online_form",			//온라인 견적서, 문의, 제품등록
+	"online_files" => "tbl_online_files",			//온라인 견적서, 문의, 제품등록
+	"html_contents" => "tbl_html_contents",			//html 작성
+	"category" => "tbl_category",			//분류
+	"category_sns" => "tbl_category_sns",			//분류
+	"category_banner" => "tbl_category_banner",			//분류배너
+	"product_files" => "tbl_product_files",			//제품 첨부파일 정보
+	"catalog_files" => "tbl_catalog_files",			//제품 카탈로그파일 정보
+	"shop_set" => "tbl_shop_set",			//상품정보
+	"shop_good" => "tbl_shop_good",			//상품정보
+	"shop_good_cat" => "tbl_shop_good_cat",			//상품 카테고리 정보
+	"shop_good_search" => "tbl_shop_good_search",			//추가검색 카테고리 정보
+	"shop_good_files" => "tbl_shop_good_files",			//상품 첨부파일 정보
+	"shop_catalog_files" => "tbl_shop_catalog_files",			//제품 카탈로그파일 정보
+	"shop_good_opt" => "tbl_shop_good_opt",			//상품 옵션 정보
+	"shop_good_opt_rel" => "tbl_shop_good_opt_rel",			//연계상품 재고 및 옵션 정보
+	"shop_cart" => "tbl_shop_cart",			//장바구니
+	"shop_order_cart" => "tbl_shop_order_cart",			//주문직전 장바구니
+	"shop_order_info" => "tbl_shop_order_info",			//주문정보 테이블
+	"shop_order_good" => "tbl_shop_order_good",			//주문상품 정보 테이블
+	"shop_review" => "tbl_shop_review",			//상품 이용후기
+	"shop_wish" => "tbl_shop_wish",			//위시리스트 테이블
+	"shop_opt" => "tbl_shop_opt",			//별도옵션관리
+	"shop_opt_val" => "tbl_shop_opt_val",			//별도옵션관리
+	"coupon" => "tbl_coupon",			//쿠폰
+	"mycoupon" => "tbl_mycoupon",			//쿠폰
+	"giftcard" => "tbl_giftcard",			//상품권
+	"mygiftcard" => "tbl_mygiftcard",			//상품권
+	"giftcard_send" => "tbl_giftcard_send",			//상품권발행
+	"one_to_one" => "tbl_one_to_one",					//1:1 질문과 답변
+	"banner" => "tbl_banner",									//배너
+	"course" => "tbl_course",									//시설
+	"point" => "tbl_point",			//적립금로그
+	"poll_info" => "tbl_poll_info",									//투표정보
+	"poll_contents" => "tbl_poll_contents",								//투표항목
+	"poll_log" => "tbl_poll_log",									//투표로그
+    "popup" => "tbl_popup",                 //팝업
+    "send" => "tbl_mail_contents",                 //메일내용
+    "send_email" => "tbl_mail_email",                 //메일목록
+	"research_info" => "tbl_research_info",									//설문정보
+	"research_question" => "tbl_research_question",									//설문항목
+	"research_answer" => "tbl_research_answer",									//답변항목
+	"research_log" => "tbl_research_log",									//설문로그
+	"calendar_data" => "calendar_data",									//만세력 정보
+	"mail_config" => "tbl_mail_config",									//메일설정 정보
+	"memo_receive" => "tbl_memo_receive",							//쪽지받은보관함
+	"memo_save" => "tbl_memo_save",									//쪽지내용테이블
+	"memo_send" => "tbl_memo_send",									//쪽지보낸보관함
+	"discounts" => "tbl_discounts",			//상품정보
+	"log" => array(
+		"log" => "tbl_websight_log",
+		"browser" => "tbl_websight_log_browser",
+		"counter" => "tbl_websight_log_counter",
+		"domain" => "tbl_websight_log_domain",
+		"ip" => "tbl_websight_log_ip",
+		"searchengin" => "tbl_websight_log_searchengin",
+		"keyword" => "tbl_websight_log_keyword",
+		"os" => "tbl_websight_log_os",
+		"page" => "tbl_websight_log_page",
+		"referer" => "tbl_websight_log_referer"
+	)
+);
+
+
+//DB Connect
+function SetConn($arrDB){
+	$myconn = @mysqli_connect( $arrDB['host'], $arrDB['user'], $arrDB['password'], $arrDB["db"]);
+    @mysqli_select_db($myconn, $arrDB["db"]) or die("Can't Database Select");
+    mysqli_query($myconn, "set names utf8");
+    return $myconn;
+}
+
+//DB Disconnect
+function SetDisConn($myconn){
+    if( $myconn )    {
+        return @mysqli_close($myconn);
+    }else{
+        errorConn("no linked connection");
+    }
+}
+
+//DB Error
+function errorConn($str){
+    print($str);
+    exit;
+}
+
+/*********************************** 공통사용 *************************************/
+//테이블 1개 에서 레코드 삭제
+function deleteArticleByIdx($tbl, $idx){
+	$sql = "DELETE FROM ".$tbl."
+	WHERE idx='$idx'
+	";
+
+//echo $sql;
+	$rs = mysqli_query($GLOBALS['dblink'], $sql);
+	$total = mysqli_affected_rows($GLOBALS['dblink']);
+
+	if($total > 0){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+//일반적인 게시물 가져오기
+function getArticleInfo($tbl, $idx){
+    $sql  = "SELECT * ";
+    $sql .= "FROM $tbl ";
+    $sql .= "WHERE idx = '$idx' ";
+	//echo $sql;
+    $rs = mysqli_query($GLOBALS['dblink'], $sql);
+    $total_rs = mysqli_num_rows($rs);
+
+    if($total_rs > 0){
+        $list['total'] = $total_rs;
+        for($i=0; $i < $total_rs; $i++){
+            $list['list'][$i] = mysqli_fetch_assoc($rs);
+        }
+    }else{
+        $list['total'] = 0;
+    }
+    return $list;
+}
+
+//쇼핑몰세팅 가져오기
+function getShopsetInfo($tbl){
+    $sql  = "SELECT * ";
+    $sql .= "FROM $tbl ";
+//	echo $sql;
+    $rs = mysqli_query($GLOBALS['dblink'], $sql);
+    $total_rs = mysqli_num_rows($rs);
+
+    if($total_rs > 0){
+        $list['total'] = $total_rs;
+        for($i=0; $i < $total_rs; $i++){
+            $list['list'][$i] = mysqli_fetch_assoc($rs);
+        }
+    }else{
+        $list['total'] = 0;
+    }
+    return $list;
+}
+
+
+//일반적인 게시물 목록 가져오기
+function getArticleList($tbl, $scale, $offset=0, $orderby=""){
+	if($orderby){
+		$ordersql = $orderby;
+	}else{
+		$ordersql = "order by idx desc" ;
+	}
+
+    $sql = "SELECT * FROM $tbl  $ordersql";
+//		echo $sql;
+    $rs = mysqli_query($GLOBALS['dblink'], $sql);
+    $total_rs = mysqli_num_rows($rs);
+
+
+    if($total_rs > 0){
+        $list['total'] = $total_rs;
+        // 페이지 네비게이션 오프셋 지정.
+		    if(!$offset){
+		        $offset=0;
+		    }else{
+		        $offset=$offset;
+		    }
+
+		    // offset 이 전체 게시물수보다 작을때 offset 을 전체게시물 - 페이지당 보여줄 글 수로 offset 설정
+		    if($total_rs<=$offset){
+		        $offset = $total_rs - $scale;
+		    }
+
+			//scale 0 으로 지정시에는 전체 가져옴
+			if($scale > 0){
+				$sql .= " limit $offset,$scale ";
+			}
+
+		    $rs = mysqli_query($GLOBALS['dblink'], $sql);
+
+		    // offset 을 이용한 limit 가 적용된 갯수
+		    $total = mysqli_num_rows($rs);
+//			echo $sql;
+		    $list['list']['total'] = $total;
+		    // 페이지 네비게이션 오프셋 지정.
+
+        for($i=0; $i < $total; $i++){
+            $list['list'][$i] = mysqli_fetch_assoc($rs);
+        }
+    }else{
+        $list['total'] = 0;
+		$list['list']['total'] = 0;
+    }
+
+    return $list;
+}
+
+//테이블에서 목록 가져오기
+function getListByTbl($tbl, $orderby=""){
+    $sql  = "SELECT * ";
+    $sql .= "FROM $tbl ";
+
+		if($orderby !=""){
+			$sql .= "$orderby";
+		}
+
+//echo $sql;
+    $rs = mysqli_query($GLOBALS['dblink'], $sql);
+    $total_rs = mysqli_num_rows($rs);
+
+    if($total_rs > 0){
+        $list['total'] = $total_rs;
+        for($i=0; $i < $total_rs; $i++){
+            $list['list'][$i] = mysqli_fetch_assoc($rs);
+        }
+    }else{
+        $list['total'] = 0;
+    }
+    return $list;
+}
+/*********************************** 공통사용 *************************************/
+/*********************************** PHP 7 전용 ST *************************************/
+function mysqli_result($res,$row=0,$col=0)
+{ 
+	$nums=mysqli_num_rows($res);
+	if($nums && $row<=($nums-1) && $row>=0)
+	{
+		mysqli_data_seek($res,$row);
+		$resrow=(is_numeric($col))?mysqli_fetch_row($res):mysqli_fetch_assoc($res);
+		if(isset($resrow[$col]))
+		{
+			return $resrow[$col];
+		}
+	}
+	return false;
+}
+
+function postNullCheck($var){
+	if(isset($_REQUEST[$var])){
+		$returnVar = $_REQUEST[$var];
+	}else{
+		$returnVar = "";
+	}
+	return $returnVar;
+}
+function initVar($var){
+	if(isset($_REQUEST[$var])){
+		$returnVar = $_REQUEST[$var];
+	}else{
+		$returnVar = "";
+	}
+	return $returnVar;
+}
+/*********************************** PHP 7 전용 ED *************************************/
+?>

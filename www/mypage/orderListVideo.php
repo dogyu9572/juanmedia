@@ -1,0 +1,304 @@
+<?php include("../inc/header.php"); ?>
+
+
+		<!-- Container -->
+		<div class="container sub" id="container">
+
+			<!-- subTopBg -->
+			<div class="subTopBg myPage">
+				<div class="inner">
+					<div class="enName">MY PAGE</div>
+					<div class="korName">마이페이지</div>
+					<div class="lnb">
+						<a href="/"><img src="/images/ico_home.svg" alt="home"></a>
+						<div class="lnbSub">
+							<div class="tit">마이페이지</div>
+							<ul>
+								<li><a href="/edu/info.php">미디어교육</a></li>
+								<li><a href="/equ/info.php">장비대여</a></li>
+								<li><a href="/place/info.php">공간대관</a></li>
+								<li><a href="/media/info.php">미디어체험</a></li>
+								<li><a href="/center/intro.php">센터안내</a></li>
+								<li><a href="/cm/notice.php">게시판</a></li>
+							</ul>
+						</div>
+						<div class="lnbSub">
+							<div class="tit">신청 내역</div>
+							<ul>
+								<li><a href="freeList.php">나의 활동 관리</a></li>
+								<li><a href="edit.php">나의 정보 관리</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- //subTopBg -->
+
+			<!-- subSec -->
+			<div class="subSec pt80 last">
+				<div class="mySide inner ">
+					
+					<div class="menu">
+						<div class="inMenu">
+							<div class="box">
+								<div class="tit">신청 내역</div>
+								<ul>
+									<li><a href="orderList.php">교육신청</a></li>
+									<li><a href="orderListEq.php">장비대여</a></li>
+									<li><a href="orderListPlace.php">공간대여</a></li>
+									<li><a href="orderListVideo.php" class="active">상영회</a></li>
+								</ul>
+							</div>
+							<div class="box">
+								<div class="tit">나의 활동 관리</div>
+								<ul>
+									<li><a href="freeList.php">자유게시판</a></li>
+									<li><a href="stopList.php">자격 정지 내역</a></li>
+								</ul>
+							</div>
+							<div class="box">
+								<div class="tit">나의 정보 관리</div>
+								<ul>
+									<li><a href="edit.php">회원정보 수정</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+					<div class="rightCont">
+						<div class="bigTit">상영회</div>
+
+						<div class="mobSelect mob">
+							<div class="baseSel">
+								<select>
+									<option value="orderListVideo.php">상영회</option>
+									<option value="orderList.php">교육신청</option>
+									<option value="orderListEq.php">장비대여</option>
+									<option value="orderListPlace.php">공간대관</option>
+								</select>
+							</div>
+						</div>
+
+						<!-- searchForm -->
+						<div class="searchForm">
+							<div class="count">
+								전체 <span>100건</span>
+							</div>
+							<div class="rightForm">
+								<div class="baseSel">
+									<select>
+										<option value="">전체</option>
+										<option value="">전체</option>
+										<option value="">전체</option>
+									</select>
+								</div>
+								<div class="search">
+									<div class="baseInput">
+										<input type="text">
+									</div>
+									<a href="#;"><img src="/images/ico_search.svg" alt="검색"></a>
+								</div>
+							</div>
+						</div>
+						<!-- //searchForm -->
+
+						<div class="tableScroll">
+							
+							<div class="scroll">
+								<div class="tableType2 order">
+									<table>
+										<colgroup>
+											<col class="no1" />
+											<col class="no2" />
+											<col class="no3" />
+											<col class="no4" />
+											<col class="no5" />
+											<col class="no6" />
+											<col class="no7" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th>NO.</th>
+												<th>접수번호</th>
+												<th>교육구분</th>
+												<th>교육분류</th>
+												<th>교육명</th>
+												<th>교육기간</th>
+												<th>결제금액</th>
+												<th>등록일</th>
+												<th>신청상태</th>
+												<th>상세보기</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>1</td>
+												<td>123343556</td>
+												<td>상설교육</td>
+												<td>영상이론</td>
+												<td class="name"><a href="detail.php">교육명이 들어가는 공간입니다교육명이 들어가는 공간입니다 들어가는 공간입니다들어가는 공간입니다들어가는 공간입니다</a></td>
+												<td>2024-08-21 ~<br />2024-08-28</td>
+												<td>10,000원</td>
+												<td>2024.08.28</td>
+												<td>취소</td>
+												<td>
+													<a href="detail.php" class="btnTypeSm">상세보기</a>
+												</td>
+											</tr>
+											<tr>
+												<td>1</td>
+												<td>123343556</td>
+												<td>상설교육</td>
+												<td>영상이론</td>
+												<td class="name"><a href="detail.php">교육명이 들어가는 공간입니다</td>
+												<td>2024-08-21 ~<br />2024-08-28</td>
+												<td>10,000원</td>
+												<td>2024.08.28</td>
+												<td>취소</td>
+												<td>
+													<a href="detail.php" class="btnTypeSm">상세보기</a>
+												</td>
+											</tr>
+											<tr>
+												<td>1</td>
+												<td>123343556</td>
+												<td>상설교육</td>
+												<td>영상이론</td>
+												<td class="name"><a href="detail.php">교육명이 들어가는 공간입니다교육명이 들어가는 공간입니다 들어가는 공간입니다들어가는 공간입니다들어가는 공간입니다</a></td>
+												<td>2024-08-21 ~<br />2024-08-28</td>
+												<td>10,000원</td>
+												<td>2024.08.28</td>
+												<td>취소</td>
+												<td>
+													<a href="detail.php" class="btnTypeSm">상세보기</a>
+												</td>
+											</tr>
+											<tr>
+												<td>1</td>
+												<td>123343556</td>
+												<td>상설교육</td>
+												<td>영상이론</td>
+												<td class="name"><a href="detail.php">교육명이 들어가는 공간입니다</td>
+												<td>2024-08-21 ~<br />2024-08-28</td>
+												<td>10,000원</td>
+												<td>2024.08.28</td>
+												<td>취소</td>
+												<td>
+													<a href="detail.php" class="btnTypeSm">상세보기</a>
+												</td>
+											</tr>
+											<tr>
+												<td>1</td>
+												<td>123343556</td>
+												<td>상설교육</td>
+												<td>영상이론</td>
+												<td class="name"><a href="detail.php">교육명이 들어가는 공간입니다교육명이 들어가는 공간입니다 들어가는 공간입니다들어가는 공간입니다들어가는 공간입니다</a></td>
+												<td>2024-08-21 ~<br />2024-08-28</td>
+												<td>10,000원</td>
+												<td>2024.08.28</td>
+												<td>취소</td>
+												<td>
+													<a href="detail.php" class="btnTypeSm">상세보기</a>
+												</td>
+											</tr>
+											<tr>
+												<td>1</td>
+												<td>123343556</td>
+												<td>상설교육</td>
+												<td>영상이론</td>
+												<td class="name"><a href="detail.php">교육명이 들어가는 공간입니다</td>
+												<td>2024-08-21 ~<br />2024-08-28</td>
+												<td>10,000원</td>
+												<td>2024.08.28</td>
+												<td>취소</td>
+												<td>
+													<a href="detail.php" class="btnTypeSm">상세보기</a>
+												</td>
+											</tr>
+											<tr>
+												<td>1</td>
+												<td>123343556</td>
+												<td>상설교육</td>
+												<td>영상이론</td>
+												<td class="name"><a href="detail.php">교육명이 들어가는 공간입니다교육명이 들어가는 공간입니다 들어가는 공간입니다들어가는 공간입니다들어가는 공간입니다</a></td>
+												<td>2024-08-21 ~<br />2024-08-28</td>
+												<td>10,000원</td>
+												<td>2024.08.28</td>
+												<td>취소</td>
+												<td>
+													<a href="detail.php" class="btnTypeSm">상세보기</a>
+												</td>
+											</tr>
+											<tr>
+												<td>1</td>
+												<td>123343556</td>
+												<td>상설교육</td>
+												<td>영상이론</td>
+												<td class="name"><a href="detail.php">교육명이 들어가는 공간입니다</td>
+												<td>2024-08-21 ~<br />2024-08-28</td>
+												<td>10,000원</td>
+												<td>2024.08.28</td>
+												<td>취소</td>
+												<td>
+													<a href="detail.php" class="btnTypeSm">상세보기</a>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+
+							<div class="infoPop">
+								<div class="in">
+									<div>
+										<div class="ico">
+											<span class="arrow prev"><img src="/images/ico_hand1.svg" alt="좌"></span>
+											<span class="hand"><img src="/images/ico_hand.svg" alt="손"></span>
+											<span class="arrow next"><img src="/images/ico_hand2.svg" alt="우"></span>
+										</div>
+										<p>좌우로 스크롤 하셔서<br />내용을 확인해주세요.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- pagingWrap -->
+						<div class="pagingWrap">
+							<a href="#;"><img src="/images/ico_paging1.svg" alt="처음"></a>
+							<a href="#;"><img src="/images/ico_paging2.svg" alt="이전"></a>
+							<div class="num">
+								<a href="#;" class="active">1</a>
+								<a href="#;">2</a>
+								<a href="#;">3</a>
+								<a href="#;">4</a>
+								<a href="#;">5</a>
+							</div>
+							<a href="#;"><img src="/images/ico_paging3.svg" alt="다음"></a>
+							<a href="#;"><img src="/images/ico_paging4.svg" alt="마지막"></a>
+						</div>
+						<!-- //pagingWrap -->
+
+
+					</div>
+
+
+				</div>
+			</div>
+			<!-- //subSec -->
+
+		</div>
+		<!-- //Container -->
+
+<?php include("../inc/quick.php"); ?>
+
+<?php include("../inc/footer.php"); ?>
+
+	</div>
+	<!-- //Wrap -->
+
+
+</body>
+</html>
+
+
+
