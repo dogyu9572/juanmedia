@@ -508,7 +508,11 @@ function delMember(id){
 	<input type="hidden" name="user_id">
 	<input type="hidden" name="returnURL" value="<?=$_SERVER['REQUEST_URI']?>">
 </form>
-
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelector('.container').style.display = 'block';
+    });
+</script>
 <script type="text/javascript">
 //<![CDATA[
 $(document).ready(function(){

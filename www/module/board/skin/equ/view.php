@@ -110,7 +110,6 @@ function doLoad(){
 </div>
 <?}else{###################################################### 사용자 페이지 ######################################################?>
     <?php
-	include_once ($_SERVER['DOCUMENT_ROOT'] . "/module/member/auth.php");
     $dayTypeMap = [
         'weekly' => '매주',
         'biweekly' => '격주',

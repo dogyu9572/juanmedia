@@ -15,6 +15,8 @@ endif;
 $dblink = SetConn($_conf_db["main_db"]);
 
 $arrInfo = getUserInfo(mysqli_real_escape_string($GLOBALS['dblink'], $_REQUEST["user_id"]));
+
+echo "echo:"; print_r($arrInfo); echo "<br>" ;
 $arrLevel = getArticleList($_conf_tbl["member_level"], $scale, $_REQUEST['offset'], "order by level_no desc ");
 for($i = 0; $i < $arrLevel["total"]; $i ++) {
 	$arrayLevel[$arrLevel["list"][$i]['level_no']] = $arrLevel["list"][$i]['level_name'];
@@ -187,9 +189,11 @@ function inNumber(str){
                 $user_name = $arrInfo['list'][0]['user_name'];
                 $mobile = $arrInfo['list'][0]['mobile'];
                 $email = $arrInfo['list'][0]['email'];
-                $address_ext = $arrInfo['list'][0]['$address_ext'];
-                $address = $arrInfo['list'][0]['$address'];
+                $address_ext = $arrInfo['list'][0]['address_ext'];
+                $address = $arrInfo['list'][0]['address'];
             }
+
+			$mobile = str_replace("-","",$mobile);
 			?>
 			<input type="hidden" name="evnMode" value="<?=$evnMode?>">		
 			<input type="hidden" name="rt_url" value="<?=$_REQUEST['listURL'] != ""?$_REQUEST['listURL']:"/backoffice/module/member/member.php"?>">
@@ -379,8 +383,8 @@ function inNumber(str){
                                                 <input type="text" class="w4 input-content" name="child_violation[]" value="<?=$arrChildViolation[$i]?>" style="display:none;">
                                             </td>
                                             <td>
-                                                <span class="text-content"><?=$arrayLevel[$arrChildCategory[$i]]?></span>
-                                                <input type="text" class="w4 input-content" name="child_category[]" value="<?=$arrayLevel[$arrChildCategory[$i]]?>" style="display:none;">
+                                                <span class="text-content"><?=$arrChildCategory[$i]?></span>
+                                                <input type="text" class="w4 input-content" name="child_category[]" value="<?=$arrChildCategory[$i]?>" style="display:none;">
                                             </td>
                                             <td>
                                                 <span class="text-content"><?=$arrChildViolationWdate[$i]?></span>
@@ -413,12 +417,15 @@ function inNumber(str){
 <script type="text/javascript">
     function fnAddViolation() {
         var htm = `
-    <tr>
+     <tr>
         <td>
             <input type="text" class="w4 input-content" name="child_violation[]" value="">
         </td>
         <td>
-            <input type="text" class="w4 input-content" name="child_category[]" value="">
+            <select class="w4 input-content" name="child_category[]">
+                <option value="정지">정지</option>
+                <option value="주의">주의</option>
+            </select>
         </td>
         <td>
             <input type="text" class="w4 datepicker input-content" name="child_violation_wdate[]" value="">
@@ -463,7 +470,7 @@ function inNumber(str){
         button.setAttribute('onclick', 'toggleEditViolation(this)');
     }
 
-    function fnEditViolation(button) {
+    function toggleEdit(button) {
         var row = button.closest('tr');
         var textContents = row.querySelectorAll('.text-content');
         var inputContents = row.querySelectorAll('.input-content');
@@ -474,13 +481,40 @@ function inNumber(str){
             });
 
             inputContents.forEach(function(inputContent) {
-                inputContent.style.display = 'inline';
+                // 카테고리 필드인 경우 select box로 변경
+                if (inputContent.name === 'child_category[]') {
+                    var selectBox = document.createElement('select');
+                    selectBox.className = 'w4 input-content';
+                    selectBox.name = 'child_category[]';
+
+                    var options = [
+                        {value: '정지', text: '정지'},
+                        {value: '주의', text: '주의'}
+                    ];
+
+                    options.forEach(function(option) {
+                        var opt = document.createElement('option');
+                        opt.value = option.value;
+                        opt.text = option.text;
+                        if (inputContent.value === option.value) {
+                            opt.selected = true;
+                        }
+                        selectBox.appendChild(opt);
+                    });
+
+                    inputContent.parentNode.replaceChild(selectBox, inputContent);
+                } else {
+                    inputContent.style.display = 'inline';
+                }
             });
 
             button.textContent = '저장';
         } else {
             inputContents.forEach(function(inputContent, index) {
-                textContents[index].textContent = inputContent.value;
+                var value = inputContent.tagName.toLowerCase() === 'select' ?
+                    inputContent.options[inputContent.selectedIndex].value :
+                    inputContent.value;
+                textContents[index].textContent = value;
                 textContents[index].style.display = 'inline';
                 inputContent.style.display = 'none';
             });

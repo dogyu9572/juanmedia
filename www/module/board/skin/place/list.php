@@ -590,8 +590,9 @@ $(document).ready(function(){
                 <div class="rightForm">
                     <div class="baseSel">
                         <select name="sw" id="sw" class="text">
-                            <option value="">선택</option>
+                            <option value="all" <?=$_GET["sw"] == "all"?"selected":""?>>전체</option>
                             <option value="s" <?=$_GET["sw"] == "s"?"selected":""?>>공간명</option>
+                            <option value="c" <?=$_GET["sw"] == "c"?"selected":""?>>내용</option>
                         </select>
                     </div>
                     <div class="search">

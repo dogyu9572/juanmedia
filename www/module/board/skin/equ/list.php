@@ -604,13 +604,14 @@ $(document).ready(function(){
                 <div class="rightForm">
                     <div class="baseSel">
                         <select name="sw" id="sw" class="text">
-                            <option value="">선택</option>
+                            <option value="all" <?=$_GET["sw"] == "all"?"selected":""?>>전체</option>
                             <option value="s" <?=$_GET["sw"] == "s"?"selected":""?>>장비명</option>
+                            <option value="c" <?=$_GET["sw"] == "c"?"selected":""?>>내용</option>
                         </select>
                     </div>
                     <div class="search">
                         <div class="baseInput">
-                            <input type="text">
+                            <input type="text" name="sk" id="sk" value="<?=$_GET["sk"]?>" class="text" placeholder="검색어를 입력하세요.">
                         </div>
                         <a href="javascript:void(0);" onclick="document.form1.submit();"><img src="/images/ico_search.svg" alt="검색"></a>
                     </div>
@@ -655,22 +656,15 @@ $(document).ready(function(){
 
             }
 
-            // Get the current state
-            $currentStatus = $arrBoardList["list"][$i]['reception_status'];
-
-            // Set the state class based on the current status using if statements
-            if ($currentStatus == '접수중') {
-                $stateClass = 'ing';
-            } elseif ($currentStatus == '대기접수') {
-                $stateClass = 'etc';
-            } elseif ($currentStatus == '종료') {
-                $stateClass = 'end';
-            } elseif ($currentStatus == '교육중') {
-                $stateClass = '';
+	        $soldOut = '';
+	        $href = $_SERVER["PHP_SELF"]."?boardid=".$arrBoardInfo["list"][0]["boardid"]."&mode=view&idx=".$arrBoardList["list"][$i]['idx'];
+            if ($arrBoardList["list"][$i]['sold_out'] === 'Y') {
+	            $soldOut = 'soldout';
+	            $href = "javascript:alert('잔여 수량이 소진되었습니다.');";
             }
             ?>
-                    <li class="eq">
-                        <a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=view&idx=<?=$arrBoardList["list"][$i]['idx']?>">
+                    <li class="eq <?=$soldOut?>">
+                        <a href="<?=$href?>">
                             <div class="img">
                                 <img src="<?=$imgsrc[$i]?>" alt="썸네일">
                                 <div class="pop">

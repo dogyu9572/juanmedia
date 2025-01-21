@@ -219,7 +219,7 @@
             </div>
 
             <div class="btnCenter mobFix">
-                <a href="/equ/list.php?category1=%EC%B4%AC%EC%98%81"  class="btnType1 gray w1">목록으로</a>
+                <a href="/equ/list.php"  class="btnType1 gray w1">목록으로</a>
                 <a href="javascript:void(0);" id="submitOrderButton" class="btnType1 w1">대여 신청</a>
 
             </div>

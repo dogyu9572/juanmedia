@@ -99,7 +99,13 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
     </script>
     <?######################################### iframe fancybox ######################################### ED?>
     <?
-     $arrCategory01 = getCategoryList("62","Y");	// 분류
+//    $arrCategory01 = getCategoryList("62","Y");	// 분류
+	$arrCategory01 = [
+		63 => '상설교육',
+        64=> '공동체교육',
+		37 => '미디어 체험',
+	];
+
     ?>
     <div class="container">
 
@@ -130,10 +136,15 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                         <th>분야*</th>
                         <td><div class="inputs">
                                 <?php
-                               for($i=0; $i < $arrCategory01["total"]; $i++){
+                              /* for($i=0; $i < $arrCategory01["total"]; $i++){
                                     $selectedCategories = explode('|', $arrBoardArticle["list"][0]['category']);
                                     $checked = in_array($arrCategory01["list"][$i]['cat_no'], $selectedCategories) ? "checked" : "";
                                     echo "<label class='check'><input type='checkbox' name='category[]' value='".$arrCategory01["list"][$i]['cat_no']."' ".$checked."><i></i>".$arrCategory01["list"][$i]['cat_name']."</label>";
+                                }*/
+                                foreach ($arrCategory01 as $key => $value) {
+	                                $selectedCategories = explode('|', $arrBoardArticle["list"][0]['category']);
+	                                $checked = in_array($key, $selectedCategories) ? "checked" : "";
+	                                echo "<label class='check'><input type='checkbox' name='category[]' value='$key' $checked><i></i>$value</label>";
                                 }
                                 ?>
                             </div></td>

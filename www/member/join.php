@@ -438,11 +438,11 @@ if(!$_SESSION['uName']){
                             <div class="warnIco sm">체크 시 정보를 수신할 수 있습니다.</div>
                             <div class="ck">
                                 <div class="baseCheck">
-                                    <input type="checkbox" id="email" name="email_accept" />
+                                    <input type="checkbox" id="email" name="email_accept" checked/>
                                     <label for="email">이메일 수신 동의</label>
                                 </div>
                                 <div class="baseCheck">
-                                    <input type="checkbox" id="sns" name="sms_accept" />
+                                    <input type="checkbox" id="sns" name="sms_accept" checked/>
                                     <label for="sns">SNS 수신 동의</label>
                                 </div>
                             </div>

@@ -10,12 +10,19 @@ $nick_name = $_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["USERCODE"];
 
 $arrList = getUserInfoNnickname($nick_name);
 
+//기존회원 아이디 찾기
+if ($arrList["total"] == 0) {
+	$name = $_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["NAME"];
+	$mobile = $_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["TEL"];
+	$arrList = getMemberInfoByNameAndMobile($name, $mobile);
+}
+
 //DB해제
 SetDisConn($dblink);
 
 if($arrList["total"] > 0){
 	if($arrList["list"][0]["join_type"] != "homepage"){ // 소셜회원일 경우
-		$succcess = false;
+		jsGo("/member/idCompleteSns.php?join_type=" . $arrList["list"][0]["join_type"] . "&name=" . $_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["NAME"], '', '');
 	}else{
 		$succcess = true;
 
@@ -31,11 +38,8 @@ if($arrList["total"] > 0){
 	jsGo("/member/login.php",'',"회원정보가 없습니다.");
 }
 
-$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["NAME"]		="";	## 이름
-$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["TEL"]		= "";	## 핸드폰
-$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["USERCODE"]	= "";				## 접수용 아이디
-
 $arrSocial = array("kakao" => "카카오","naver" => "네이버");
+
 ?>
 
 		<!-- Container -->
