@@ -1,786 +1,1 @@
-<?
-/*********************************** 카테고리 *************************************/
-//카테고리 목록 가져오기
-function getCategoryAll(){
-	//테이블
-	$tbl = $GLOBALS["_conf_tbl"]["category"];
-
-	$sql  = "SELECT cat_no, cat_name, cat_engname ";
-	$sql .= "FROM ".$tbl." ";
-
-	$rs = mysqli_query($GLOBALS['dblink'], $sql);
-	$total_rs = mysqli_num_rows($rs);;
-    
-	
-	if($total_rs > 0){
-			for($i=0; $i < $total_rs; $i++){
-					$row = mysqli_fetch_assoc($rs);
-					$list[$row['cat_no']] = $row['cat_name'];
-					$list['icon'][$row['cat_no']] = $row['cat_engname'];
-					
-			}
-	}else{
-		$list = null;
-	}
-
-  return $list;
-}
-
-function getCategoryNameAll(){
-	//테이블
-	$tbl = $GLOBALS["_conf_tbl"]["category"];
-
-	$sql  = "SELECT cat_no, cat_name ";
-	$sql .= "FROM ".$tbl." ";
-
-	$rs = mysqli_query($GLOBALS['dblink'], $sql);
-	$total_rs = mysqli_num_rows($rs);;
-    
-	
-	if($total_rs > 0){
-			for($i=0; $i < $total_rs; $i++){
-					$row = mysqli_fetch_assoc($rs);
-					$list[$row['cat_name']] = $row['cat_no'];
-			}
-	}else{
-		$list = null;
-	}
-
-  return $list;
-}
-
-
-//카테고리 목록 이미지 가져오기
-function getCategoryAllimage(){
-	//테이블
-	$tbl = $GLOBALS["_conf_tbl"]["category"];
-	$tbl_files = $GLOBALS["_conf_tbl"]["catalog_files"];
-
-	$sql  = "SELECT A.cat_no, A.cat_name, B.re_name ";
-	$sql .= "FROM ".$tbl." A ";
-	$sql .= "LEFT JOIN ".$tbl_files." B ON A.cat_no=B.b_idx ";
-	$rs = mysqli_query($GLOBALS['dblink'], $sql);
-	$total_rs = mysqli_num_rows($rs);;
-    
-	if($total_rs > 0){
-		for($i=0; $i < $total_rs; $i++){
-				$row = mysqli_fetch_assoc($rs);
-				$list[$row['cat_no']] = $row['re_name'];
-		}
-	}else{
-			$list = null;
-	}
-
-  return $list;
-}
-
-//카테고리 목록 가져오기
-function getCategoryList($cat_no, $viewgb="", $mainShow="", $subQuery=""){
-	//테이블
-	$tbl = $GLOBALS["_conf_tbl"]["category"];
-
-	if($cat_no==""){
-		$sql  = "SELECT * ";
-		$sql .= "FROM ".$tbl." ";
-		$sql .= "WHERE cat_depth='0' order by cat_sort ";
-
-		$rs = mysqli_query($GLOBALS['dblink'], $sql);
-		$total_rs = mysqli_num_rows($rs);;
-    
-	}else{
-		//cat_no(카테고리번호) 에서 카테고리 코드와 카테고리깊이를 찾음
-		$select_que = "select * from $tbl where cat_no='$cat_no'";
-		if($viewgb=="Y") {
-			$select_que .= " AND cat_is_show='Y' ";
-		}
-
-		$result_select = mysqli_query($GLOBALS['dblink'], $select_que);
-		$select_row = mysqli_fetch_array($result_select);
-		$select_depth = $select_row['cat_depth']+1;
-		$select_code = $select_row['cat_code'];
-
-		$sql  = "SELECT * ";
-		$sql .= "FROM ".$tbl." ";
-		$sql .= "WHERE cat_code like '$select_code%' and cat_depth='$select_depth' ";
-		if($viewgb=="Y") {
-			$sql .= " AND cat_is_show='Y' ";
-		}
-		if($mainShow=="Y") {
-			$sql .= " AND cat_main_show='Y' ";
-		}
-		if($subQuery){
-			$sql .= $subQuery;
-		}
-		$sql .= "order by cat_sort ";
-		//echo $sql;
-
-		$rs = mysqli_query($GLOBALS['dblink'], $sql);
-		$total_rs = mysqli_num_rows($rs);;
-	}
-	
-	if($total_rs > 0){
-			$list['total'] = $total_rs;
-			for($i=0; $i < $total_rs; $i++){
-					$list['list'][$i] = mysqli_fetch_assoc($rs);
-
-					//하위카테고리 갯수
-					$sql  = "SELECT cat_no ";
-					$sql .= "FROM ".$tbl." ";
-					$sql .= "WHERE cat_code like '".$list['list'][$i]['cat_code']."%' AND cat_depth > ".$list['list'][$i]['cat_depth']." ";
-
-					$rs_cnt = mysqli_query($GLOBALS['dblink'], $sql);
-					$total_sub = mysqli_num_rows($rs_cnt);
-
-					$list['list'][$i]['total_sub'] = $total_sub;
-			}
-	}else{
-			$list['total'] = 0;
-	}
-
-  return $list;
-}
-
-
-function getCategoryFileList(){
-	//테이블
-	$tbl = $GLOBALS["_conf_tbl"]["category"];
-	$tbl_files = $GLOBALS["_conf_tbl"]["catalog_files"];
-
-	$sql  = "SELECT A.*, B.re_name ";
-	$sql .= "FROM ".$tbl." A ";
-	$sql .= "LEFT JOIN ".$tbl_files." B ON A.cat_no=B.b_idx ";
-	$sql .= "WHERE A.cat_depth='0' and A.cat_no!='1' order by A.cat_sort ";
-
-	$rs = mysqli_query($GLOBALS['dblink'], $sql);
-	$total_rs = mysqli_num_rows($rs);;
-    
-	if($total_rs > 0){
-		$list['total'] = $total_rs;
-		for($i=0; $i < $total_rs; $i++){
-				$list['list'][$i] = mysqli_fetch_assoc($rs);
-		}
-	}else{
-			$list['total'] = 0;
-	}
-
-  return $list;
-}
-
-
-//카테고리 정보 가져오기
-function getCategoryInfo($cat_no){
-	//테이블
-	$tbl = $GLOBALS["_conf_tbl"]["category"];
-	$tbl_catalog_files = $GLOBALS["_conf_tbl"]["catalog_files"];
-	$tbl_sns = $GLOBALS["_conf_tbl"]["category_sns"];
-
-	$sql  = "SELECT * ";
-	$sql .= "FROM ".$tbl." ";
-	$sql .= "WHERE cat_no='$cat_no' ";
-//echo $sql;
-	$rs = mysqli_query($GLOBALS['dblink'], $sql);
-	$total_rs = mysqli_num_rows($rs);;
-	
-	if($total_rs > 0){
-			$list['total'] = $total_rs;
-			for($i=0; $i < $total_rs; $i++){
-					$list['list'][$i] = mysqli_fetch_assoc($rs);
-			}
-	}else{
-			$list['total'] = 0;
-	}
-
-	//파일정보 가져오기(카탈로그)
-	$sql  = "SELECT * ";
-	$sql .= "FROM ".$tbl_catalog_files." ";
-	$sql .= "WHERE b_idx = '$cat_no' order by idx ";
-	$rs = mysqli_query($GLOBALS['dblink'], $sql);
-	$total_rs = mysqli_num_rows($rs);
-	
-	if($total_rs > 0){
-			$list['total_catalog_files'] = $total_rs;
-			for($i=0; $i < $total_rs; $i++){
-					$list['catalog_files'][$i] = mysqli_fetch_assoc($rs);
-			}
-	}else{
-			$list['total_catalog_files'] = 0;
-	}
-
-	//SNS정보 가져오기
-	$sql  = "SELECT * ";
-	$sql .= "FROM ".$tbl_sns." ";
-	$sql .= "WHERE b_cat_no = '$cat_no' ";
-	$rs = mysqli_query($GLOBALS['dblink'], $sql);
-	$total_rs = mysqli_num_rows($rs);;
-	
-	if($total_rs > 0){
-			$list['total_sns'] = $total_rs;
-			for($i=0; $i < $total_rs; $i++){
-					$list['sns'][$i] = mysqli_fetch_assoc($rs);
-			}
-	}else{
-			$list['total_sns'] = 0;
-	}
-
-
-  return $list;
-}
-
-//카테고리 이름
-function getCategoryName($cat_no) {
-	$tbl = $GLOBALS["_conf_tbl"]["category"];
-	$sql = "SELECT cat_name FROM $tbl WHERE cat_no='$cat_no'";
-	$rs = mysqli_query($GLOBALS['dblink'], $sql);
-	$row = mysqli_fetch_assoc($rs);
-	return $row['cat_name'];
-}
-
-//카테고리 패쓰 가져오기
-function getCategoryPath($cat_no){
-	//테이블
-	$tbl = $GLOBALS["_conf_tbl"]["category"];
-	
-	//카테고리 정보 가져오기
-	$arrInfo = getCategoryInfo($cat_no);
-
-	//	카테고리 이름 구하기
-	$select_category = explode("/",$arrInfo["list"][0]["cat_code"]); //현재 카테고리 코드를 / 구분자로 분리해 배열에 담음.
-
-	for($i=0;$i<count($select_category);$i++){
-		$cat_name_select_que = "select cat_no, cat_name from $tbl where cat_no='$select_category[$i]'";
-		$cat_name_select_result = mysqli_query($GLOBALS['dblink'], $cat_name_select_que);
-
-		$list['list'][$i] = mysqli_fetch_assoc($cat_name_select_result);
-	}
-	$list['total'] = $i - 1;
-
-	return $list;
-}
-
-//카테고리 등록
-function addCategory($s_category, $s_depth, $new_name) {
-	//테이블
-	$tbl = $GLOBALS["_conf_tbl"]["category"];
-
-	// 현재 최대값의 카테고리 넘버를 구함.
-	$select_que = "select ifnull(max(cat_no),1) from $tbl";
-	$result_select = mysqli_query($GLOBALS['dblink'], $select_que);
-	$max_no = mysqli_result($result_select,0,0);
-	$new_no = ++$max_no;
-	$new_category = $s_category . $new_no . "/";
-	
-	// 현재  카테고리의 최대값 소트번호를 구함.
-	$select_que2 = "select ifnull(max(cat_sort),1) from $tbl where cat_code like '$s_category%' and cat_depth='$s_depth'";
-	//echo $select_que2."<br/>";
-	$result_select2 = mysqli_query($GLOBALS['dblink'], $select_que2);
-	$max_sort = mysqli_result($result_select2,0,0);
-	$new_sort = ++$max_sort;
-	if(!$s_depth){
-		$s_depth = "0";
-	}
-	################ 연자인경우 대상 치과의사로 자동등록
-	$cat_area = "";
-	if($_POST["s_cat_no"]=="18"){
-		$cat_area = "치과의사";		
-	}
-
-	// 새 카테고리를 등록시킴
-	$insert_que = "insert into $tbl set
-		cat_no = '$new_no',
-		cat_code = '$new_category',
-		cat_name = '$new_name',
-		cat_depth = '$s_depth',
-		cat_content = '',
-		cat_area	= '$cat_area',
-		cat_link_idx= '',
-		cat_sort = '$new_sort',
-		wdate = now()
-	";
-
-	//echo $insert_que;
-	//exit;
-
-	$insert_result = mysqli_query($GLOBALS['dblink'], $insert_que);
-	$total = mysqli_affected_rows($GLOBALS['dblink']);
-
-	if($total > 0){
-		return true;
-	}else{
-		return false;
-	}
-}
-
-//	카테고리 소트순위 업
-function sortupCategory($cat_no) {
-	//테이블
-	$tbl = $GLOBALS["_conf_tbl"]["category"];
-
-	// 현재 카테고리의 소트순위를 구함.
-	$select_que = "select cat_code, cat_depth, cat_sort from $tbl where cat_no='$cat_no'";
-	$result_select = @mysqli_query($GLOBALS['dblink'], $select_que);
-	$cat_code = @mysqli_result($result_select,0,0);
-	
-	// 현재 코드를 제외한 상위 코드만을 선택함
-	$replace_code = "/" . $cat_no;
-	$cat_code = str_replace($replace_code,"",$cat_code);
-	// 현재 코드를 제외한 상위 코드만을 선택함
-
-	$cat_depth = @mysqli_result($result_select,0,1);
-	$cat_sort = @mysqli_result($result_select,0,2);	
-	$up_sort = $cat_sort-1;
-	// 최상위 카테고리일 경우 1로 정렬
-	if($up_sort=='0')$up_sort='1';
-
-	// 상위 카테고리의 소트순위를 먼저 내림
-	if ($cat_depth=='0') {//최상위 일경우는 카테고리 코드 검사안함.
-		$update_que = "update $tbl set cat_sort='$cat_sort' where cat_sort='$up_sort' and cat_depth='$cat_depth'";
-	}else{
-		$update_que = "update $tbl set cat_sort='$cat_sort' where cat_code like '$cat_code%' and cat_sort='$up_sort' and cat_depth='$cat_depth'";
-	}
-
-	$update_result = mysqli_query($GLOBALS['dblink'], $update_que);
-
-	// 변경할 카테고리의 소트순위를 변경함
-	$update_que2 = "update $tbl set cat_sort='$up_sort' where cat_no='$cat_no'";
-	$update_result2 = mysqli_query($GLOBALS['dblink'], $update_que2);
-	
-	if($update_result2){
-		return true;
-	}else{
-		return false;
-	}
-}
-
-//카테고리 소트 순위 다운
-function sortdownCategory($cat_no){
-	//테이블
-	$tbl = $GLOBALS["_conf_tbl"]["category"];
-
-	// 현재 카테고리의 소트순위를 구함.
-	$select_que = "select cat_code, cat_depth, cat_sort from $tbl where cat_no='$cat_no'";
-	$result_select = mysqli_query($GLOBALS['dblink'], $select_que);
-	$cat_code = @mysqli_result($result_select,0,0);
-
-	// 현재 코드를 제외한 상위 코드만을 선택함
-	$replace_code = "/" . $cat_no;
-	$cat_code = str_replace($replace_code,"",$cat_code);
-	// 현재 코드를 제외한 상위 코드만을 선택함
-
-	$cat_depth = @mysqli_result($result_select,0,1);
-	$cat_sort = @mysqli_result($result_select,0,2);
-
-	// 소트 최대값을 구해서 현재 소트값과 같으면 더이상 증가시키지 않음.
-	if ($cat_depth=='0') {//최상위 일경우는 카테고리 코드 검사안함.
-		$max_que = "select max(cat_sort) from $tbl where cat_depth='$cat_depth'";
-	}else{
-		$max_que = "select max(cat_sort) from $tbl where cat_code like '$cat_code%' and cat_depth='$cat_depth'";
-	}
-	$max_result = mysqli_query($GLOBALS['dblink'], $max_que);
-	$max_sort = @mysqli_result($max_result,0,0);
-
-	if($cat_sort==$max_sort){
-		$down_sort = $max_sort;
-	}else{
-		$down_sort = $cat_sort+1;
-	}
-
-	// 하위 카테고리의 소트순위를 먼저 올림
-	if ($cat_depth=='0') {//최상위 일경우는 카테고리 코드 검사안함.
-		$update_que = "update $tbl set cat_sort='$cat_sort' where cat_sort='$down_sort' and cat_depth='$cat_depth'";
-	}else{
-		$update_que = "update $tbl set cat_sort='$cat_sort' where cat_code like '$cat_code%' and cat_sort='$down_sort' and cat_depth='$cat_depth'";
-	}
-	$update_result = mysqli_query($GLOBALS['dblink'], $update_que);
-
-	// 변경할 카테고리의 소트순위를 변경함
-	$update_que2 = "update $tbl set cat_sort='$down_sort' where cat_no='$cat_no'";
-	$update_result2 = mysqli_query($GLOBALS['dblink'], $update_que2);
-	
-	if($update_result && $update_result2){
-		return true;
-	}else{
-		return false;
-	}
-}
-
-
-//카테고리 수정
-function editCategory ($cat_no, $cat_name, $cat_content) {
-	//테이블
-	$tbl = $GLOBALS["_conf_tbl"]["category"];
-	$tbl_sns = $GLOBALS["_conf_tbl"]["category_sns"];
-	$tbl_shop = $GLOBALS["_conf_tbl"]["shop_good"];
-		
-	$is_show = mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_is_show'])=="N"?"N":"Y";
-
-	$arr_link_idx = "";
-	$comma = "";	
-	for($i=0; $i<count($_POST['cat_link_idx']); $i++){
-		$arr_link_idx .= $comma.$_POST['cat_link_idx'][$i];
-		$comma = "|";
-	}
-	// 선택한 카테고리 변경
-	$update_que = "update $tbl set 
-		cat_name		= '".$cat_name."', 
-		cat_content		= '".$cat_content."',
-		cat_is_show		= '".$is_show."',
-		cat_area		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_area'])."',
-		cat_engname		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_engname'])."',
-		cat_main_show	= IFNULL(NULLIF('".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_main_show'])."',''),'N'),
-		cat_sub_show	= IFNULL(NULLIF('".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_sub_show'])."',''),'N'),
-		cat_best		= IFNULL(NULLIF('".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_best'])."',''),'0'),		
-		cat_value		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_value'])."',
-		cat_etc_1		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_etc_1'])."',
-		cat_etc_2		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_etc_2'])."',
-		cat_etc_3		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_etc_3'])."',
-		cat_etc_4		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_etc_4'])."',
-		cat_etc_5		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_etc_5'])."',
-		cat_etc_6		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_etc_6'])."',
-		cat_etc_7		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_etc_7'])."',
-		cat_etc_8		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_etc_8'])."',
-		cat_etc_11		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_etc_11'])."',
-		cat_etc_12		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_etc_12'])."',
-		cat_link_idx	= '".$arr_link_idx."'
-	where cat_no = '".$cat_no."' ";
-	$update_result = mysqli_query($GLOBALS['dblink'], $update_que);
-
-	delCatalogFiles2($cat_no);
-	inputCatalogFiles2($cat_no);
-	
-	if($update_result){
-		return true;
-	}else{
-		return false;
-	}
-}
-
-
-//	카테고리 삭제
-function deleteCategory($cat_no) {
-	//테이블
-	$tbl = $GLOBALS["_conf_tbl"]["category"];
-	
-	// 선택한 카테고리 소트 재정렬
-	$select_que = "select cat_code,cat_sort,cat_depth from $tbl where cat_no='$cat_no'";
-	$result_select = mysqli_query($GLOBALS['dblink'], $select_que);
-	$now_cat_code = mysqli_result($result_select,0,0);
-	$now_cat_sort = mysqli_result($result_select,0,1);
-	$now_cat_depth = mysqli_result($result_select,0,2);
-
-	// 결과값이 에러 표시후 뒤로가기
-	// 아닐경우 모두 지워짐
-	// 20091123
-	if (!$now_cat_code){
-		jsMsg("정확한 경로가 아닙니다.");
-		jsHistory("-1") ;	
-		exit;
-	}
-
-	// 현재 코드를 제외한 상위 코드만을 선택함
-	if($now_cat_depth>0){
-		$replace_code = "/" . $cat_no;
-		$sup_cat_code = str_replace($replace_code,"",$now_cat_code);
-	}else{
-		$sup_cat_code = "";
-	}
-	// 현재 코드를 제외한 상위 코드만을 선택함
-
-	$update_que = "update $tbl set cat_sort=cat_sort -1 where cat_code like '$sup_cat_code%' and cat_sort>'$now_cat_sort' and cat_depth='$now_cat_depth'";	
-
-	$result_update = mysqli_query($GLOBALS['dblink'], $update_que);
-
-	// 선택한 카테고리 및 하위 카테고리삭제
-	$delete_que = "delete from $tbl where cat_code like '$now_cat_code%'";
-	$delete_result = mysqli_query($GLOBALS['dblink'], $delete_que);
-
-	$total = mysqli_affected_rows($GLOBALS['dblink']);
-
-	if($total > 0){
-		return true;
-	}else{
-		return false;
-	}
-}
-/*********************************** 카테고리 *************************************/
-
-//하위첫번째값 구하기
-function getCategoryNo1($cat_no) {
-	//테이블
-	$tbl = $GLOBALS["_conf_tbl"]["category"];
-	
-	$select_que = "select cat_code from ".$tbl." where cat_no='$cat_no'";
-	$result_select = mysqli_query($GLOBALS['dblink'], $select_que);
-	$select_row = mysqli_fetch_array($result_select);
-	$select_code = $select_row['cat_code'];
-
-	$sql  = "SELECT * FROM ".$tbl." WHERE cat_code like '$select_code%' order by cat_depth, cat_sort, cat_code ";
-	$rs = mysqli_query($GLOBALS['dblink'], $sql);
-	$total_rs = mysqli_num_rows($rs);;
-
-	for($i=0; $i < $total_rs; $i++){
-		$list['list'][$i] = mysqli_fetch_assoc($rs);
-		
-		$cat1 = str_replace($select_code, "", $list['list'][$i]['cat_code']);
-		$cat2[$i] = explode("/",$cat1);
-	}
-
-	return $cat2[1][0];
-}
-
-//카탈로그 파일정보 가져오기
-function getCatalogFileInfo($b_idx){
-	$tbl = $GLOBALS["_conf_tbl"]["catalog_files"];
-
-    $sql  = "SELECT * ";
-    $sql .= "FROM " .$tbl." ";
-    $sql .= "WHERE b_idx = '$b_idx' ";
-    $rs = mysqli_query($GLOBALS['dblink'], $sql);
-    $total_rs = mysqli_num_rows($rs);;
-    
-    if($total_rs > 0){
-        $list['total'] = $total_rs;
-        for($i=0; $i < $total_rs; $i++){
-            $list['list'][$i] = mysqli_fetch_assoc($rs);
-        }
-    }else{
-        $list['total'] = 0;
-    }
-    return $list;
-}
-
-//카탈로그 파일정보 가져오기
-function getCatalogFileInfo2($b_idx, $idx){
-	$tbl = $GLOBALS["_conf_tbl"]["catalog_files"];
-
-    $sql  = "SELECT * ";
-    $sql .= "FROM " .$tbl." ";
-    $sql .= "WHERE b_idx = '$b_idx' ";
-    $sql .= "AND idx = '$idx' ";
-    $rs = mysqli_query($GLOBALS['dblink'], $sql);
-    $total_rs = mysqli_num_rows($rs);;
-    
-    if($total_rs > 0){
-        $list['total'] = $total_rs;
-        for($i=0; $i < $total_rs; $i++){
-            $list['list'][$i] = mysqli_fetch_assoc($rs);
-        }
-    }else{
-        $list['total'] = 0;
-    }
-    return $list;
-}
-
-
-//카탈로그 파일 삭제 처리
-function delCatalogFiles2($idx){
-	//제품정보 테이블
-	$tbl_files = $GLOBALS["_conf_tbl"]["catalog_files"];
-
-	//현재 정보 가져오기
-	$arrCurInfo = getCategoryInfo($idx);
-
-	//파일삭제 코딩 시작 - 삭제체크 한것만 처리
-	if($_POST['delCatalog']){
-		for($i=0;$i<count($_POST['delCatalog']);$i++){
-			if($_POST['delCatalog'][$i]>0){
-				$fileinfo = getCatalogFileInfo2($arrCurInfo["list"][0]['cat_no'], $_POST['delCatalog'][$i]);
-				//디비에서 파일정보 삭제
-				mysqli_query($GLOBALS['dblink'], "DELETE FROM ".$tbl_files." WHERE idx='".$fileinfo["list"][0]['idx']."' ");
-				//디스크에서 파일 삭제
-				unlink($GLOBALS["_SITE"]["UPLOADED_DATA"]."/category/".$fileinfo["list"][0]['re_name']);
-			}
-		}
-	}
-	//파일삭제 코딩 종료
-}
-
-
-//카탈로그 파일처리
-function inputCatalogFiles2($idx){
-
-    if ($_FILES['catalog_file']['error']) {
-        for ($i=0;$i<count($_FILES['catalog_file']['error']);$i++) {
-            if ($_FILES['catalog_file']['error'][$i] == 0) {
-                //확장자 검사후 파일이름 생성
-                $memo = $_POST['memo_name'][$i];
-                $filename = $_FILES['catalog_file'][name][$i];
-                $attach_ext = explode(".", $filename);
-                $extension = $attach_ext[sizeof($attach_ext)-1];
-                $extension = strtolower($extension);
-                $filerename = $memo."_" . md5(mktime()) . $i . "." . $extension;
-                $filesize = $_FILES['catalog_file'][size][$i];
-                $filetype = $_FILES['catalog_file'][type][$i];
-                
-                // 파일 확장자 검사
-                if (!strcmp($extension, "htm") ||!strcmp($extension, "html") ||!strcmp($extension, "phtml") ||!strcmp($extension, "php") ||!strcmp($extension, "php3") ||!strcmp($extension, "php4") ||!strcmp($extension, "inc") ||!strcmp($extension, "pl") ||!strcmp($extension, "cgi")) {
-                    jsMsg("not allowed file extension");
-                    jsHistory("-1");
-                }
-            
-                if (is_uploaded_file($_FILES['catalog_file'][tmp_name][$i])) {
-                    move_uploaded_file($_FILES['catalog_file'][tmp_name][$i], $GLOBALS["_SITE"]["UPLOADED_DATA"]."/category/".$filerename);
-                }
-
-                $sql = "insert into ".$GLOBALS["_conf_tbl"]["catalog_files"]." set 
-				b_idx='".$idx."',/* 글 번호 id*/
-				ori_name='".$filename."',/*파일원본이름*/
-				re_name='".$filerename."',/*md5로 변환된 파일이름*/
-				type='".$filetype."',/*파일타입*/
-				ext ='".$extension."',/*파일확장자*/
-				size='".$filesize."',/*첨부파일 용량*/
-				wdate=now()
-			";
-                $rsf = mysqli_query($GLOBALS['dblink'], $sql);
-            }
-        }
-    }
-}
-
-//배너파일 등록
-function insertCategoryBanner($catno){
-	$tbl = $GLOBALS["_conf_tbl"]["category_banner"];
-	//이미지파일 처리
-
-	if ($_FILES[image_file][error] == 0){
-		//확장자 검사후 파일이름 생성
-		$filename = $_FILES[image_file][name];
-		$attach_ext = explode(".",$filename);
-		$extension = $attach_ext[sizeof($attach_ext)-1];
-		$extension = strtolower($extension);		    
-		$filerename = md5(mktime()) . "." . $extension;
-		$filesize = $_FILES[image_file][size];
-		$filetype = $_FILES[image_file][type];
-			
-		// 파일 확장자 검사
-		if(!strcmp($extension,"htm") ||!strcmp($extension,"html") ||!strcmp($extension,"phtml") ||!strcmp($extension,"php") ||!strcmp($extension,"php3") ||!strcmp($extension,"php4") ||!strcmp($extension,"inc") ||!strcmp($extension,"pl") ||!strcmp($extension,"cgi")){
-			jsMsg("not allowed file extension");
-			jsHistory("-1");
-		}
-		
-		if (is_uploaded_file($_FILES[image_file][tmp_name])) {	
-			move_uploaded_file ($_FILES[image_file][tmp_name],$GLOBALS["_SITE"]["UPLOADED_DATA"]."/categorybanner/".$filerename);
-		}
-	}
-
-
-	$sql = "insert into ".$tbl." SET 
-		cat_no= '".$catno."',
-		c_subject= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['c_subject'])."',
-		c_image= '".$filerename."',
-		c_url= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['c_url'])."',
-		c_target = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['c_target'])."',
-		c_sort = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['c_sort'])."',
-		c_type = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['c_type'])."',
-		c_date = now()
-	";
-	$rsf = mysqli_query($GLOBALS['dblink'], $sql);
-	
-	$total = mysqli_affected_rows($GLOBALS['dblink']);
-
-	if($total > 0){
-		return true;
-	}else{
-		return false;
-	}
-}
-
-
-//배너파일 수정
-function updateCategoryBanner($idx){
-	$tbl = $GLOBALS["_conf_tbl"]["category_banner"];
-
-	//이미지파일 처리
-	$arrInfo = getArticleInfo($tbl, $idx);
-
-	if ($_FILES[image_file][error] == 0){
-		//확장자 검사후 파일이름 생성
-		$filename = $_FILES[image_file][name];
-		$attach_ext = explode(".",$filename);
-		$extension = $attach_ext[sizeof($attach_ext)-1];
-		$extension = strtolower($extension);		    
-		$filerename = md5(mktime()) . "." . $extension;
-		$filesize = $_FILES[image_file][size];
-		$filetype = $_FILES[image_file][type];
-			
-		// 파일 확장자 검사
-		if(!strcmp($extension,"htm") ||!strcmp($extension,"html") ||!strcmp($extension,"phtml") ||!strcmp($extension,"php") ||!strcmp($extension,"php3") ||!strcmp($extension,"php4") ||!strcmp($extension,"inc") ||!strcmp($extension,"pl") ||!strcmp($extension,"cgi")){
-			jsMsg("not allowed file extension");
-			jsHistory("-1");
-		}
-		
-		if (is_uploaded_file($_FILES[image_file][tmp_name])) {	
-			@unlink($GLOBALS["_SITE"]["UPLOADED_DATA"]."/categorybanner/".$arrInfo["list"][0]['c_image']);
-			move_uploaded_file ($_FILES[image_file][tmp_name],$GLOBALS["_SITE"]["UPLOADED_DATA"]."/categorybanner/".$filerename);
-		}
-	}else{
-		$filerename = $arrInfo["list"][0]['c_image'];
-	}
-
-
-	$sql = "UPDATE ".$tbl." SET 
-		c_subject= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['c_subject'])."',
-		c_image= '".$filerename."',
-		c_url= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['c_url'])."',
-		c_target = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['c_target'])."',
-		c_sort = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['c_sort'])."',
-		c_type = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['c_type'])."'
-		WHERE idx = '$idx'
-	";
-	$rsf = mysqli_query($GLOBALS['dblink'], $sql);
-
-	if($rsf){
-		return true;
-	}else{
-		return false;
-	}
-}
-
-//배너파일 삭제
-function deleteCategoryBanner($idx){
-	$tbl = $GLOBALS["_conf_tbl"]["category_banner"];
-
-	//이미지파일 처리
-	$arrInfo = getArticleInfo($tbl, $idx);
-
-	@unlink($GLOBALS["_SITE"]["UPLOADED_DATA"]."/categorybanner/".$arrInfo["list"][0]['c_image']);
-	
-
-	$sql = "DELETE FROM ".$tbl." WHERE idx = '$idx' ";
-	$rsf = mysqli_query($GLOBALS['dblink'], $sql);
-
-	$total = mysqli_affected_rows($GLOBALS['dblink']);
-
-	if($total > 0){
-		return true;
-	}else{
-		return false;
-	}
-}
-
-
-//카테고리 배너목록 가져오기
-function getCategoryBannerList($cat_no, $type=""){
-	//테이블
-	$tbl = $GLOBALS["_conf_tbl"]["category_banner"];
-
-	$sql  = "SELECT * ";
-	$sql .= "FROM ".$tbl." ";
-	$sql .= "WHERE cat_no='$cat_no' ";
-	if($type !="") {
-		$sql .= " AND c_type='$type' ";	
-	}
-	$sql .= "order by c_sort desc, idx desc ";
-    
-	$rs = mysqli_query($GLOBALS['dblink'], $sql);
-	$total = mysqli_num_rows($rs);;
-
-	$list['list']['total'] = $total;
-		
-	for($i=0; $i < $total; $i++){
-		$list['list'][$i] = mysqli_fetch_assoc($rs);
-	}
-
-    return $list;
-}
-
-?>
+<?/*********************************** 카테고리 *************************************///카테고리 목록 가져오기function getCategoryAll(){	//테이블	$tbl = $GLOBALS["_conf_tbl"]["category"];	$sql  = "SELECT cat_no, cat_name, cat_engname ";	$sql .= "FROM ".$tbl." ";	$rs = mysqli_query($GLOBALS['dblink'], $sql);	$total_rs = mysqli_num_rows($rs);;    		if($total_rs > 0){			for($i=0; $i < $total_rs; $i++){					$row = mysqli_fetch_assoc($rs);					$list[$row['cat_no']] = $row['cat_name'];					$list['icon'][$row['cat_no']] = $row['cat_engname'];								}	}else{		$list = null;	}  return $list;}function getCategoryNameAll(){	//테이블	$tbl = $GLOBALS["_conf_tbl"]["category"];	$sql  = "SELECT cat_no, cat_name ";	$sql .= "FROM ".$tbl." ";	$rs = mysqli_query($GLOBALS['dblink'], $sql);	$total_rs = mysqli_num_rows($rs);;    		if($total_rs > 0){			for($i=0; $i < $total_rs; $i++){					$row = mysqli_fetch_assoc($rs);					$list[$row['cat_name']] = $row['cat_no'];			}	}else{		$list = null;	}  return $list;}//카테고리 목록 이미지 가져오기function getCategoryAllimage(){	//테이블	$tbl = $GLOBALS["_conf_tbl"]["category"];	$tbl_files = $GLOBALS["_conf_tbl"]["catalog_files"];	$sql  = "SELECT A.cat_no, A.cat_name, B.re_name ";	$sql .= "FROM ".$tbl." A ";	$sql .= "LEFT JOIN ".$tbl_files." B ON A.cat_no=B.b_idx ";	$rs = mysqli_query($GLOBALS['dblink'], $sql);	$total_rs = mysqli_num_rows($rs);;    	if($total_rs > 0){		for($i=0; $i < $total_rs; $i++){				$row = mysqli_fetch_assoc($rs);				$list[$row['cat_no']] = $row['re_name'];		}	}else{			$list = null;	}  return $list;}//카테고리 목록 가져오기function getCategoryList($cat_no, $viewgb="", $mainShow="", $subQuery=""){	//테이블	$tbl = $GLOBALS["_conf_tbl"]["category"];	if($cat_no==""){		$sql  = "SELECT * ";		$sql .= "FROM ".$tbl." ";		$sql .= "WHERE cat_depth='0' order by cat_sort ";		$rs = mysqli_query($GLOBALS['dblink'], $sql);		$total_rs = mysqli_num_rows($rs);;    	}else{		//cat_no(카테고리번호) 에서 카테고리 코드와 카테고리깊이를 찾음		$select_que = "select * from $tbl where cat_no='$cat_no'";		if($viewgb=="Y") {			$select_que .= " AND cat_is_show='Y' ";		}		$result_select = mysqli_query($GLOBALS['dblink'], $select_que);		$select_row = mysqli_fetch_array($result_select);		$select_depth = $select_row['cat_depth']+1;		$select_code = $select_row['cat_code'];		$sql  = "SELECT * ";		$sql .= "FROM ".$tbl." ";		$sql .= "WHERE cat_code like '$select_code%' and cat_depth='$select_depth' ";		if($viewgb=="Y") {			$sql .= " AND cat_is_show='Y' ";		}		if($mainShow=="Y") {			$sql .= " AND cat_main_show='Y' ";		}		if($subQuery){			$sql .= $subQuery;		}		$sql .= "order by cat_sort ";		//echo $sql;		$rs = mysqli_query($GLOBALS['dblink'], $sql);		$total_rs = mysqli_num_rows($rs);;	}		if($total_rs > 0){			$list['total'] = $total_rs;			for($i=0; $i < $total_rs; $i++){					$list['list'][$i] = mysqli_fetch_assoc($rs);					//하위카테고리 갯수					$sql  = "SELECT cat_no ";					$sql .= "FROM ".$tbl." ";					$sql .= "WHERE cat_code like '".$list['list'][$i]['cat_code']."%' AND cat_depth > ".$list['list'][$i]['cat_depth']." ";					$rs_cnt = mysqli_query($GLOBALS['dblink'], $sql);					$total_sub = mysqli_num_rows($rs_cnt);					$list['list'][$i]['total_sub'] = $total_sub;			}	}else{			$list['total'] = 0;	}  return $list;}function getCategoryFileList(){	//테이블	$tbl = $GLOBALS["_conf_tbl"]["category"];	$tbl_files = $GLOBALS["_conf_tbl"]["catalog_files"];	$sql  = "SELECT A.*, B.re_name ";	$sql .= "FROM ".$tbl." A ";	$sql .= "LEFT JOIN ".$tbl_files." B ON A.cat_no=B.b_idx ";	$sql .= "WHERE A.cat_depth='0' and A.cat_no!='1' order by A.cat_sort ";	$rs = mysqli_query($GLOBALS['dblink'], $sql);	$total_rs = mysqli_num_rows($rs);;    	if($total_rs > 0){		$list['total'] = $total_rs;		for($i=0; $i < $total_rs; $i++){				$list['list'][$i] = mysqli_fetch_assoc($rs);		}	}else{			$list['total'] = 0;	}  return $list;}//카테고리 정보 가져오기function getCategoryInfo($cat_no){	//테이블	$tbl = $GLOBALS["_conf_tbl"]["category"];	$tbl_catalog_files = $GLOBALS["_conf_tbl"]["catalog_files"];	$sql  = "SELECT * ";	$sql .= "FROM ".$tbl." ";	$sql .= "WHERE cat_no='$cat_no' ";//echo $sql;	$rs = mysqli_query($GLOBALS['dblink'], $sql);	$total_rs = mysqli_num_rows($rs);;		if($total_rs > 0){			$list['total'] = $total_rs;			for($i=0; $i < $total_rs; $i++){					$list['list'][$i] = mysqli_fetch_assoc($rs);			}	}else{			$list['total'] = 0;	}	//파일정보 가져오기(카탈로그)	$sql  = "SELECT * ";	$sql .= "FROM ".$tbl_catalog_files." ";	$sql .= "WHERE b_idx = '$cat_no' order by idx ";	$rs = mysqli_query($GLOBALS['dblink'], $sql);	$total_rs = mysqli_num_rows($rs);		if($total_rs > 0){			$list['total_catalog_files'] = $total_rs;			for($i=0; $i < $total_rs; $i++){					$list['catalog_files'][$i] = mysqli_fetch_assoc($rs);			}	}else{			$list['total_catalog_files'] = 0;	}  return $list;}//카테고리 이름function getCategoryName($cat_no) {	$tbl = $GLOBALS["_conf_tbl"]["category"];	$sql = "SELECT cat_name FROM $tbl WHERE cat_no='$cat_no'";	$rs = mysqli_query($GLOBALS['dblink'], $sql);	$row = mysqli_fetch_assoc($rs);	return $row['cat_name'];}//카테고리 패쓰 가져오기function getCategoryPath($cat_no){	//테이블	$tbl = $GLOBALS["_conf_tbl"]["category"];		//카테고리 정보 가져오기	$arrInfo = getCategoryInfo($cat_no);	//	카테고리 이름 구하기	$select_category = explode("/",$arrInfo["list"][0]["cat_code"]); //현재 카테고리 코드를 / 구분자로 분리해 배열에 담음.	for($i=0;$i<count($select_category);$i++){		$cat_name_select_que = "select cat_no, cat_name from $tbl where cat_no='$select_category[$i]'";		$cat_name_select_result = mysqli_query($GLOBALS['dblink'], $cat_name_select_que);		$list['list'][$i] = mysqli_fetch_assoc($cat_name_select_result);	}	$list['total'] = $i - 1;	return $list;}//카테고리 등록function addCategory($s_category, $s_depth, $new_name) {	//테이블	$tbl = $GLOBALS["_conf_tbl"]["category"];	// 현재 최대값의 카테고리 넘버를 구함.	$select_que = "select ifnull(max(cat_no),1) from $tbl";	$result_select = mysqli_query($GLOBALS['dblink'], $select_que);	$max_no = mysqli_result($result_select,0,0);	$new_no = ++$max_no;	$new_category = $s_category . $new_no . "/";		// 현재  카테고리의 최대값 소트번호를 구함.	$select_que2 = "select ifnull(max(cat_sort),1) from $tbl where cat_code like '$s_category%' and cat_depth='$s_depth'";	//echo $select_que2."<br/>";	$result_select2 = mysqli_query($GLOBALS['dblink'], $select_que2);	$max_sort = mysqli_result($result_select2,0,0);	$new_sort = ++$max_sort;	if(!$s_depth){		$s_depth = "0";	}	################ 연자인경우 대상 치과의사로 자동등록	$cat_area = "";	if($_POST["s_cat_no"]=="18"){		$cat_area = "치과의사";			}	// 새 카테고리를 등록시킴	$insert_que = "insert into $tbl set		cat_no = '$new_no',		cat_code = '$new_category',		cat_name = '$new_name',		cat_depth = '$s_depth',		cat_content = '',		cat_area	= '$cat_area',		cat_link_idx= '',		cat_sort = '$new_sort',		wdate = now()	";	//echo $insert_que;	//exit;	$insert_result = mysqli_query($GLOBALS['dblink'], $insert_que);	$total = mysqli_affected_rows($GLOBALS['dblink']);	if($total > 0){		return true;	}else{		return false;	}}//	카테고리 소트순위 업function sortupCategory($cat_no) {	//테이블	$tbl = $GLOBALS["_conf_tbl"]["category"];	// 현재 카테고리의 소트순위를 구함.	$select_que = "select cat_code, cat_depth, cat_sort from $tbl where cat_no='$cat_no'";	$result_select = @mysqli_query($GLOBALS['dblink'], $select_que);	$cat_code = @mysqli_result($result_select,0,0);		// 현재 코드를 제외한 상위 코드만을 선택함	$replace_code = "/" . $cat_no;	$cat_code = str_replace($replace_code,"",$cat_code);	// 현재 코드를 제외한 상위 코드만을 선택함	$cat_depth = @mysqli_result($result_select,0,1);	$cat_sort = @mysqli_result($result_select,0,2);		$up_sort = $cat_sort-1;	// 최상위 카테고리일 경우 1로 정렬	if($up_sort=='0')$up_sort='1';	// 상위 카테고리의 소트순위를 먼저 내림	if ($cat_depth=='0') {//최상위 일경우는 카테고리 코드 검사안함.		$update_que = "update $tbl set cat_sort='$cat_sort' where cat_sort='$up_sort' and cat_depth='$cat_depth'";	}else{		$update_que = "update $tbl set cat_sort='$cat_sort' where cat_code like '$cat_code%' and cat_sort='$up_sort' and cat_depth='$cat_depth'";	}	$update_result = mysqli_query($GLOBALS['dblink'], $update_que);	// 변경할 카테고리의 소트순위를 변경함	$update_que2 = "update $tbl set cat_sort='$up_sort' where cat_no='$cat_no'";	$update_result2 = mysqli_query($GLOBALS['dblink'], $update_que2);		if($update_result2){		return true;	}else{		return false;	}}//카테고리 소트 순위 다운function sortdownCategory($cat_no){	//테이블	$tbl = $GLOBALS["_conf_tbl"]["category"];	// 현재 카테고리의 소트순위를 구함.	$select_que = "select cat_code, cat_depth, cat_sort from $tbl where cat_no='$cat_no'";	$result_select = mysqli_query($GLOBALS['dblink'], $select_que);	$cat_code = @mysqli_result($result_select,0,0);	// 현재 코드를 제외한 상위 코드만을 선택함	$replace_code = "/" . $cat_no;	$cat_code = str_replace($replace_code,"",$cat_code);	// 현재 코드를 제외한 상위 코드만을 선택함	$cat_depth = @mysqli_result($result_select,0,1);	$cat_sort = @mysqli_result($result_select,0,2);	// 소트 최대값을 구해서 현재 소트값과 같으면 더이상 증가시키지 않음.	if ($cat_depth=='0') {//최상위 일경우는 카테고리 코드 검사안함.		$max_que = "select max(cat_sort) from $tbl where cat_depth='$cat_depth'";	}else{		$max_que = "select max(cat_sort) from $tbl where cat_code like '$cat_code%' and cat_depth='$cat_depth'";	}	$max_result = mysqli_query($GLOBALS['dblink'], $max_que);	$max_sort = @mysqli_result($max_result,0,0);	if($cat_sort==$max_sort){		$down_sort = $max_sort;	}else{		$down_sort = $cat_sort+1;	}	// 하위 카테고리의 소트순위를 먼저 올림	if ($cat_depth=='0') {//최상위 일경우는 카테고리 코드 검사안함.		$update_que = "update $tbl set cat_sort='$cat_sort' where cat_sort='$down_sort' and cat_depth='$cat_depth'";	}else{		$update_que = "update $tbl set cat_sort='$cat_sort' where cat_code like '$cat_code%' and cat_sort='$down_sort' and cat_depth='$cat_depth'";	}	$update_result = mysqli_query($GLOBALS['dblink'], $update_que);	// 변경할 카테고리의 소트순위를 변경함	$update_que2 = "update $tbl set cat_sort='$down_sort' where cat_no='$cat_no'";	$update_result2 = mysqli_query($GLOBALS['dblink'], $update_que2);		if($update_result && $update_result2){		return true;	}else{		return false;	}}//카테고리 수정function editCategory ($cat_no, $cat_name, $cat_content) {	//테이블	$tbl = $GLOBALS["_conf_tbl"]["category"];		$tbl_shop = $GLOBALS["_conf_tbl"]["shop_good"];			$is_show = mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_is_show'])=="N"?"N":"Y";	$arr_link_idx = "";	$comma = "";		for($i=0; $i<count($_POST['cat_link_idx']); $i++){		$arr_link_idx .= $comma.$_POST['cat_link_idx'][$i];		$comma = "|";	}	// 선택한 카테고리 변경	$update_que = "update $tbl set 		cat_name		= '".$cat_name."', 		cat_content		= '".$cat_content."',		cat_is_show		= '".$is_show."',		cat_area		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_area'])."',		cat_engname		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_engname'])."',		cat_main_show	= IFNULL(NULLIF('".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_main_show'])."',''),'N'),		cat_sub_show	= IFNULL(NULLIF('".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_sub_show'])."',''),'N'),		cat_best		= IFNULL(NULLIF('".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_best'])."',''),'0'),				cat_value		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_value'])."',		cat_etc_1		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_etc_1'])."',		cat_etc_2		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_etc_2'])."',		cat_etc_3		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_etc_3'])."',		cat_etc_4		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_etc_4'])."',		cat_etc_5		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_etc_5'])."',		cat_etc_6		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_etc_6'])."',		cat_etc_7		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_etc_7'])."',		cat_etc_8		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_etc_8'])."',		cat_etc_11		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_etc_11'])."',		cat_etc_12		= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['cat_etc_12'])."',		cat_link_idx	= '".$arr_link_idx."'	where cat_no = '".$cat_no."' ";	$update_result = mysqli_query($GLOBALS['dblink'], $update_que);	delCatalogFiles2($cat_no);	inputCatalogFiles2($cat_no);		if($update_result){		return true;	}else{		return false;	}}//	카테고리 삭제function deleteCategory($cat_no) {	//테이블	$tbl = $GLOBALS["_conf_tbl"]["category"];		// 선택한 카테고리 소트 재정렬	$select_que = "select cat_code,cat_sort,cat_depth from $tbl where cat_no='$cat_no'";	$result_select = mysqli_query($GLOBALS['dblink'], $select_que);	$now_cat_code = mysqli_result($result_select,0,0);	$now_cat_sort = mysqli_result($result_select,0,1);	$now_cat_depth = mysqli_result($result_select,0,2);	// 결과값이 에러 표시후 뒤로가기	// 아닐경우 모두 지워짐	// 20091123	if (!$now_cat_code){		jsMsg("정확한 경로가 아닙니다.");		jsHistory("-1") ;			exit;	}	// 현재 코드를 제외한 상위 코드만을 선택함	if($now_cat_depth>0){		$replace_code = "/" . $cat_no;		$sup_cat_code = str_replace($replace_code,"",$now_cat_code);	}else{		$sup_cat_code = "";	}	// 현재 코드를 제외한 상위 코드만을 선택함	$update_que = "update $tbl set cat_sort=cat_sort -1 where cat_code like '$sup_cat_code%' and cat_sort>'$now_cat_sort' and cat_depth='$now_cat_depth'";		$result_update = mysqli_query($GLOBALS['dblink'], $update_que);	// 선택한 카테고리 및 하위 카테고리삭제	$delete_que = "delete from $tbl where cat_code like '$now_cat_code%'";	$delete_result = mysqli_query($GLOBALS['dblink'], $delete_que);	$total = mysqli_affected_rows($GLOBALS['dblink']);	if($total > 0){		return true;	}else{		return false;	}}/*********************************** 카테고리 *************************************///하위첫번째값 구하기function getCategoryNo1($cat_no) {	//테이블	$tbl = $GLOBALS["_conf_tbl"]["category"];		$select_que = "select cat_code from ".$tbl." where cat_no='$cat_no'";	$result_select = mysqli_query($GLOBALS['dblink'], $select_que);	$select_row = mysqli_fetch_array($result_select);	$select_code = $select_row['cat_code'];	$sql  = "SELECT * FROM ".$tbl." WHERE cat_code like '$select_code%' order by cat_depth, cat_sort, cat_code ";	$rs = mysqli_query($GLOBALS['dblink'], $sql);	$total_rs = mysqli_num_rows($rs);;	for($i=0; $i < $total_rs; $i++){		$list['list'][$i] = mysqli_fetch_assoc($rs);				$cat1 = str_replace($select_code, "", $list['list'][$i]['cat_code']);		$cat2[$i] = explode("/",$cat1);	}	return $cat2[1][0];}//카탈로그 파일정보 가져오기function getCatalogFileInfo($b_idx){	$tbl = $GLOBALS["_conf_tbl"]["catalog_files"];    $sql  = "SELECT * ";    $sql .= "FROM " .$tbl." ";    $sql .= "WHERE b_idx = '$b_idx' ";    $rs = mysqli_query($GLOBALS['dblink'], $sql);    $total_rs = mysqli_num_rows($rs);;        if($total_rs > 0){        $list['total'] = $total_rs;        for($i=0; $i < $total_rs; $i++){            $list['list'][$i] = mysqli_fetch_assoc($rs);        }    }else{        $list['total'] = 0;    }    return $list;}//카탈로그 파일정보 가져오기function getCatalogFileInfo2($b_idx, $idx){	$tbl = $GLOBALS["_conf_tbl"]["catalog_files"];    $sql  = "SELECT * ";    $sql .= "FROM " .$tbl." ";    $sql .= "WHERE b_idx = '$b_idx' ";    $sql .= "AND idx = '$idx' ";    $rs = mysqli_query($GLOBALS['dblink'], $sql);    $total_rs = mysqli_num_rows($rs);;        if($total_rs > 0){        $list['total'] = $total_rs;        for($i=0; $i < $total_rs; $i++){            $list['list'][$i] = mysqli_fetch_assoc($rs);        }    }else{        $list['total'] = 0;    }    return $list;}//카탈로그 파일 삭제 처리function delCatalogFiles2($idx){	//제품정보 테이블	$tbl_files = $GLOBALS["_conf_tbl"]["catalog_files"];	//현재 정보 가져오기	$arrCurInfo = getCategoryInfo($idx);	//파일삭제 코딩 시작 - 삭제체크 한것만 처리	if($_POST['delCatalog']){		for($i=0;$i<count($_POST['delCatalog']);$i++){			if($_POST['delCatalog'][$i]>0){				$fileinfo = getCatalogFileInfo2($arrCurInfo["list"][0]['cat_no'], $_POST['delCatalog'][$i]);				//디비에서 파일정보 삭제				mysqli_query($GLOBALS['dblink'], "DELETE FROM ".$tbl_files." WHERE idx='".$fileinfo["list"][0]['idx']."' ");				//디스크에서 파일 삭제				unlink($GLOBALS["_SITE"]["UPLOADED_DATA"]."/category/".$fileinfo["list"][0]['re_name']);			}		}	}	//파일삭제 코딩 종료}//카탈로그 파일처리function inputCatalogFiles2($idx){    if ($_FILES['catalog_file']['error']) {        for ($i=0;$i<count($_FILES['catalog_file']['error']);$i++) {            if ($_FILES['catalog_file']['error'][$i] == 0) {                //확장자 검사후 파일이름 생성                $memo = $_POST['memo_name'][$i];                $filename = $_FILES['catalog_file'][name][$i];                $attach_ext = explode(".", $filename);                $extension = $attach_ext[sizeof($attach_ext)-1];                $extension = strtolower($extension);                $filerename = $memo."_" . md5(mktime()) . $i . "." . $extension;                $filesize = $_FILES['catalog_file'][size][$i];                $filetype = $_FILES['catalog_file'][type][$i];                                // 파일 확장자 검사                if (!strcmp($extension, "htm") ||!strcmp($extension, "html") ||!strcmp($extension, "phtml") ||!strcmp($extension, "php") ||!strcmp($extension, "php3") ||!strcmp($extension, "php4") ||!strcmp($extension, "inc") ||!strcmp($extension, "pl") ||!strcmp($extension, "cgi")) {                    jsMsg("not allowed file extension");                    jsHistory("-1");                }                            if (is_uploaded_file($_FILES['catalog_file'][tmp_name][$i])) {                    move_uploaded_file($_FILES['catalog_file'][tmp_name][$i], $GLOBALS["_SITE"]["UPLOADED_DATA"]."/category/".$filerename);                }                $sql = "insert into ".$GLOBALS["_conf_tbl"]["catalog_files"]." set 				b_idx='".$idx."',/* 글 번호 id*/				ori_name='".$filename."',/*파일원본이름*/				re_name='".$filerename."',/*md5로 변환된 파일이름*/				type='".$filetype."',/*파일타입*/				ext ='".$extension."',/*파일확장자*/				size='".$filesize."',/*첨부파일 용량*/				wdate=now()			";                $rsf = mysqli_query($GLOBALS['dblink'], $sql);            }        }    }}//배너파일 등록function insertCategoryBanner($catno){	$tbl = $GLOBALS["_conf_tbl"]["category_banner"];	//이미지파일 처리	if ($_FILES[image_file][error] == 0){		//확장자 검사후 파일이름 생성		$filename = $_FILES[image_file][name];		$attach_ext = explode(".",$filename);		$extension = $attach_ext[sizeof($attach_ext)-1];		$extension = strtolower($extension);		    		$filerename = md5(mktime()) . "." . $extension;		$filesize = $_FILES[image_file][size];		$filetype = $_FILES[image_file][type];					// 파일 확장자 검사		if(!strcmp($extension,"htm") ||!strcmp($extension,"html") ||!strcmp($extension,"phtml") ||!strcmp($extension,"php") ||!strcmp($extension,"php3") ||!strcmp($extension,"php4") ||!strcmp($extension,"inc") ||!strcmp($extension,"pl") ||!strcmp($extension,"cgi")){			jsMsg("not allowed file extension");			jsHistory("-1");		}				if (is_uploaded_file($_FILES[image_file][tmp_name])) {				move_uploaded_file ($_FILES[image_file][tmp_name],$GLOBALS["_SITE"]["UPLOADED_DATA"]."/categorybanner/".$filerename);		}	}	$sql = "insert into ".$tbl." SET 		cat_no= '".$catno."',		c_subject= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['c_subject'])."',		c_image= '".$filerename."',		c_url= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['c_url'])."',		c_target = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['c_target'])."',		c_sort = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['c_sort'])."',		c_type = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['c_type'])."',		c_date = now()	";	$rsf = mysqli_query($GLOBALS['dblink'], $sql);		$total = mysqli_affected_rows($GLOBALS['dblink']);	if($total > 0){		return true;	}else{		return false;	}}//배너파일 수정function updateCategoryBanner($idx){	$tbl = $GLOBALS["_conf_tbl"]["category_banner"];	//이미지파일 처리	$arrInfo = getArticleInfo($tbl, $idx);	if ($_FILES[image_file][error] == 0){		//확장자 검사후 파일이름 생성		$filename = $_FILES[image_file][name];		$attach_ext = explode(".",$filename);		$extension = $attach_ext[sizeof($attach_ext)-1];		$extension = strtolower($extension);		    		$filerename = md5(mktime()) . "." . $extension;		$filesize = $_FILES[image_file][size];		$filetype = $_FILES[image_file][type];					// 파일 확장자 검사		if(!strcmp($extension,"htm") ||!strcmp($extension,"html") ||!strcmp($extension,"phtml") ||!strcmp($extension,"php") ||!strcmp($extension,"php3") ||!strcmp($extension,"php4") ||!strcmp($extension,"inc") ||!strcmp($extension,"pl") ||!strcmp($extension,"cgi")){			jsMsg("not allowed file extension");			jsHistory("-1");		}				if (is_uploaded_file($_FILES[image_file][tmp_name])) {				@unlink($GLOBALS["_SITE"]["UPLOADED_DATA"]."/categorybanner/".$arrInfo["list"][0]['c_image']);			move_uploaded_file ($_FILES[image_file][tmp_name],$GLOBALS["_SITE"]["UPLOADED_DATA"]."/categorybanner/".$filerename);		}	}else{		$filerename = $arrInfo["list"][0]['c_image'];	}	$sql = "UPDATE ".$tbl." SET 		c_subject= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['c_subject'])."',		c_image= '".$filerename."',		c_url= '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['c_url'])."',		c_target = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['c_target'])."',		c_sort = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['c_sort'])."',		c_type = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['c_type'])."'		WHERE idx = '$idx'	";	$rsf = mysqli_query($GLOBALS['dblink'], $sql);	if($rsf){		return true;	}else{		return false;	}}//배너파일 삭제function deleteCategoryBanner($idx){	$tbl = $GLOBALS["_conf_tbl"]["category_banner"];	//이미지파일 처리	$arrInfo = getArticleInfo($tbl, $idx);	@unlink($GLOBALS["_SITE"]["UPLOADED_DATA"]."/categorybanner/".$arrInfo["list"][0]['c_image']);		$sql = "DELETE FROM ".$tbl." WHERE idx = '$idx' ";	$rsf = mysqli_query($GLOBALS['dblink'], $sql);	$total = mysqli_affected_rows($GLOBALS['dblink']);	if($total > 0){		return true;	}else{		return false;	}}//카테고리 배너목록 가져오기function getCategoryBannerList($cat_no, $type=""){	//테이블	$tbl = $GLOBALS["_conf_tbl"]["category_banner"];	$sql  = "SELECT * ";	$sql .= "FROM ".$tbl." ";	$sql .= "WHERE cat_no='$cat_no' ";	if($type !="") {		$sql .= " AND c_type='$type' ";		}	$sql .= "order by c_sort desc, idx desc ";    	$rs = mysqli_query($GLOBALS['dblink'], $sql);	$total = mysqli_num_rows($rs);;	$list['list']['total'] = $total;			for($i=0; $i < $total; $i++){		$list['list'][$i] = mysqli_fetch_assoc($rs);	}    return $list;}?>

@@ -1,251 +1,251 @@
-<?PHP
-include $_SERVER['DOCUMENT_ROOT'] . "/backoffice/pub/inc/admin_top.php";
-include "./menu.php";
-
-if(!in_array("board_manage",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTH"]) && $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]!="ROOT"):
-	jsMsg("권한이 없습니다.");
-	jsHistory("-1");
-endif;
-
-include $_SERVER['DOCUMENT_ROOT'] . "/module/popup/popup.lib.php";
-
-//DB연결
-$dblink = SetConn($_conf_db["main_db"]);
-
-$arrInfo = getArticleInfo($GLOBALS["_conf_tbl"]["popup"], $_REQUEST['idx']);
-//_DEBUG($arrInfo);
-
-//DB해제
-SetDisConn($dblink);
-?>
-<script language="javascript">
-function checkform(f){
-	if(f.subject.value==""){
-		alert("타입을 선택하세요.");
-		f.subject.focus();
-		return false;
-	}
-	if(f.s_date.value==""){
-		alert("팝업 시작일을 선택해 주세요.");
-		f.s_date.focus();
-		return false;
-	}
-	if(f.e_date.value==""){
-		alert("팝업 종료일을 선택해 주세요.");
-		f.e_date.focus();
-		return false;
-	}
-	if(f.width.value==""){
-		alert("팝업가로크기를 입력하세요.");
-		f.width.focus();
-		return false;
-	}
-	if(f.height.value==""){
-		alert("팝업세로크기를 입력하세요.");
-		f.height.focus();
-		return false;
-	}
-	if(f.p_mode[0].checked==false && f.p_mode[1].checked==false){
-		alert("팝업형태를 선택해 주세요.");
-		f.p_mode[0].focus();
-		return false;
-	}
-	if(f.p_type[0].checked==false && f.p_type[1].checked==false){
-		alert("팝업타입을 선택해 주세요.");
-		f.p_type[0].focus();
-		return false;
-	}
-	if(f.p_type[0].checked==true){
-
-	}
-	try{ contents.outputBodyHTML(); } catch(e){ }
-}
-
-function popupCheck(fval){
-	f = document.frmPopup;
-	if(fval=="IMG"){
-		f.photo_file.disabled = false;
-		f.p_url.disabled = false;
-		f.p_target[0].disabled = false;
-		f.p_target[1].disabled = false;
-	}else{
-		f.photo_file.disabled = true;
-		f.p_url.disabled = true;
-		f.p_target[0].disabled = true;
-		f.p_target[1].disabled = true;
-	}
-}
-
-</script>
-<div class="container">
-
-	<div class="title">팝업 수정</div>
-	
-	<div class="inbox write_tbl mo_break_write">
-		<?php
-		$arrCategory = array(
-			"1" => "주안영상미디어센터",
-			"2" => "KCIA",
-			"3" => "KIMA",
-			"4" => "문화연예시상식"
-		);
-		?>
-		<form name="frmPopup" method="post" action="popup_evn.php" ENCTYPE="multipart/form-data" onsubmit="return checkform(this);">
-		<input type="hidden" name="evnMode" value="editPopup">
-		<input type="hidden" name="idx" value="<?=$arrInfo["list"][0]['idx']?>">
-
-		<div class="tit">팝업정보 <i>*</i></div>
-		<table>
-			<tr>
-				<th>구분</th>
-				<td>
-					<select name="category" id="category">
-						<?php foreach($arrCategory as $key => $val){?>
-						<option value="<?=$key?>" <?=$arrInfo["list"][0]['category'] == $key?"selected":""?>><?=$val?></option>
-						<?php } ?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<th>PC/MO</th>
-				<td>
-					<select name="device" id="device">
-						<option value="pc" <?=$arrInfo["list"][0]['device'] == "pc"?"selected":""?>>PC</option>
-						<option value="mo" <?=$arrInfo["list"][0]['device'] == "mo"?"selected":""?>>MO</option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<th>제목</th>
-				<td><div class="inputs"><input type="text" class="w3" name="subject" maxlength="100" value="<?=stripslashes($arrInfo["list"][0]['subject'])?>"></div>
-				</td>
-			</tr>
-			<tr>
-				<th>시작일</th>
-				<td><input type="text" class="w3 datepicker" name="s_date" value="<?=stripslashes($arrInfo["list"][0]['s_date'])?>" maxlength="10" /></td>
-			</tr>
-			<tr>
-				<th>종료일</th>
-				<td><input type="text" class="w3 datepicker" name="e_date" value="<?=stripslashes($arrInfo["list"][0]['e_date'])?>" maxlength="10" /></td>
-			</tr>
-			<tr>
-				<th>팝업가로</th>
-				<td><div class="inputs"><input type="text" class="w1" name="width" maxlength="10" value="<?=stripslashes($arrInfo["list"][0]['width'])?>"><em>&nbsp;px</em></div>
-				</td>
-			</tr>
-			<tr>
-				<th>팝업세로</th>
-				<td><div class="inputs"><input type="text" class="w1" name="height" maxlength="10" value="<?=stripslashes($arrInfo["list"][0]['height'])?>"><em>&nbsp;px</em></div>
-				</td>
-			</tr>
-			<tr>
-				<th>팝업위치(Top)</th>
-				<td><div class="inputs"><input type="text" class="w1" name="pop_top" maxlength="10" value="<?=stripslashes($arrInfo["list"][0]['pop_top'])?>"><em>&nbsp;px</em></div>
-				</td>
-			</tr>
-			<tr>
-				<th>팝업위치(Left)</th>
-				<td><div class="inputs"><input type="text" class="w1" name="pop_left" maxlength="10" value="<?=stripslashes($arrInfo["list"][0]['pop_left'])?>"><em>&nbsp;px</em></div>
-				</td>
-			</tr>
-			<tr>
-				<th>팝업형태</th>
-				<td><div class="inputs">
-					<label class="radio"><input type="radio" name="p_mode" value="P" <?=$arrInfo["list"][0]['p_mode']=="P"?" checked":""?>><i></i>일반팝업</label>
-					<label class="radio"><input type="radio" name="p_mode" value="L" <?=$arrInfo["list"][0]['p_mode']=="L"?" checked":""?>><i></i>레이어팝업</label> 
-					<em>※ 레이어팝업을 이용하여 창이아닌 레이어로 공지할 수 있습니다.</em>
-				</div></td>
-			</tr>
-			<tr style="display:none;">
-				<th>팝업타입</th>
-				<td><div class="inputs">
-					<label class="radio"><input type="radio" name="p_type" value="IMG" onclick="popupCheck(this.value);" <?=$arrInfo["list"][0]['p_type']=="IMG"?" checked":""?>><i></i>이미지</label>
-					<label class="radio"><input type="radio" name="p_type" value="HTML" onclick="popupCheck(this.value);" <?=$arrInfo["list"][0]['p_type']=="HTML"?" checked":""?>><i></i>HTML</label> 
-					<em>※ 팝업타입이 이미지 일 경우에만 클릭시 이동주소, 클릭시 타겟이 사용됨</em>
-				</div></td>
-			</tr>
-			<tr style="display:none;">
-				<th>내용</th>
-				<td>
-					<textarea id="contents" name="contents"><?=stripslashes($arrInfo["list"][0]['contents'])?></textarea>
-					<?//	$CKContent = "contents";	include $_SERVER['DOCUMENT_ROOT'] . "/ckeditor/Editor.php";	?>
-				</td>
-			</tr>
-			<tr>
-				<th>팝업 이미지 - PC</th>
-				<td>
-					<div class="inputs">
-						<div class="filebutton">
-							<span>파일 선택</span>
-							<input type="file" name="photo_file" class="searchfile" title="파일 찾기">
-						</div>
-						<div class="filebox">선택된 파일 없음</div>						
-					<em><?if($arrInfo["list"][0]['p_image']):?><a href="/uploaded/popup/<?=$arrInfo["list"][0]['p_image']?>" target="_blank">▶ 등록된 이미지</a><?endif;?></em>
-					</div>					
-				</td>
-			</tr>
-			<tr style="display:none;">
-				<th>팝업 이미지 - 모바일</th>
-				<td>
-					<div class="inputs">
-						<div class="filebutton">
-							<span>파일 선택</span>
-							<input type="file" name="photo_file_mo" class="searchfile" title="파일 찾기">
-						</div>
-						<div class="filebox">선택된 파일 없음</div>						
-					<em><?if($arrInfo["list"][0]['m_image']):?><a href="/uploaded/popup/<?=$arrInfo["list"][0]['m_image']?>" target="_blank">▶ 등록된 이미지</a><?endif;?></em>
-					</div>					
-				</td>
-			</tr>
-			<tr>
-				<th>클릭시 이동주소</th>
-				<td><div class="inputs"><input type="text" class="w4" name="p_url" value="<?=stripslashes($arrInfo["list"][0]['p_url'])?>" maxlength="250"></div></td>
-			</tr>
-			<tr>
-				<th>클릭시 타겟</th>
-				<td><div class="inputs">
-					<label class="radio"><input type="radio" name="p_target" value="O" <?=$arrInfo["list"][0]['p_target']=="O"?" checked":""?>><i></i>부모창</label>
-					<label class="radio"><input type="radio" name="p_target" value="B" <?=$arrInfo["list"][0]['p_target']=="B"?" checked":""?>><i></i>새창</label> 
-				</div></td>
-			</tr>
-
-		</table>		
-
-		<div class="btns">
-			<a href="javascript:void(0);" onclick="history.back()" class="btn btn_list">목록보기</a>
-			<button class="btn btn_save" type="submit">저장</button>
-		</div>
-		</form>
-	</div> <!-- //inbox -->
-</div>
-<script type="text/javascript">
-//<![CDATA[
-$(window).load(function(){
-//달력
-	$(".datepicker").datepicker({
-		dateFormat: 'yy-mm-dd',
-		showMonthAfterYear:true,
-		showOn: "both",
-		buttonImage: "/images/icon_month.gif", 
-        buttonImageOnly: true,
-		changeYear: true,
-		changeMonth: true,
-		yearRange: 'c-100:c+10',
-		yearSuffix: "년 ",
-		monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
-		dayNamesMin: ['일','월','화','수','목','금','토']
-	});
-//파일선택
-	$(".searchfile").on('change',function(){
-		val = $(this).val().split("\\");
-		f_name = val[val.length-1]; 
-		s_name = f_name.substring(f_name.length-4, f_name.length);
-		$(this).parent().siblings('.filebox').html(f_name);
-	});
-});
-//]]>
-</script>
-<?php
-######################################################## 디자인 ED
-include $_SERVER['DOCUMENT_ROOT'] . "/backoffice/pub/inc/footer.php";
+<?PHP
+include $_SERVER['DOCUMENT_ROOT'] . "/backoffice/pub/inc/admin_top.php";
+include "./menu.php";
+
+if(!in_array("board_manage",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTH"]) && $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]!="ROOT"):
+	jsMsg("권한이 없습니다.");
+	jsHistory("-1");
+endif;
+
+include $_SERVER['DOCUMENT_ROOT'] . "/module/popup/popup.lib.php";
+
+//DB연결
+$dblink = SetConn($_conf_db["main_db"]);
+
+$arrInfo = getArticleInfo($GLOBALS["_conf_tbl"]["popup"], $_REQUEST['idx']);
+//_DEBUG($arrInfo);
+
+//DB해제
+SetDisConn($dblink);
+?>
+<script language="javascript">
+function checkform(f){
+	if(f.subject.value==""){
+		alert("타입을 선택하세요.");
+		f.subject.focus();
+		return false;
+	}
+	if(f.s_date.value==""){
+		alert("팝업 시작일을 선택해 주세요.");
+		f.s_date.focus();
+		return false;
+	}
+	if(f.e_date.value==""){
+		alert("팝업 종료일을 선택해 주세요.");
+		f.e_date.focus();
+		return false;
+	}
+	if(f.width.value==""){
+		alert("팝업가로크기를 입력하세요.");
+		f.width.focus();
+		return false;
+	}
+	if(f.height.value==""){
+		alert("팝업세로크기를 입력하세요.");
+		f.height.focus();
+		return false;
+	}
+	if(f.p_mode[0].checked==false && f.p_mode[1].checked==false){
+		alert("팝업형태를 선택해 주세요.");
+		f.p_mode[0].focus();
+		return false;
+	}
+	if(f.p_type[0].checked==false && f.p_type[1].checked==false){
+		alert("팝업타입을 선택해 주세요.");
+		f.p_type[0].focus();
+		return false;
+	}
+	if(f.p_type[0].checked==true){
+
+	}
+	try{ contents.outputBodyHTML(); } catch(e){ }
+}
+
+function popupCheck(fval){
+	f = document.frmPopup;
+	if(fval=="IMG"){
+		f.photo_file.disabled = false;
+		f.p_url.disabled = false;
+		f.p_target[0].disabled = false;
+		f.p_target[1].disabled = false;
+	}else{
+		f.photo_file.disabled = true;
+		f.p_url.disabled = true;
+		f.p_target[0].disabled = true;
+		f.p_target[1].disabled = true;
+	}
+}
+
+</script>
+<div class="container">
+
+	<div class="title">팝업 수정</div>
+	
+	<div class="inbox write_tbl mo_break_write">
+		<?php
+		$arrCategory = array(
+			"1" => "주안영상미디어센터",
+			"2" => "KCIA",
+			"3" => "KIMA",
+			"4" => "문화연예시상식"
+		);
+		?>
+		<form name="frmPopup" method="post" action="popup_evn.php" ENCTYPE="multipart/form-data" onsubmit="return checkform(this);">
+		<input type="hidden" name="evnMode" value="editPopup">
+		<input type="hidden" name="idx" value="<?=$arrInfo["list"][0]['idx']?>">
+
+		<div class="tit">팝업정보 <i>*</i></div>
+		<table>
+			<tr>
+				<th>구분</th>
+				<td>
+					<select name="category" id="category">
+						<?php foreach($arrCategory as $key => $val){?>
+						<option value="<?=$key?>" <?=$arrInfo["list"][0]['category'] == $key?"selected":""?>><?=$val?></option>
+						<?php } ?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>PC/MO</th>
+				<td>
+					<select name="device" id="device">
+						<option value="pc" <?=$arrInfo["list"][0]['device'] == "pc"?"selected":""?>>PC</option>
+						<option value="mo" <?=$arrInfo["list"][0]['device'] == "mo"?"selected":""?>>MO</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>제목</th>
+				<td><div class="inputs"><input type="text" class="w3" name="subject" maxlength="100" value="<?=stripslashes($arrInfo["list"][0]['subject'])?>"></div>
+				</td>
+			</tr>
+			<tr>
+				<th>시작일</th>
+				<td><input type="text" class="w3 datepicker" name="s_date" value="<?=stripslashes($arrInfo["list"][0]['s_date'])?>" maxlength="10" /></td>
+			</tr>
+			<tr>
+				<th>종료일</th>
+				<td><input type="text" class="w3 datepicker" name="e_date" value="<?=stripslashes($arrInfo["list"][0]['e_date'])?>" maxlength="10" /></td>
+			</tr>
+			<tr>
+				<th>팝업가로</th>
+				<td><div class="inputs"><input type="text" class="w1" name="width" maxlength="10" value="<?=stripslashes($arrInfo["list"][0]['width'])?>"><em>&nbsp;px</em></div>
+				</td>
+			</tr>
+			<tr>
+				<th>팝업세로</th>
+				<td><div class="inputs"><input type="text" class="w1" name="height" maxlength="10" value="<?=stripslashes($arrInfo["list"][0]['height'])?>"><em>&nbsp;px</em></div>
+				</td>
+			</tr>
+			<tr>
+				<th>팝업위치(Top)</th>
+				<td><div class="inputs"><input type="text" class="w1" name="pop_top" maxlength="10" value="<?=stripslashes($arrInfo["list"][0]['pop_top'])?>"><em>&nbsp;px</em></div>
+				</td>
+			</tr>
+			<tr>
+				<th>팝업위치(Left)</th>
+				<td><div class="inputs"><input type="text" class="w1" name="pop_left" maxlength="10" value="<?=stripslashes($arrInfo["list"][0]['pop_left'])?>"><em>&nbsp;px</em></div>
+				</td>
+			</tr>
+			<tr>
+				<th>팝업형태</th>
+				<td><div class="inputs">
+					<label class="radio"><input type="radio" name="p_mode" value="P" <?=$arrInfo["list"][0]['p_mode']=="P"?" checked":""?>><i></i>일반팝업</label>
+					<label class="radio"><input type="radio" name="p_mode" value="L" <?=$arrInfo["list"][0]['p_mode']=="L"?" checked":""?>><i></i>레이어팝업</label> 
+					<em>※ 레이어팝업을 이용하여 창이아닌 레이어로 공지할 수 있습니다.</em>
+				</div></td>
+			</tr>
+			<tr style="display:none;">
+				<th>팝업타입</th>
+				<td><div class="inputs">
+					<label class="radio"><input type="radio" name="p_type" value="IMG" onclick="popupCheck(this.value);" <?=$arrInfo["list"][0]['p_type']=="IMG"?" checked":""?>><i></i>이미지</label>
+					<label class="radio"><input type="radio" name="p_type" value="HTML" onclick="popupCheck(this.value);" <?=$arrInfo["list"][0]['p_type']=="HTML"?" checked":""?>><i></i>HTML</label> 
+					<em>※ 팝업타입이 이미지 일 경우에만 클릭시 이동주소, 클릭시 타겟이 사용됨</em>
+				</div></td>
+			</tr>
+			<tr style="display:none;">
+				<th>내용</th>
+				<td>
+					<textarea id="contents" name="contents"><?=stripslashes($arrInfo["list"][0]['contents'])?></textarea>
+					<?//	$CKContent = "contents";	include $_SERVER['DOCUMENT_ROOT'] . "/ckeditor/Editor.php";	?>
+				</td>
+			</tr>
+			<tr>
+				<th>팝업 이미지 - PC</th>
+				<td>
+					<div class="inputs">
+						<div class="filebutton">
+							<span>파일 선택</span>
+							<input type="file" name="photo_file" class="searchfile" title="파일 찾기">
+						</div>
+						<div class="filebox">선택된 파일 없음</div>						
+					<em><?if($arrInfo["list"][0]['p_image']):?><a href="/uploaded/popup/<?=$arrInfo["list"][0]['p_image']?>" target="_blank">▶ 등록된 이미지</a><?endif;?></em>
+					</div>					
+				</td>
+			</tr>
+			<tr style="display:none;">
+				<th>팝업 이미지 - 모바일</th>
+				<td>
+					<div class="inputs">
+						<div class="filebutton">
+							<span>파일 선택</span>
+							<input type="file" name="photo_file_mo" class="searchfile" title="파일 찾기">
+						</div>
+						<div class="filebox">선택된 파일 없음</div>						
+					<em><?if($arrInfo["list"][0]['m_image']):?><a href="/uploaded/popup/<?=$arrInfo["list"][0]['m_image']?>" target="_blank">▶ 등록된 이미지</a><?endif;?></em>
+					</div>					
+				</td>
+			</tr>
+			<tr>
+				<th>클릭시 이동주소</th>
+				<td><div class="inputs"><input type="text" class="w4" name="p_url" value="<?=stripslashes($arrInfo["list"][0]['p_url'])?>" maxlength="250"></div></td>
+			</tr>
+			<tr>
+				<th>클릭시 타겟</th>
+				<td><div class="inputs">
+					<label class="radio"><input type="radio" name="p_target" value="O" <?=$arrInfo["list"][0]['p_target']=="O"?" checked":""?>><i></i>부모창</label>
+					<label class="radio"><input type="radio" name="p_target" value="B" <?=$arrInfo["list"][0]['p_target']=="B"?" checked":""?>><i></i>새창</label> 
+				</div></td>
+			</tr>
+
+		</table>		
+
+		<div class="btns">
+			<a href="javascript:void(0);" onclick="history.back()" class="btn btn_list">목록보기</a>
+			<button class="btn btn_save" type="submit">저장</button>
+		</div>
+		</form>
+	</div> <!-- //inbox -->
+</div>
+<script type="text/javascript">
+//<![CDATA[
+$(window).load(function(){
+//달력
+	$(".datepicker").datepicker({
+		dateFormat: 'yy-mm-dd',
+		showMonthAfterYear:true,
+		showOn: "both",
+		buttonImage: "/images/icon_month.gif", 
+        buttonImageOnly: true,
+		changeYear: true,
+		changeMonth: true,
+		yearRange: 'c-100:c+10',
+		yearSuffix: "년 ",
+		monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+		dayNamesMin: ['일','월','화','수','목','금','토']
+	});
+//파일선택
+	$(".searchfile").on('change',function(){
+		val = $(this).val().split("\\");
+		f_name = val[val.length-1]; 
+		s_name = f_name.substring(f_name.length-4, f_name.length);
+		$(this).parent().siblings('.filebox').html(f_name);
+	});
+});
+//]]>
+</script>
+<?php
+######################################################## 디자인 ED
+include $_SERVER['DOCUMENT_ROOT'] . "/backoffice/pub/inc/footer.php";
 ?>

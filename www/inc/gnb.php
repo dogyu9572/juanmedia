@@ -1,6 +1,6 @@
 <?php
 
-include_once $_SERVER["DOCUMENT_ROOT"]."/common/conf/config.php";
+include_once $_SERVER["DOCUMENT_ROOT"]."/common/conf/config.inc.php";
 include_once $_SERVER["DOCUMENT_ROOT"] . "/module/category/category.lib.php";
 
 //DB연결

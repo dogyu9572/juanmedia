@@ -1,204 +1,204 @@
-<?
-switch ($_REQUEST['boardid']){
-    case 'edu_instructors' :
-        $leftMenuClass[6] = "on"; $menuview[0] = "on"; break;
-	case 'edu_applicants' :
-		$leftMenuClass[1] = "on"; $menuview[3] = "on"; break;
-	case 'edu' :
-		$leftMenuClass[2] = "on"; $menuview[3] = "on"; break;
-	case 'edu_certificates' :
-		$leftMenuClass[3] = "on"; $menuview[3] = "on"; break;
-    case 'edu_instructorapply' :
-        $leftMenuClass[4] = "on"; $menuview[3] = "on"; break;
-    case 'equ_applicants' :
-        $leftMenuClass[1] = "on"; $menuview[4] = "on"; break;
-    case 'equ' :
-        $leftMenuClass[2] = "on"; $menuview[4] = "on"; break;
-    case 'place_applicants' :
-        $leftMenuClass[1] = "on"; $menuview[5] = "on"; break;
-    case 'place' :
-        $leftMenuClass[2] = "on"; $menuview[5] = "on"; break;
-	case 'mailsms' :
-		$leftMenuClass[8] = "on"; $menuview[0] = "on"; break;
-	case 'terms' :
-		if($_GET["category"] == "1"){
-			$leftMenuClass[9] = "on"; $menuview[0] = "on"; 
-		}else if($_GET["category"] == "2"){
-			$leftMenuClass[10] = "on"; $menuview[0] = "on"; 
-		}else if($_GET["category"] == "3"){
-			$leftMenuClass[11] = "on"; $menuview[0] = "on"; 
-		}else if($_GET["category"] == "4"){
-			$leftMenuClass[12] = "on"; $menuview[0] = "on"; 
-		}else if($_GET["category"] == "5"){
-			$leftMenuClass[13] = "on"; $menuview[0] = "on"; 
-		}
-
-	break; 
-	case 'often':
-		$leftMenuClass[14] = "on"; $menuview[0] = "on"; break;
-
-	case 'evaluation' :case 'sub_evaluation' :
-		$leftMenuClass[1] = "on"; $menuview[2] = "on"; break;
-	case 'accept' :
-		$leftMenuClass[2] = "on"; $menuview[2] = "on"; break;
-}
-
-switch ($_REQUEST['mode']){
-	case 'order_list' : case 'order_modify' :
-		$leftMenuClass[3] = "on"; $leftMenuClass[2] = ""; break;
-	case 'ship_list' : case 'ship_modify' :
-		$leftMenuClass[4] = "on"; $leftMenuClass[2] = ""; break;
-	case 'company_list' : case 'company_modify' :
-		$leftMenuClass[5] = "on"; $leftMenuClass[2] = ""; break;
-}
-if($_REQUEST['boardid']=="KCAcompany"){
-	if($_GET['etc_2']=="N"){
-		$leftMenuClass[12] = "";
-		$leftMenuClass[14] = "on";
-	}
-}
-if($_REQUEST['boardid']=="KCAawards"){
-	if($_GET['etc_2']=="N"){
-		$leftMenuClass[13] = "";
-		$leftMenuClass[15] = "on";
-	}
-}
-?>
-<div class="aside">
-	<a href="javascript:void(0);" class="btn_aside"></a>
-	<div class="in_scroll">
-		<div class="menu">			
-			<?if($menuview[0]=="on"){?>
-			<dl class="on">
-				<dt>기본 설정 <i></i></dt>
-                <dd style="display:block;"><!-- 열려있는 페이지에는 dd에 display:block 해주세요. -->
-                    <?/*if(in_array("admin_manage_01", $arrayMyMenuSub) && (in_array("admin_manage_01",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){*/?><!--
-					<a class="<?php /*=$leftMenuClass[0]*/?>" href="/backoffice/module/admin/admin_set.php">· 기본설정</a>--><?/*}*/?>
-                    <?/*if(in_array("admin_manage_07", $arrayMyMenuSub) && (in_array("admin_manage_07",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){*/?><!--
-					<a class="<?php /*=$leftMenuClass[6]*/?>" href="/backoffice/module/banner/banner.php">· 배너 관리</a><?/*}*/?>
-					<?/*if(in_array("admin_manage_08", $arrayMyMenuSub) && (in_array("admin_manage_08",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){*/?>
-					<a class="<?php /*=$leftMenuClass[7]*/?>" href="/backoffice/module/popup/popup_list.php">· 팝업 관리</a><?/*}*/?>
-					<?/*if(in_array("admin_manage_09", $arrayMyMenuSub) && (in_array("admin_manage_09",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){*/?>
-					<a class="<?php /*=$leftMenuClass[8]*/?>" href="/backoffice/module/board/board_view.php?boardid=mailsms">· 메일&문자 관리</a>--><?/*}*/?>
-                    <?if(in_array("admin_manage_01", $arrayMyMenuSub) && (in_array("admin_manage_01",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                    <a class="<?=$leftMenuClass[1]?>" href="/backoffice/module/admin/admin_schedule.php">· 센터 전체일정</a><?}?>
-                    <?if(in_array("admin_manage_02", $arrayMyMenuSub) && (in_array("admin_manage_02",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                    <a class="<?=$leftMenuClass[2]?>" href="/backoffice/module/admin/admin.php">· 관리자 관리</a><?}?>
-                    <?if(in_array("admin_manage_03", $arrayMyMenuSub) && (in_array("admin_manage_03",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                    <a class="<?=$leftMenuClass[3]?>" href="/backoffice/module/category/category.php?cat_no=3">· 메뉴 관리</a><?}?>
-                    <?if(in_array("admin_manage_04", $arrayMyMenuSub) && (in_array("admin_manage_04",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                    <a class="<?=$leftMenuClass[4]?>" href="/backoffice/module/category/category.php?cat_no=4">· 카테고리 관리</a><?}?>
-                    <?if(in_array("admin_manage_05", $arrayMyMenuSub) && (in_array("admin_manage_05",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                    <a class="<?=$leftMenuClass[5]?>" href="/backoffice/module/admin/admin_discount.php">· 할인 관리</a><?}?>
-                    <?if(in_array("admin_manage_06", $arrayMyMenuSub) && (in_array("admin_manage_06",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                    <a class="<?=$leftMenuClass[6]?>" href="/backoffice/module/board/board_view.php?boardid=edu_instructors">· 강사 관리</a><?}?>
-                    <?if(in_array("admin_manage_07", $arrayMyMenuSub) && (in_array("admin_manage_07",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                    <a class="<?=$leftMenuClass[7]?>" href="/backoffice/module/admin/admin_set.php">· 환경 설정</a><?}?>
-                </dd>
-			</dl>			
-			<?}?>
-			<?if($menuview[1]=="on"){?>
-			<dl class="on">
-				<dt>고객센터<i></i></dt>
-				<dd style="display:block;"><!-- 열려있는 페이지에는 dd에 display:block 해주세요. -->
-					<?if(in_array("center_manage_01", $arrayMyMenuSub) && (in_array("center_manage_01",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-					<a class="<?=$leftMenuClass[0]?>" href="/backoffice/module/board/board_view.php?boardid=qna1">· 문의관리</a><?}?>
-					<?if(in_array("center_manage_02", $arrayMyMenuSub) && (in_array("center_manage_02",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-					<a class="<?=$leftMenuClass[3]?>" href="/backoffice/module/board/board_view.php?boardid=faq">· 자주 묻는 질문</a><?}?>
-				</dd>
-			</dl>
-			<?}?>
-			<?if($menuview[2]=="on"){?>
-			<dl class="on">
-				<dt>평가접수관리<i></i></dt>
-				<dd style="display:block;"><!-- 열려있는 페이지에는 dd에 display:block 해주세요. -->
-					<?if(in_array("event_manage_01", $arrayMyMenuSub) && (in_array("event_manage_01",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-					<a class="<?=$leftMenuClass[0]?>" href="/backoffice/module/category/category.php?cat_no=2">· 접수업종 관리</a><?}?>
-					<?if(in_array("event_manage_02", $arrayMyMenuSub) && (in_array("event_manage_02",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-					<a class="<?=$leftMenuClass[1]?>" href="/backoffice/module/board/board_view.php?boardid=evaluation">· 산업평가 목록</a><?}?>
-					<?if(in_array("event_manage_03", $arrayMyMenuSub) && (in_array("event_manage_03",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-					<a class="<?=$leftMenuClass[2]?>" href="/backoffice/module/board/board_view.php?boardid=accept">· 접수 및 심사내역</a><?}?>
-					<?if(in_array("event_manage_04", $arrayMyMenuSub) && (in_array("event_manage_04",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-					<a class="<?=$leftMenuClass[3]?>" href="/backoffice/module/board/board_view.php?boardid=accept&mode=order_list">· 등록 내역</a><?}?>
-					<?if(in_array("event_manage_05", $arrayMyMenuSub) && (in_array("event_manage_05",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-					<a class="<?=$leftMenuClass[4]?>" href="/backoffice/module/board/board_view.php?boardid=accept&mode=ship_list">· 발급품 및 배송내역</a><?}?>
-					<?if(in_array("event_manage_06", $arrayMyMenuSub) && (in_array("event_manage_06",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-					<a class="<?=$leftMenuClass[5]?>" href="/backoffice/module/board/board_view.php?boardid=accept&mode=company_list">· 상호정보 관리</a><?}?>
-				</dd>
-			</dl>			
-			<?}?>
-			<?if($menuview[3]=="on"){?>
-			<dl class="on">
-				<dt>교육 관리 <i></i></dt>
-				<dd style="display:block;"><!-- 열려있는 페이지에는 dd에 display:block 해주세요. -->
-                    <?if(in_array("edu_manage_01", $arrayMyMenuSub) && (in_array("edu_manage_01",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                    <a class="<?=$leftMenuClass[1]?>" href="/backoffice/module/board/board_view.php?boardid=edu_applicants">· 신청내역</a><?}?>
-                    <?if(in_array("edu_manage_02", $arrayMyMenuSub) && (in_array("edu_manage_02",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                    <a class="<?=$leftMenuClass[2]?>" href="/backoffice/module/board/board_view.php?boardid=edu">· 교육목록</a><?}?>
-                    <?if(in_array("edu_manage_03", $arrayMyMenuSub) && (in_array("edu_manage_03",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                    <a class="<?=$leftMenuClass[3]?>" href="/backoffice/module/board/board_view.php?boardid=edu_certificates">· 수료증 관리</a><?}?>
-                    <?if(in_array("edu_manage_04", $arrayMyMenuSub) && (in_array("edu_manage_04",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                    <a class="<?=$leftMenuClass[4]?>" href="/backoffice/module/board/board_view.php?boardid=edu_instructorapply">· 강사지원 관리</a><?}?>
-				</dd>
-			</dl>			
-			<?}?>
-            <?if($menuview[4]=="on"){?>
-            <dl class="on">
-                <dt>장비 관리 <i></i></dt>
-                <dd style="display:block;"><!-- 열려있는 페이지에는 dd에 display:block 해주세요. -->
-                    <?if(in_array("equ_manage_01", $arrayMyMenuSub) && (in_array("equ_manage_01",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                    <a class="<?=$leftMenuClass[1]?>" href="/backoffice/module/board/board_view.php?boardid=equ_applicants">· 신청내역</a><?}?>
-                    <?if(in_array("equ_manage_02", $arrayMyMenuSub) && (in_array("equ_manage_02",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                    <a class="<?=$leftMenuClass[2]?>" href="/backoffice/module/board/board_view.php?boardid=equ">· 장비목록</a><?}?>
-                </dd>
-            </dl>
-            <?}?>
-            <?if($menuview[5]=="on"){?>
-                <dl class="on">
-                    <dt>공간 관리 <i></i></dt>
-                    <dd style="display:block;"><!-- 열려있는 페이지에는 dd에 display:block 해주세요. -->
-                        <?if(in_array("place_manage_01", $arrayMyMenuSub) && (in_array("place_manage_01",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                        <a class="<?=$leftMenuClass[1]?>" href="/backoffice/module/board/board_view.php?boardid=place_applicants">· 신청내역</a><?}?>
-                        <?if(in_array("place_manage_02", $arrayMyMenuSub) && (in_array("place_manage_02",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                        <a class="<?=$leftMenuClass[2]?>" href="/backoffice/module/board/board_view.php?boardid=place">· 공간목록</a><?}?>
-                    </dd>
-                </dl>
-            <?}?>
-
-			<?if($menuview[6]=="on"){?>
-			<dl class="on">
-				<dt>문화연예시상식<i></i></dt>
-				<dd style="display:block;"><!-- 열려있는 페이지에는 dd에 display:block 해주세요. -->
-					<?if(in_array("area_manage_01", $arrayMyMenuSub) && (in_array("area_manage_01",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-					<a class="<?=$leftMenuClass[0]?>" href="/backoffice/module/board/board_view.php?boardid=KCAWDwinner">· 수상자</a><?}?>
-					<?if(in_array("area_manage_02", $arrayMyMenuSub) && (in_array("area_manage_02",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-					<a class="<?=$leftMenuClass[1]?>" href="/backoffice/module/board/board_view.php?boardid=KCAWDliterary">· 수상작</a><?}?>
-					<?if(in_array("area_manage_03", $arrayMyMenuSub) && (in_array("area_manage_03",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-					<a class="<?=$leftMenuClass[2]?>" href="/backoffice/module/board/board_view.php?boardid=KCAWDceremony">· 시상식 영상</a><?}?>
-					<?if(in_array("area_manage_04", $arrayMyMenuSub) && (in_array("area_manage_04",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-					<a class="<?=$leftMenuClass[3]?>" href="/backoffice/module/board/board_view.php?boardid=KCAWDinterview">· 인터뷰 영상</a><?}?>
-					<?if(in_array("area_manage_05", $arrayMyMenuSub) && (in_array("area_manage_05",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-					<a class="<?=$leftMenuClass[4]?>" href="/backoffice/module/board/board_view.php?boardid=KCAWDmainwinner">· 역대 주요 수상자</a><?}?>
-					<?if(in_array("area_manage_06", $arrayMyMenuSub) && (in_array("area_manage_06",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-					<a class="<?=$leftMenuClass[5]?>" href="/backoffice/module/board/board_view.php?boardid=KCAWDmainliterary">· 역대 주요 수상작</a><?}?>
-					<?if(in_array("area_manage_07", $arrayMyMenuSub) && (in_array("area_manage_07",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-					<a class="<?=$leftMenuClass[6]?>" href="/backoffice/module/board/board_view.php?boardid=KCAWDpress">· 보도자료</a><?}?>
-				</dd>
-			</dl>			
-			<?}?>
-			<?if($menuview[8]=="on"){?>
-			<dl class="on">
-				<dt>홈페이지 관리 <i></i></dt>
-				<dd style="display:block;"><!-- 열려있는 페이지에는 dd에 display:block 해주세요. -->
-					<a class="<?=$leftMenuClass[0]?>" href="/backoffice/module/banner/banner.php">· 배너 관리</a>
-					<a class="<?=$leftMenuClass[3]?>" href="/backoffice/module/board/board_view.php?boardid=mainbanner">· 메인 배너 관리</a>
-					<a class="<?=$leftMenuClass[1]?>" href="/backoffice/module/popup/popup_list.php">· 팝업 관리</a>
-					<a class="<?=$leftMenuClass[4]?>" href="/backoffice/module/board/board_view.php?boardid=clogo">· 후원사 로고 관리</a>
-					<a class="<?=$leftMenuClass[5]?>" href="/backoffice/module/board/board_view.php?boardid=support">· 광고/후원 관리</a>
-				</dd>
-			</dl>			
-			<?}?>
-		</div>
-		<?include $_SERVER['DOCUMENT_ROOT'] . "/backoffice/admin_info.php";?>
-	</div>
+<?
+switch ($_REQUEST['boardid']){
+    case 'edu_instructors' :
+        $leftMenuClass[6] = "on"; $menuview[0] = "on"; break;
+	case 'edu_applicants' :
+		$leftMenuClass[1] = "on"; $menuview[3] = "on"; break;
+	case 'edu' :
+		$leftMenuClass[2] = "on"; $menuview[3] = "on"; break;
+	case 'edu_certificates' :
+		$leftMenuClass[3] = "on"; $menuview[3] = "on"; break;
+    case 'edu_instructorapply' :
+        $leftMenuClass[4] = "on"; $menuview[3] = "on"; break;
+    case 'equ_applicants' :
+        $leftMenuClass[1] = "on"; $menuview[4] = "on"; break;
+    case 'equ' :
+        $leftMenuClass[2] = "on"; $menuview[4] = "on"; break;
+    case 'place_applicants' :
+        $leftMenuClass[1] = "on"; $menuview[5] = "on"; break;
+    case 'place' :
+        $leftMenuClass[2] = "on"; $menuview[5] = "on"; break;
+	case 'mailsms' :
+		$leftMenuClass[8] = "on"; $menuview[0] = "on"; break;
+	case 'terms' :
+		if($_GET["category"] == "1"){
+			$leftMenuClass[9] = "on"; $menuview[0] = "on"; 
+		}else if($_GET["category"] == "2"){
+			$leftMenuClass[10] = "on"; $menuview[0] = "on"; 
+		}else if($_GET["category"] == "3"){
+			$leftMenuClass[11] = "on"; $menuview[0] = "on"; 
+		}else if($_GET["category"] == "4"){
+			$leftMenuClass[12] = "on"; $menuview[0] = "on"; 
+		}else if($_GET["category"] == "5"){
+			$leftMenuClass[13] = "on"; $menuview[0] = "on"; 
+		}
+
+	break; 
+	case 'often':
+		$leftMenuClass[14] = "on"; $menuview[0] = "on"; break;
+
+	case 'evaluation' :case 'sub_evaluation' :
+		$leftMenuClass[1] = "on"; $menuview[2] = "on"; break;
+	case 'accept' :
+		$leftMenuClass[2] = "on"; $menuview[2] = "on"; break;
+}
+
+switch ($_REQUEST['mode']){
+	case 'order_list' : case 'order_modify' :
+		$leftMenuClass[3] = "on"; $leftMenuClass[2] = ""; break;
+	case 'ship_list' : case 'ship_modify' :
+		$leftMenuClass[4] = "on"; $leftMenuClass[2] = ""; break;
+	case 'company_list' : case 'company_modify' :
+		$leftMenuClass[5] = "on"; $leftMenuClass[2] = ""; break;
+}
+if($_REQUEST['boardid']=="KCAcompany"){
+	if($_GET['etc_2']=="N"){
+		$leftMenuClass[12] = "";
+		$leftMenuClass[14] = "on";
+	}
+}
+if($_REQUEST['boardid']=="KCAawards"){
+	if($_GET['etc_2']=="N"){
+		$leftMenuClass[13] = "";
+		$leftMenuClass[15] = "on";
+	}
+}
+?>
+<div class="aside">
+	<a href="javascript:void(0);" class="btn_aside"></a>
+	<div class="in_scroll">
+		<div class="menu">			
+			<?if($menuview[0]=="on"){?>
+			<dl class="on">
+				<dt>기본 설정 <i></i></dt>
+                <dd style="display:block;"><!-- 열려있는 페이지에는 dd에 display:block 해주세요. -->
+                    <?/*if(in_array("admin_manage_01", $arrayMyMenuSub) && (in_array("admin_manage_01",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){*/?><!--
+					<a class="<?php /*=$leftMenuClass[0]*/?>" href="/backoffice/module/admin/admin_set.php">· 기본설정</a>--><?/*}*/?>
+                    <?/*if(in_array("admin_manage_07", $arrayMyMenuSub) && (in_array("admin_manage_07",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){*/?><!--
+					<a class="<?php /*=$leftMenuClass[6]*/?>" href="/backoffice/module/banner/banner.php">· 배너 관리</a><?/*}*/?>
+					<?/*if(in_array("admin_manage_08", $arrayMyMenuSub) && (in_array("admin_manage_08",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){*/?>
+					<a class="<?php /*=$leftMenuClass[7]*/?>" href="/backoffice/module/popup/popup_list.php">· 팝업 관리</a><?/*}*/?>
+					<?/*if(in_array("admin_manage_09", $arrayMyMenuSub) && (in_array("admin_manage_09",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){*/?>
+					<a class="<?php /*=$leftMenuClass[8]*/?>" href="/backoffice/module/board/board_view.php?boardid=mailsms">· 메일&문자 관리</a>--><?/*}*/?>
+                    <?if(in_array("admin_manage_01", $arrayMyMenuSub) && (in_array("admin_manage_01",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                    <a class="<?=$leftMenuClass[1]?>" href="/backoffice/module/admin/admin_schedule.php">· 센터 전체일정</a><?}?>
+                    <?if(in_array("admin_manage_02", $arrayMyMenuSub) && (in_array("admin_manage_02",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                    <a class="<?=$leftMenuClass[2]?>" href="/backoffice/module/admin/admin.php">· 관리자 관리</a><?}?>
+                    <?if(in_array("admin_manage_03", $arrayMyMenuSub) && (in_array("admin_manage_03",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                    <a class="<?=$leftMenuClass[3]?>" href="/backoffice/module/category/category.php?cat_no=3">· 메뉴 관리</a><?}?>
+                    <?if(in_array("admin_manage_04", $arrayMyMenuSub) && (in_array("admin_manage_04",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                    <a class="<?=$leftMenuClass[4]?>" href="/backoffice/module/category/category.php?cat_no=4">· 카테고리 관리</a><?}?>
+                    <?if(in_array("admin_manage_05", $arrayMyMenuSub) && (in_array("admin_manage_05",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                    <a class="<?=$leftMenuClass[5]?>" href="/backoffice/module/admin/admin_discount.php">· 할인 관리</a><?}?>
+                    <?if(in_array("admin_manage_06", $arrayMyMenuSub) && (in_array("admin_manage_06",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                    <a class="<?=$leftMenuClass[6]?>" href="/backoffice/module/board/board_view.php?boardid=edu_instructors">· 강사 관리</a><?}?>
+                    <?if(in_array("admin_manage_07", $arrayMyMenuSub) && (in_array("admin_manage_07",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                    <a class="<?=$leftMenuClass[7]?>" href="/backoffice/module/admin/admin_set.php">· 환경 설정</a><?}?>
+                </dd>
+			</dl>			
+			<?}?>
+			<?if($menuview[1]=="on"){?>
+			<dl class="on">
+				<dt>고객센터<i></i></dt>
+				<dd style="display:block;"><!-- 열려있는 페이지에는 dd에 display:block 해주세요. -->
+					<?if(in_array("center_manage_01", $arrayMyMenuSub) && (in_array("center_manage_01",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+					<a class="<?=$leftMenuClass[0]?>" href="/backoffice/module/board/board_view.php?boardid=qna1">· 문의관리</a><?}?>
+					<?if(in_array("center_manage_02", $arrayMyMenuSub) && (in_array("center_manage_02",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+					<a class="<?=$leftMenuClass[3]?>" href="/backoffice/module/board/board_view.php?boardid=faq">· 자주 묻는 질문</a><?}?>
+				</dd>
+			</dl>
+			<?}?>
+			<?if($menuview[2]=="on"){?>
+			<dl class="on">
+				<dt>평가접수관리<i></i></dt>
+				<dd style="display:block;"><!-- 열려있는 페이지에는 dd에 display:block 해주세요. -->
+					<?if(in_array("event_manage_01", $arrayMyMenuSub) && (in_array("event_manage_01",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+					<a class="<?=$leftMenuClass[0]?>" href="/backoffice/module/category/category.php?cat_no=2">· 접수업종 관리</a><?}?>
+					<?if(in_array("event_manage_02", $arrayMyMenuSub) && (in_array("event_manage_02",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+					<a class="<?=$leftMenuClass[1]?>" href="/backoffice/module/board/board_view.php?boardid=evaluation">· 산업평가 목록</a><?}?>
+					<?if(in_array("event_manage_03", $arrayMyMenuSub) && (in_array("event_manage_03",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+					<a class="<?=$leftMenuClass[2]?>" href="/backoffice/module/board/board_view.php?boardid=accept">· 접수 및 심사내역</a><?}?>
+					<?if(in_array("event_manage_04", $arrayMyMenuSub) && (in_array("event_manage_04",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+					<a class="<?=$leftMenuClass[3]?>" href="/backoffice/module/board/board_view.php?boardid=accept&mode=order_list">· 등록 내역</a><?}?>
+					<?if(in_array("event_manage_05", $arrayMyMenuSub) && (in_array("event_manage_05",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+					<a class="<?=$leftMenuClass[4]?>" href="/backoffice/module/board/board_view.php?boardid=accept&mode=ship_list">· 발급품 및 배송내역</a><?}?>
+					<?if(in_array("event_manage_06", $arrayMyMenuSub) && (in_array("event_manage_06",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+					<a class="<?=$leftMenuClass[5]?>" href="/backoffice/module/board/board_view.php?boardid=accept&mode=company_list">· 상호정보 관리</a><?}?>
+				</dd>
+			</dl>			
+			<?}?>
+			<?if($menuview[3]=="on"){?>
+			<dl class="on">
+				<dt>교육 관리 <i></i></dt>
+				<dd style="display:block;"><!-- 열려있는 페이지에는 dd에 display:block 해주세요. -->
+                    <?if(in_array("edu_manage_01", $arrayMyMenuSub) && (in_array("edu_manage_01",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                    <a class="<?=$leftMenuClass[1]?>" href="/backoffice/module/board/board_view.php?boardid=edu_applicants">· 신청내역</a><?}?>
+                    <?if(in_array("edu_manage_02", $arrayMyMenuSub) && (in_array("edu_manage_02",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                    <a class="<?=$leftMenuClass[2]?>" href="/backoffice/module/board/board_view.php?boardid=edu">· 교육목록</a><?}?>
+                    <?if(in_array("edu_manage_03", $arrayMyMenuSub) && (in_array("edu_manage_03",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                    <a class="<?=$leftMenuClass[3]?>" href="/backoffice/module/board/board_view.php?boardid=edu_certificates">· 수료증 관리</a><?}?>
+                    <?if(in_array("edu_manage_04", $arrayMyMenuSub) && (in_array("edu_manage_04",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                    <a class="<?=$leftMenuClass[4]?>" href="/backoffice/module/board/board_view.php?boardid=edu_instructorapply">· 강사지원 관리</a><?}?>
+				</dd>
+			</dl>			
+			<?}?>
+            <?if($menuview[4]=="on"){?>
+            <dl class="on">
+                <dt>장비 관리 <i></i></dt>
+                <dd style="display:block;"><!-- 열려있는 페이지에는 dd에 display:block 해주세요. -->
+                    <?if(in_array("equ_manage_01", $arrayMyMenuSub) && (in_array("equ_manage_01",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                    <a class="<?=$leftMenuClass[1]?>" href="/backoffice/module/board/board_view.php?boardid=equ_applicants">· 신청내역</a><?}?>
+                    <?if(in_array("equ_manage_02", $arrayMyMenuSub) && (in_array("equ_manage_02",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                    <a class="<?=$leftMenuClass[2]?>" href="/backoffice/module/board/board_view.php?boardid=equ">· 장비목록</a><?}?>
+                </dd>
+            </dl>
+            <?}?>
+            <?if($menuview[5]=="on"){?>
+                <dl class="on">
+                    <dt>공간 관리 <i></i></dt>
+                    <dd style="display:block;"><!-- 열려있는 페이지에는 dd에 display:block 해주세요. -->
+                        <?if(in_array("place_manage_01", $arrayMyMenuSub) && (in_array("place_manage_01",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                        <a class="<?=$leftMenuClass[1]?>" href="/backoffice/module/board/board_view.php?boardid=place_applicants">· 신청내역</a><?}?>
+                        <?if(in_array("place_manage_02", $arrayMyMenuSub) && (in_array("place_manage_02",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                        <a class="<?=$leftMenuClass[2]?>" href="/backoffice/module/board/board_view.php?boardid=place">· 공간목록</a><?}?>
+                    </dd>
+                </dl>
+            <?}?>
+
+			<?if($menuview[6]=="on"){?>
+			<dl class="on">
+				<dt>문화연예시상식<i></i></dt>
+				<dd style="display:block;"><!-- 열려있는 페이지에는 dd에 display:block 해주세요. -->
+					<?if(in_array("area_manage_01", $arrayMyMenuSub) && (in_array("area_manage_01",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+					<a class="<?=$leftMenuClass[0]?>" href="/backoffice/module/board/board_view.php?boardid=KCAWDwinner">· 수상자</a><?}?>
+					<?if(in_array("area_manage_02", $arrayMyMenuSub) && (in_array("area_manage_02",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+					<a class="<?=$leftMenuClass[1]?>" href="/backoffice/module/board/board_view.php?boardid=KCAWDliterary">· 수상작</a><?}?>
+					<?if(in_array("area_manage_03", $arrayMyMenuSub) && (in_array("area_manage_03",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+					<a class="<?=$leftMenuClass[2]?>" href="/backoffice/module/board/board_view.php?boardid=KCAWDceremony">· 시상식 영상</a><?}?>
+					<?if(in_array("area_manage_04", $arrayMyMenuSub) && (in_array("area_manage_04",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+					<a class="<?=$leftMenuClass[3]?>" href="/backoffice/module/board/board_view.php?boardid=KCAWDinterview">· 인터뷰 영상</a><?}?>
+					<?if(in_array("area_manage_05", $arrayMyMenuSub) && (in_array("area_manage_05",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+					<a class="<?=$leftMenuClass[4]?>" href="/backoffice/module/board/board_view.php?boardid=KCAWDmainwinner">· 역대 주요 수상자</a><?}?>
+					<?if(in_array("area_manage_06", $arrayMyMenuSub) && (in_array("area_manage_06",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+					<a class="<?=$leftMenuClass[5]?>" href="/backoffice/module/board/board_view.php?boardid=KCAWDmainliterary">· 역대 주요 수상작</a><?}?>
+					<?if(in_array("area_manage_07", $arrayMyMenuSub) && (in_array("area_manage_07",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+					<a class="<?=$leftMenuClass[6]?>" href="/backoffice/module/board/board_view.php?boardid=KCAWDpress">· 보도자료</a><?}?>
+				</dd>
+			</dl>			
+			<?}?>
+			<?if($menuview[8]=="on"){?>
+			<dl class="on">
+				<dt>홈페이지 관리 <i></i></dt>
+				<dd style="display:block;"><!-- 열려있는 페이지에는 dd에 display:block 해주세요. -->
+					<a class="<?=$leftMenuClass[0]?>" href="/backoffice/module/banner/banner.php">· 배너 관리</a>
+					<a class="<?=$leftMenuClass[3]?>" href="/backoffice/module/board/board_view.php?boardid=mainbanner">· 메인 배너 관리</a>
+					<a class="<?=$leftMenuClass[1]?>" href="/backoffice/module/popup/popup_list.php">· 팝업 관리</a>
+					<a class="<?=$leftMenuClass[4]?>" href="/backoffice/module/board/board_view.php?boardid=clogo">· 후원사 로고 관리</a>
+					<a class="<?=$leftMenuClass[5]?>" href="/backoffice/module/board/board_view.php?boardid=support">· 광고/후원 관리</a>
+				</dd>
+			</dl>			
+			<?}?>
+		</div>
+		<?include $_SERVER['DOCUMENT_ROOT'] . "/backoffice/admin_info.php";?>
+	</div>
 </div>

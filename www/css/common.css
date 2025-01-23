@@ -105,7 +105,7 @@ select::-ms-expand {display:none;}
 .mainSec .mainSlide img {width:100%;}
 .mainSec .mainSlide .controler {position:absolute; left:80px; bottom:56px; text-align:center; display:flex; align-items:center; justify-content:center; font-size:14px; color:#fff; font-weight:700; z-index:10; width:134px; height:40px; border-radius:22px; background:rgba(0,0,0,.2);}
 .mainSec .mainSlide .controler .count {display:flex; gap:6px; margin-right:16px;}
-.mainSec .mainSlide .controler .count span {display:flex; width:18px;}
+.mainSec .mainSlide .controler .count span {display:flex;}
 .mainSec .mainSlide .controler .count span.bar {width:6px;}
 .mainSec .mainSlide .controler .swiperNav {display:flex; gap:12px; align-items:center;}
 .mainSec .mainSlide .controler .swiperNav .nav {width:9px; height:14px; cursor:pointer; }
@@ -147,7 +147,7 @@ select::-ms-expand {display:none;}
 
 .mainEq {width:100%; max-width:1075px;}
 .mainEq .tabCont ul {overflow:hidden;}
-.mainEq .tabCont ul li {margin-right:24px; display:none;}
+.mainEq .tabCont ul li {margin-right:24px;}
 .mainEq .tabCont ul li:last-child {margin-right:0;}
 .mainEq .tabCont ul li a {position:relative; display:block;  width:342px; }
 .mainEq .tabCont ul li a .img {display:flex; height:220px; align-items:center; justify-content:center; padding:25px 20px; background:#fff; border:1px solid #EBEBEB; border-radius:20px;  overflow:hidden;  border-radius:20px; position:relative;}
@@ -155,6 +155,7 @@ select::-ms-expand {display:none;}
 .mainEq .tabCont ul li a .pop {transition:.3s all; opacity:0; position:absolute; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,.4); display:flex; align-items:center; justify-content:center; font-size:20px; color:#fff; font-weight:700; }
 .mainEq .tabCont ul li a .pop .popTit {padding-top:31px; background:url('/images/ico_popCal.svg') center top no-repeat;}
 .mainEq .tabCont ul li a:hover .pop {opacity:1;}
+.mainEq .tabCont .place {display: none;}
 
 .mainEq .tabCont ul li a .box {margin-top:24px; display:flex; align-items:center; justify-content:space-between;}
 .mainEq .tabCont ul li a .box .tit {font-size:24px; font-weight:600; }
@@ -470,7 +471,7 @@ select::-ms-expand {display:none;}
 .detailInfo .left {width:708px;}
 .detailInfo .left .btnBack {margin-bottom:24px;}
 .detailInfo .left .img img{width:100%;}
-.detailInfo .textCont {width:586px}
+.detailInfo .textCont {width:586px; max-width:100%;}
 .detailInfo .textCont .pointBox {margin-bottom:8px;}
 .detailInfo .textCont .title {font-size:32px; line-height:51px; font-weight:600; margin-bottom:8px; display:flex; align-items:center;}
 .detailInfo .textCont .title .num { margin-right:8px;width:30px; height:30px; display:inline-flex; border-radius:100px; justify-content:center; align-items:center; background:#EDB819; font-size:13px; font-weight:900; color:#fff; }
@@ -1327,7 +1328,7 @@ label.check input:checked + i:before {width:10px; height:10px;}
 	/* main */
 	.mainSec .mainSlide .controler {position:absolute; left:20px; bottom:43%;  font-size:12px; line-height:12px; color:#fff; font-weight:700; z-index:10; width:111px; height:32px; border-radius:22px;}
 	.mainSec .mainSlide .controler .count {display:flex; gap:6px; margin-right:12px;}
-	.mainSec .mainSlide .controler .count span {display:flex; width:16px;}
+	.mainSec .mainSlide .controler .count span {display:flex;}
 	.mainSec .mainSlide .controler .count span.bar {width:1px; position:relative; left:-3px;}
 	.mainSec .mainSlide .controler .swiperNav {display:flex; gap:10px; align-items:center;}
 	.mainSec .mainSlide .controler .swiperNav .nav {width:9px; height:14px; cursor:pointer; }
@@ -1711,7 +1712,7 @@ label.check input:checked + i:before {width:10px; height:10px;}
 	.detailInfo .textCont .title {font-size:24px; line-height:38px; font-weight:600; margin-bottom:5px;}
 	.detailInfo .textCont .title .num {width:25px; height:25px; font-size:14px; }
 	.detailInfo .textCont .item_num {margin-bottom:20px;}
-	.detailInfo .textCont .subTit {font-size:14px; margin-top:-20px; margin-bottom:20px;}
+	.detailInfo .textCont .subTit {font-size:14px; margin-bottom:20px;}
 	.detailInfo .textCont .price .name {color:#888888; font-size:14px; font-weight:500; line-height:16px; margin-bottom:2px;}
 	.detailInfo .textCont .price .money {color:#222; font-size:18px; font-weight:600; line-height:28px; margin-bottom:0;}
 	.detailInfo .textCont .info {margin-top:10px; padding-top:26px; border-top:1px solid #EBEBEB;}

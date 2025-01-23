@@ -219,7 +219,7 @@ $_SESSION["SEAR_TYPE"] = "member_info";
 									<div class="tit">비밀번호<span>*</span></div>
 									<div class="right">
 										<div class="baseInput">
-											<input type="password" name="user_pw" id="user_pw"  placeholder="비밀번호 변경 시 입려해주세요.">
+											<input type="password" name="user_pw" id="user_pw"  placeholder="비밀번호 변경 시 입력해주세요.">
 										</div>
 									</div>
 								</div>

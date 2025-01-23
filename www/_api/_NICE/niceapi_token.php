@@ -1,90 +1,90 @@
-<?php
-###### 순서 
-## 1) https://www.niceapi.co.kr/ 로그인 app 생성후 인증키조회 client_id & client_secret 를 niceapi_token.php에 입력후 토큰값을 구한다
-## 2) niceapi_token_access.php 에 토큰값입력후 테스트
-## 3) niceapi_token_inc.php 변경값 적용후 사용자페이지에 적용 END
-// 전송해야 할 설정값
-$client_id = "deaa21e4-f404-4c54-9888-c4fae33291be";
-$client_secret = "754f263d6c9a62b6da32ef411c11d6517d65325";
-
-$api_server = "https://svc.niceapi.co.kr:22001";
-$api_url = "/digital/niceid/oauth/oauth/token";	
-
-$authorization = "Authorization: Basic ".base64_encode($client_id.":".$client_secret); 
-// http 호출 헤더값 설정
-$http_header = array();
-$http_header[0] = "Content-Type: application/x-www-form-urlencoded";
-$http_header[1] = $authorization;
-
-// 전송할 값들을 배열 형태로 저장한다
-$postvars = [
-"grant_type"=> "client_credentials",
-"scope"=> "default"
-];
-// 배열 형태로 저장한 값들을 json 형태로 변환해서 전송
-$json_portvars = json_encode($postvars);
-
-$data = json_encode(array(
-"grant_type"  => "client_credentials",
-"scope" => "default"
-));
-
-$post_data = "grant_type=client_credentials&scope=default";
-
-// api 호출
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $api_server.$api_url);
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);	
-curl_setopt($ch, CURLOPT_POST, TRUE); //POST 방식으로 호출
-curl_setopt($ch, CURLOPT_HTTPHEADER, $http_header);
-curl_setopt($ch, CURLOPT_HEADER, TRUE); //response에 header 값도 수신
-curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-
-$response = curl_exec($ch);
-
-if (curl_errno($ch)) {
-    $error_msg = curl_error($ch);
-}
-
-curl_close($ch);
-
-$jsonRs = substr($response,(strpos($response,"DENY")+5),strlen($response));
-$arrRs = json_decode(trim($jsonRs), true);
-
-//echo $jsonRs;
-echo $arrRs['dataBody']['access_token'];
-
-if(!isset($_SERVER["HTTPS"])){ $httpVal = "http://"; }else{ $httpVal = "https://"; }
-$returnUrl = $httpVal.$_SERVER['SERVER_NAME']."/_api/_NICE/niceapi_token_return.php";
-//echo $response;
-//echo $error_msg;
-?><br/>
-[<?//=$returnUrl?>]
-<script language='javascript'>
-	window.name ="Parent_window";
-	
-	function fnPopup(){
-		window.open('', 'popupChk', 'width=500, height=550, top=100, left=100, fullscreen=no, menubar=no, status=no, toolbar=no, titlebar=yes, location=no, scrollbar=no');
-		document.form_chk.action = "https://nice.checkplus.co.kr/CheckPlusSafeModel/service.cb";
-		document.form_chk.target = "popupChk";
-		document.form_chk.submit();
-	}
-</script>
-
-<!-- 본인인증 서비스 팝업을 호출하기 위해서는 다음과 같은 form이 필요합니다. -->
-<form name="form_chk" method="post">
-	<input type="hidden" name="m" value="checkplusService">	
-	<input type="hidden" name="EncodeData" value="1fa35fc7-717e-4f2c-9a5e-9e55ab3ad3dc">
-</form>
-
-<a href="javascript:fnPopup();"> CheckPlus 안심본인인증 Click</a>
-
-
-action = "https://nice.checkplus.co.kr/CheckPlusSafeModel/service.cb";
-<form name="form" id="form">
-      <input type="hidden" id="m" name="m" value="service" />
-      <input type="hidden" id="token_version_id" name="token_version_id" value="1fa35fc7-717e-4f2c-9a5e-9e55ab3ad3dc" />
-      <input type="hidden" id="enc_data" name="enc_data" />
-      <input type="hidden" id="integrity_value" name="integrity_value" />
+<?php
+###### 순서 
+## 1) https://www.niceapi.co.kr/ 로그인 app 생성후 인증키조회 client_id & client_secret 를 niceapi_token.php에 입력후 토큰값을 구한다
+## 2) niceapi_token_access.php 에 토큰값입력후 테스트
+## 3) niceapi_token_inc.php 변경값 적용후 사용자페이지에 적용 END
+// 전송해야 할 설정값
+$client_id = "deaa21e4-f404-4c54-9888-c4fae33291be";
+$client_secret = "754f263d6c9a62b6da32ef411c11d6517d65325";
+
+$api_server = "https://svc.niceapi.co.kr:22001";
+$api_url = "/digital/niceid/oauth/oauth/token";	
+
+$authorization = "Authorization: Basic ".base64_encode($client_id.":".$client_secret); 
+// http 호출 헤더값 설정
+$http_header = array();
+$http_header[0] = "Content-Type: application/x-www-form-urlencoded";
+$http_header[1] = $authorization;
+
+// 전송할 값들을 배열 형태로 저장한다
+$postvars = [
+"grant_type"=> "client_credentials",
+"scope"=> "default"
+];
+// 배열 형태로 저장한 값들을 json 형태로 변환해서 전송
+$json_portvars = json_encode($postvars);
+
+$data = json_encode(array(
+"grant_type"  => "client_credentials",
+"scope" => "default"
+));
+
+$post_data = "grant_type=client_credentials&scope=default";
+
+// api 호출
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $api_server.$api_url);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);	
+curl_setopt($ch, CURLOPT_POST, TRUE); //POST 방식으로 호출
+curl_setopt($ch, CURLOPT_HTTPHEADER, $http_header);
+curl_setopt($ch, CURLOPT_HEADER, TRUE); //response에 header 값도 수신
+curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+
+$response = curl_exec($ch);
+
+if (curl_errno($ch)) {
+    $error_msg = curl_error($ch);
+}
+
+curl_close($ch);
+
+$jsonRs = substr($response,(strpos($response,"DENY")+5),strlen($response));
+$arrRs = json_decode(trim($jsonRs), true);
+
+//echo $jsonRs;
+echo $arrRs['dataBody']['access_token'];
+
+if(!isset($_SERVER["HTTPS"])){ $httpVal = "http://"; }else{ $httpVal = "https://"; }
+$returnUrl = $httpVal.$_SERVER['SERVER_NAME']."/_api/_NICE/niceapi_token_return.php";
+//echo $response;
+//echo $error_msg;
+?><br/>
+[<?//=$returnUrl?>]
+<script language='javascript'>
+	window.name ="Parent_window";
+	
+	function fnPopup(){
+		window.open('', 'popupChk', 'width=500, height=550, top=100, left=100, fullscreen=no, menubar=no, status=no, toolbar=no, titlebar=yes, location=no, scrollbar=no');
+		document.form_chk.action = "https://nice.checkplus.co.kr/CheckPlusSafeModel/service.cb";
+		document.form_chk.target = "popupChk";
+		document.form_chk.submit();
+	}
+</script>
+
+<!-- 본인인증 서비스 팝업을 호출하기 위해서는 다음과 같은 form이 필요합니다. -->
+<form name="form_chk" method="post">
+	<input type="hidden" name="m" value="checkplusService">	
+	<input type="hidden" name="EncodeData" value="1fa35fc7-717e-4f2c-9a5e-9e55ab3ad3dc">
+</form>
+
+<a href="javascript:fnPopup();"> CheckPlus 안심본인인증 Click</a>
+
+
+action = "https://nice.checkplus.co.kr/CheckPlusSafeModel/service.cb";
+<form name="form" id="form">
+      <input type="hidden" id="m" name="m" value="service" />
+      <input type="hidden" id="token_version_id" name="token_version_id" value="1fa35fc7-717e-4f2c-9a5e-9e55ab3ad3dc" />
+      <input type="hidden" id="enc_data" name="enc_data" />
+      <input type="hidden" id="integrity_value" name="integrity_value" />
 </form>

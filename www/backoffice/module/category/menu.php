@@ -1,60 +1,60 @@
-<?
-include_once $_SERVER['DOCUMENT_ROOT'] . "/module/category/category.lib.php";
-
-//DB연결
-$dblink = SetConn($_conf_db["main_db"]);
-
-//현재카테고리 패쓰
-if($_REQUEST["cat_no"]){
-	$arrLeftPath = getCategoryPath($_REQUEST["cat_no"]);
-}else{
-	$arrLeftPath['list'][0]['cat_no']="2";
-}
-
-//DB해제
-SetDisConn($dblink);
-
-switch($arrLeftPath['list'][0]['cat_no']){
-	case '3' :	$leftMenuClass[3] = "on"; break;
-	case '4' :	$leftMenuClass[4] = "on"; break;
-	case '5' :	$leftMenuClass[5] = "on"; break;
-	case '6' :	$leftMenuClass[6] = "on"; break;
-	case '7' :	$leftMenuClass[7] = "on"; break;
-}
-
-?>
-<div class="aside">
-	<a href="javascript:void(0);" class="btn_aside"></a>
-	<div class="in_scroll">
-		<div class="menu">
-            <dl class="on">
-                <dt>기본 설정 <i></i></dt>
-                <dd style="display:block;"><!-- 열려있는 페이지에는 dd에 display:block 해주세요. -->
-                    <?/*if(in_array("admin_manage_01", $arrayMyMenuSub) && (in_array("admin_manage_01",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){*/?><!--
-					<a class="<?php /*=$leftMenuClass[0]*/?>" href="/backoffice/module/admin/admin_set.php">· 기본설정</a>--><?/*}*/?>
-                    <?/*if(in_array("admin_manage_07", $arrayMyMenuSub) && (in_array("admin_manage_07",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){*/?><!--
-					<a class="<?php /*=$leftMenuClass[6]*/?>" href="/backoffice/module/banner/banner.php">· 배너 관리</a><?/*}*/?>
-					<?/*if(in_array("admin_manage_08", $arrayMyMenuSub) && (in_array("admin_manage_08",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){*/?>
-					<a class="<?php /*=$leftMenuClass[7]*/?>" href="/backoffice/module/popup/popup_list.php">· 팝업 관리</a><?/*}*/?>
-					<?/*if(in_array("admin_manage_09", $arrayMyMenuSub) && (in_array("admin_manage_09",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){*/?>
-					<a class="<?php /*=$leftMenuClass[8]*/?>" href="/backoffice/module/board/board_view.php?boardid=mailsms">· 메일&문자 관리</a>--><?/*}*/?>
-                    <?if(in_array("admin_manage_01", $arrayMyMenuSub) && (in_array("admin_manage_01",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                    <a class="<?=$leftMenuClass[1]?>" href="/backoffice/module/admin/admin_schedule.php">· 센터 전체일정</a><?}?>
-                    <?if(in_array("admin_manage_02", $arrayMyMenuSub) && (in_array("admin_manage_02",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                    <a class="<?=$leftMenuClass[2]?>" href="/backoffice/module/admin/admin.php">· 관리자 관리</a><?}?>
-                    <?if(in_array("admin_manage_03", $arrayMyMenuSub) && (in_array("admin_manage_03",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                    <a class="<?=$leftMenuClass[3]?>" href="/backoffice/module/category/category.php?cat_no=3">· 메뉴 관리</a><?}?>
-                    <?if(in_array("admin_manage_04", $arrayMyMenuSub) && (in_array("admin_manage_04",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                    <a class="<?=$leftMenuClass[4]?>" href="/backoffice/module/category/category.php?cat_no=4">· 카테고리 관리</a><?}?>
-                    <?if(in_array("admin_manage_05", $arrayMyMenuSub) && (in_array("admin_manage_05",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                    <a class="<?=$leftMenuClass[5]?>" href="/backoffice/module/admin/admin_discount.php">· 할인 관리</a><?}?>
-                    <?if(in_array("admin_manage_06", $arrayMyMenuSub) && (in_array("admin_manage_06",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                    <a class="<?=$leftMenuClass[6]?>" href="/backoffice/module/board/board_view.php?boardid=edu_instructors">· 강사 관리</a><?}?>
-                    <?if(in_array("admin_manage_07", $arrayMyMenuSub) && (in_array("admin_manage_07",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
-                    <a class="<?=$leftMenuClass[7]?>" href="/backoffice/module/admin/admin_set.php">· 환경 설정</a><?}?>
-                </dd>
-            </dl>
-        </div>
-		<?include $_SERVER['DOCUMENT_ROOT'] . "/backoffice/admin_info.php";?>
-	</div>
+<?
+include_once $_SERVER['DOCUMENT_ROOT'] . "/module/category/category.lib.php";
+
+//DB연결
+$dblink = SetConn($_conf_db["main_db"]);
+
+//현재카테고리 패쓰
+if($_REQUEST["cat_no"]){
+	$arrLeftPath = getCategoryPath($_REQUEST["cat_no"]);
+}else{
+	$arrLeftPath['list'][0]['cat_no']="2";
+}
+
+//DB해제
+SetDisConn($dblink);
+
+switch($arrLeftPath['list'][0]['cat_no']){
+	case '3' :	$leftMenuClass[3] = "on"; break;
+	case '4' :	$leftMenuClass[4] = "on"; break;
+	case '5' :	$leftMenuClass[5] = "on"; break;
+	case '6' :	$leftMenuClass[6] = "on"; break;
+	case '7' :	$leftMenuClass[7] = "on"; break;
+}
+
+?>
+<div class="aside">
+	<a href="javascript:void(0);" class="btn_aside"></a>
+	<div class="in_scroll">
+		<div class="menu">
+            <dl class="on">
+                <dt>기본 설정 <i></i></dt>
+                <dd style="display:block;"><!-- 열려있는 페이지에는 dd에 display:block 해주세요. -->
+                    <?/*if(in_array("admin_manage_01", $arrayMyMenuSub) && (in_array("admin_manage_01",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){*/?><!--
+					<a class="<?php /*=$leftMenuClass[0]*/?>" href="/backoffice/module/admin/admin_set.php">· 기본설정</a>--><?/*}*/?>
+                    <?/*if(in_array("admin_manage_07", $arrayMyMenuSub) && (in_array("admin_manage_07",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){*/?><!--
+					<a class="<?php /*=$leftMenuClass[6]*/?>" href="/backoffice/module/banner/banner.php">· 배너 관리</a><?/*}*/?>
+					<?/*if(in_array("admin_manage_08", $arrayMyMenuSub) && (in_array("admin_manage_08",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){*/?>
+					<a class="<?php /*=$leftMenuClass[7]*/?>" href="/backoffice/module/popup/popup_list.php">· 팝업 관리</a><?/*}*/?>
+					<?/*if(in_array("admin_manage_09", $arrayMyMenuSub) && (in_array("admin_manage_09",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){*/?>
+					<a class="<?php /*=$leftMenuClass[8]*/?>" href="/backoffice/module/board/board_view.php?boardid=mailsms">· 메일&문자 관리</a>--><?/*}*/?>
+                    <?if(in_array("admin_manage_01", $arrayMyMenuSub) && (in_array("admin_manage_01",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                    <a class="<?=$leftMenuClass[1]?>" href="/backoffice/module/admin/admin_schedule.php">· 센터 전체일정</a><?}?>
+                    <?if(in_array("admin_manage_02", $arrayMyMenuSub) && (in_array("admin_manage_02",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                    <a class="<?=$leftMenuClass[2]?>" href="/backoffice/module/admin/admin.php">· 관리자 관리</a><?}?>
+                    <?if(in_array("admin_manage_03", $arrayMyMenuSub) && (in_array("admin_manage_03",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                    <a class="<?=$leftMenuClass[3]?>" href="/backoffice/module/category/category.php?cat_no=3">· 메뉴 관리</a><?}?>
+                    <?if(in_array("admin_manage_04", $arrayMyMenuSub) && (in_array("admin_manage_04",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                    <a class="<?=$leftMenuClass[4]?>" href="/backoffice/module/category/category.php?cat_no=4">· 카테고리 관리</a><?}?>
+                    <?if(in_array("admin_manage_05", $arrayMyMenuSub) && (in_array("admin_manage_05",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                    <a class="<?=$leftMenuClass[5]?>" href="/backoffice/module/admin/admin_discount.php">· 할인 관리</a><?}?>
+                    <?if(in_array("admin_manage_06", $arrayMyMenuSub) && (in_array("admin_manage_06",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                    <a class="<?=$leftMenuClass[6]?>" href="/backoffice/module/board/board_view.php?boardid=edu_instructors">· 강사 관리</a><?}?>
+                    <?if(in_array("admin_manage_07", $arrayMyMenuSub) && (in_array("admin_manage_07",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTHSUB"]) || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]=="ROOT")){?>
+                    <a class="<?=$leftMenuClass[7]?>" href="/backoffice/module/admin/admin_set.php">· 환경 설정</a><?}?>
+                </dd>
+            </dl>
+        </div>
+		<?include $_SERVER['DOCUMENT_ROOT'] . "/backoffice/admin_info.php";?>
+	</div>
 </div>
