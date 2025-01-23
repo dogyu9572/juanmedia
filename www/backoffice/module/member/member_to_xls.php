@@ -29,11 +29,6 @@ $scale = 10000;
 // DB연결
 $dblink = SetConn ( $_conf_db ["main_db"] );
 
-if($_GET['stby']=="y"){
-	$subQuery = " AND user_level < 3 ";
-}else{
-	$subQuery = " AND user_level = 3 ";
-}
 if($_GET['join_type']){
 	$subQuery .= " AND join_type='".$_GET['join_type']."' ";
 }
@@ -48,11 +43,10 @@ if($_GET['sms_accept']){
 }
 
 
-$arrList = getMemberList( mysqli_real_escape_string ( $GLOBALS ['dblink'], $_REQUEST ['jb'] ),  mysqli_real_escape_string ( $GLOBALS ['dblink'], $_REQUEST ['sw'] ), mysqli_real_escape_string ( $GLOBALS ['dblink'], $_REQUEST ['sk'] ), $scale, $_REQUEST ['offset'] , $subQuery);
+$arrList = getMemberList( "",  mysqli_real_escape_string ( $GLOBALS ['dblink'], $_REQUEST ['sw'] ), mysqli_real_escape_string ( $GLOBALS ['dblink'], $_REQUEST ['sk'] ), $scale, $_REQUEST ['offset'] , $subQuery);
 // _DEBUG($arrList);
 
 $arrAllCategory = getCategoryAll();
-
 
 $filename = iconv("UTF-8","EUC-KR",$_SITE['NAME'])."_".iconv("UTF-8","EUC-KR","회원정보")."_".date(m).date(d).date(h).date(i).".xls";
 header( "Content-type: application/vnd.ms-excel; charset=euc-kr"); 
@@ -64,47 +58,35 @@ $EXCEL_TXT = "
 <table border='1'>
 <tr style='background-color:#ffff00;'>
    <td>No</td>  
-   <td>".iconv("UTF-8","EUC-KR","처리상태")."</td>
-   <td>".iconv("UTF-8","EUC-KR","회원등급")."</td>
-   <td>".iconv("UTF-8","EUC-KR","상호")."</td>
-   <td>".iconv("UTF-8","EUC-KR","사업자등록번호")."</td>
-   <td>".iconv("UTF-8","EUC-KR","거래처등록코드")."</td>
-   <td>".iconv("UTF-8","EUC-KR","대표자명")."</td>
-   <td>".iconv("UTF-8","EUC-KR","계산서 수신메일")."</td>
-   <td>".iconv("UTF-8","EUC-KR","매장번호")."</td>
-   <td>".iconv("UTF-8","EUC-KR","배송지")."</td>
-   <td>".iconv("UTF-8","EUC-KR","매장오픈시간")."</td>
-   <td>".iconv("UTF-8","EUC-KR","매장휴무일")."</td>
-   <td>".iconv("UTF-8","EUC-KR","아이디")."</td>
+   <td>".iconv("UTF-8","EUC-KR","회원상태")."</td>
+   <td>".iconv("UTF-8","EUC-KR","가입구분")."</td>
    <td>".iconv("UTF-8","EUC-KR","이름")."</td>
-   <td>".iconv("UTF-8","EUC-KR","담당자 연락처")."</td>
-   <td>".iconv("UTF-8","EUC-KR","주문희망일")."</td>
-   <td>".iconv("UTF-8","EUC-KR","가입일시")."</td>
+   <td>".iconv("UTF-8","EUC-KR","이메일(아이디)")."</td>
+   <td>".iconv("UTF-8","EUC-KR","연락처")."</td>
+   <td>".iconv("UTF-8","EUC-KR","메일 수신")."</td>
+   <td>".iconv("UTF-8","EUC-KR","SMS 수신")."</td>
+   <td>".iconv("UTF-8","EUC-KR","가입날짜")."</td>
+   <td>".iconv("UTF-8","EUC-KR","최종로그인")."</td>
+   <td>".iconv("UTF-8","EUC-KR","비고")."</td>
 </tr>
 ";
 
 for ( $i=0 ; $i < $arrList["total"] ; $i++ ) {
 
-	$EXCEL_TXT .= "
-	<tr>
-		<td>".($i+1)."</td>
-		<td>".iconv("UTF-8","EUC-KR",$_SITE["MEMBER_LEVEL"][$arrList['list'][$i]['user_level']])."</td>
-		<td>".iconv("UTF-8","EUC-KR",$arrAllCategory[$arrList["list"][$i]['a_class']])."</td>
-		<td>".iconv("UTF-8","EUC-KR",$arrList["list"][$i]['etc_1'])."</td>
-		<td style=mso-number-format:'\@'>".iconv("UTF-8","EUC-KR",$arrList["list"][$i]['etc_2'])."</td>
-		<td style=mso-number-format:'\@'>".iconv("UTF-8","EUC-KR",$arrList["list"][$i]['etc_10'])."</td>
-		<td>".iconv("UTF-8","EUC-KR",$arrList["list"][$i]['etc_3'])."</td>
-		<td>".iconv("UTF-8","EUC-KR",$arrList["list"][$i]['email'])."</td>
-		<td style=mso-number-format:'\@'>".iconv("UTF-8","EUC-KR",$arrList["list"][$i]['etc_5'])."</td>
-		<td>".iconv("UTF-8","EUC-KR","[".$arrList["list"][$i]['zip']."] ".$arrList["list"][$i]['address']." ".$arrList["list"][$i]['address_ext'])."</td>
-		<td style=mso-number-format:'\@'>".iconv("UTF-8","EUC-KR",$arrList["list"][$i]['etc_6'])."</td>
-		<td>".iconv("UTF-8","EUC-KR",yoilHan($arrList["list"][$i]['holiday']) )."</td>
-		<td>".iconv("UTF-8","EUC-KR",$arrList["list"][$i]['user_id'])."</td>
-		<td>".iconv("UTF-8","EUC-KR",$arrList["list"][$i]['user_name'])."</td>	
-		<td style=mso-number-format:'\@'>".iconv("UTF-8","EUC-KR",$arrList["list"][$i]['mobile'])."</td>
-		<td>".iconv("UTF-8","EUC-KR",yoilHan($arrList["list"][$i]['orderday']) )."</td>
-		<td>".iconv("UTF-8","EUC-KR",$arrList["list"][$i]['wdate'])."</td>
-	</tr>
+    $EXCEL_TXT .= "
+    <tr>
+        <td>" . ($i + 1) . "</td>
+        <td>" . iconv("UTF-8", "EUC-KR", $_SITE["MEMBER_LEVEL"][$arrList['list'][$i]['user_level']]) . "</td>
+        <td>" . iconv("UTF-8", "EUC-KR", $_SITE["MEMBER_TYPE"][$arrList['list'][$i]['join_type']]) . "</td>
+        <td>" . iconv("UTF-8", "EUC-KR", $arrList["list"][$i]['user_name']) . "</td>
+        <td>" . iconv("UTF-8", "EUC-KR", $arrList["list"][$i]['email']) . "</td>
+        <td>" . iconv("UTF-8", "EUC-KR", $arrList["list"][$i]['mobile']) . "</td>
+        <td>" . iconv("UTF-8", "EUC-KR", $arrList["list"][$i]['email_accept']) . "</td>
+        <td>" . iconv("UTF-8", "EUC-KR", $arrList["list"][$i]['sms_accept']) . "</td>
+        <td>" . iconv("UTF-8", "EUC-KR", $arrList["list"][$i]['wdate']) . "</td>
+        <td>" . iconv("UTF-8", "EUC-KR", $arrList["list"][$i]['login_last']) . "</td>
+        <td>" . iconv("UTF-8", "EUC-KR", $arrList["list"][$i]['user_memo']) . "</td>
+    </tr>
 	";		
 }
 $EXCEL_TXT .= "</table>";

@@ -45,7 +45,7 @@ $(function() {
     <div id="admin-content">
 	<div class="admin-title-top">
 		<h2 class="admin-title">회원 관리</h2>
-		<div class="admin-title-right">HOME &nbsp;&gt;&nbsp; 회원 관리 &nbsp;&gt;&nbsp; 회원 목록</div>
+		<div class="admin-title-right">HOME &nbsp;&gt;&nbsp; 회원 관리 &nbsp;&gt;&nbsp; 회원 리스트</div>
 	</div>
 
 <script language="javascript" src="/common/util.js"></script>

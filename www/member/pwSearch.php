@@ -1,62 +1,1 @@
-<?php include("../inc/header.php"); ?>
-<?php
-@session_start();
-include $_SERVER['DOCUMENT_ROOT'] . "/_api/_NICE/niceapi_token_inc.php";
-$_SESSION["SEAR_TYPE"] = "find_pw";
-?>
-<script>
-    function fnNicePopup(){
-        fnPopup();	// 리얼
-    }
-</script>
-		<!-- Container -->
-		<div class="container sub" id="container">
-
-			<!-- pageTitle -->
-			<div class="pageTitle inner only mb60">비밀번호 찾기</div>
-			<!-- //pageTitle -->
-
-			<!-- memberWrap -->
-			<div class="memberWrap">
-
-				<div class="tabToggle">
-					<div class="inner">
-						<ul>
-							<li><a href="idSearch.php" class="active">아이디 찾기</a></li>
-							<li class="active"><a href="pwSearch.php">비밀번호 찾기</a></li>
-						</ul>
-					</div>
-				</div>
-
-				<div class="shadowDiv">
-					<div class="memberBox">
-						<div class="title">
-							<div class="tit titBig">휴대폰 본인인증</div>
-							<div class="text">SNS 회원은 비밀번호 찾기가 <br class="mob" />제공되지 않습니다.<br  />각 SNS 서비스 내에서 확인해주세요. </div>
-						</div>
-						<div class="btnOne">
-                            <a href="javascript:void(0);" class="btnType1 black" onclick="fnNicePopup()">휴대폰 본인인증</a>
-						</div>
-					</div>
-				</div>
-	
-			</div>
-			<!-- //memberWrap -->
-
-		</div>
-		<!-- //Container -->
-
-
-<?php include("../inc/quick.php"); ?>
-
-<?php include("../inc/footer.php"); ?>
-
-	</div>
-	<!-- //Wrap -->
-
-
-</body>
-</html>
-
-
-
+<script type="text/javascript">    alert("준비중입니다.");    window.history.back();</script><?php include("../inc/header.php"); ?><?php@session_start();include $_SERVER['DOCUMENT_ROOT'] . "/_api/_NICE/niceapi_token_inc.php";$_SESSION["SEAR_TYPE"] = "find_pw";?><script>    function fnNicePopup(){        fnPopup();	// 리얼    }</script>		<!-- Container -->		<div class="container sub" id="container">			<!-- pageTitle -->			<div class="pageTitle inner only mb60">비밀번호 찾기</div>			<!-- //pageTitle -->			<!-- memberWrap -->			<div class="memberWrap">				<div class="tabToggle">					<div class="inner">						<ul>							<li><a href="idSearch.php" class="active">아이디 찾기</a></li>							<li class="active"><a href="pwSearch.php">비밀번호 찾기</a></li>						</ul>					</div>				</div>				<div class="shadowDiv">					<div class="memberBox">						<div class="title">							<div class="tit titBig">휴대폰 본인인증</div>							<div class="text">SNS 회원은 비밀번호 찾기가 <br class="mob" />제공되지 않습니다.<br  />각 SNS 서비스 내에서 확인해주세요. </div>						</div>						<div class="btnOne">                            <a href="javascript:void(0);" class="btnType1 black" onclick="fnNicePopup()">휴대폰 본인인증</a>						</div>					</div>				</div>				</div>			<!-- //memberWrap -->		</div>		<!-- //Container --><?php include("../inc/quick.php"); ?><?php include("../inc/footer.php"); ?>	</div>	<!-- //Wrap --></body></html>

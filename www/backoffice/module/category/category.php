@@ -1,648 +1,1 @@
-<?
-############################ 저장후 리턴페이지 설정 ############################ ST
-if($_GET['rlist']=="T"){
-	session_start();
-	header("location: ".$_SERVER['PHP_SELF']."?".$_SESSION['searchParam']);
-	exit();
-}
-############################ 저장후 리턴페이지 설정 ############################ ED
-include $_SERVER['DOCUMENT_ROOT'] . "/backoffice/pub/inc/admin_top.php";
-include "./menu.php";
-
-include_once $_SERVER['DOCUMENT_ROOT'] . "/module/category/category.lib.php";
-if(!in_array("admin_manage",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTH"]) && $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]!="ROOT"):
-	jsMsg("권한이 없습니다.");
-	jsHistory("-1");
-endif;
-############################ 저장후 리턴페이지 설정 ############################ ST
-if($_GET['rlist']!="T"){
-	if($_SERVER['QUERY_STRING']){
-		$_SESSION['searchParam'] = $_SERVER['QUERY_STRING'];
-	}
-}
-############################ 저장후 리턴페이지 설정 ############################ ED
-//DB연결
-$dblink = SetConn($_conf_db["main_db"]);
-
-//현재카테고리 정보
-$arrInfo = getCategoryInfo(mysqli_real_escape_string($GLOBALS['dblink'], $_REQUEST["cat_no"]));
-//현재카테고리 패쓰
-$arrPath = getCategoryPath(mysqli_real_escape_string($GLOBALS['dblink'], $_REQUEST["cat_no"]));
-//카테고리 목록
-$subQuery = "";
-if($_GET['sk']){
-	$subQuery = " AND cat_name like '%".$_GET['sk']."%' ";
-}
-
-$arrList = getCategoryList(mysqli_real_escape_string($GLOBALS['dblink'], $_REQUEST["cat_no"]), "", "", $subQuery );
-
-//_DEBUG($arrList);
-//DB해제
-SetDisConn($dblink);
-
-$arrCate = explode("/", $arrInfo["list"][0]['cat_code']);
-?>
-<style type="text/css">
-	.cat_image{max-width:120px;max-height:40px;}
-</style>
-<script type="text/javascript">
-<!--
-function fnCategoryDel(catNo, s_catNo){
-	if(confirm('삭제 하시겠습니까?')){
-		location.href= "category_evn.php?evnMode=deleteCategory&cat_no="+catNo+"&s_cat_no="+s_catNo;
-	}
-}
-function fnCategoryEdit(catNo){
-	var strKor = $("#cateKor_"+catNo).val();
-	var strEng = $("#cateEng_"+catNo).val();
-
-	//	alert(strKor+strEng)
-	$.post("/module/category/ajax_category_edit.php", { kornm : strKor, engnm : strEng, cat_no: catNo },
-		function(data){
-			if(data=="true"){
-				//location.reload();
-				$("#cateKor_"+catNo).css("background","#ececec");
-				$("#cateEng_"+catNo).css("background","#ececec");
-			}else{
-				//	alert(data)
-				alert("실패.");
-			}
-		}
-	);
-}
-// 브랜드 순위변경
-function fnBest(strBest, catNo){
-	$.post("/module/category/ajax_selectbox_best.php", { bestnum : strBest,cat_no: catNo },
-		function(data){
-			if(data=="true"){
-				location.reload();
-			}else{
-				alert("실패.");
-			}
-		}
-	);
-}
-/************
-$(function() {
-	$("#sortWrap").sortable({
-		axis: "y",
-		containment: "parent",
-		update: function (event, ui) {
-			var order = $(this).sortable('toArray', {
-				attribute: 'data-order'
-			});
-			console.log(order);
-			fnOrderSave(order);
-		}
-	});
-});
-*************/
-var arrIdx=[];
-function fnOrderSave(order){
-	arrIdx = order;
-	fnGoodOrderby();
-}
-// 상품 순서 변경
-function fnGoodOrderby(){
-	var idxs = "";
-	var comma = "";
-	for(var i=0;i<arrIdx.length;i++){
-		idxs += comma+arrIdx[i];
-		comma = "|";
-	}
-	//alert(idxs)
-	if(idxs){
-		$.post("/module/category/ajax_orderby_category.php", { gidx: idxs },
-			function(data){
-				if(data){
-				//	alert(data);
-					location.reload();
-				}
-			}
-		);
-	}else{
-		alert('변경된 순서가 없습니다.');
-	}
-}
-function fnShow(ths){
-	var catNo = $(ths).val();
-	var ckVal = "";
-	if($(ths).is(':checked')){
-		ckVal = "Y";
-	}else{
-		ckVal = "N";
-	}
-	$.post("/module/category/ajax_category_show.php", { cat_no: catNo, cat_is_show : ckVal },
-		function(data){
-			if(data){
-			//	alert(data);
-			}
-		}
-	);
-}
-//-->
-</script>
-<?######################################### iframe fancybox ######################################### ST?>
-<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"/>
-<style type="text/css">
-.fancybox__content { padding: 5px 0;border-radius: 4px; }
-.fancybox__slide {padding-bottom:20px;}
-</style>
-<script type="text/javascript">
-<!--
-function OpenApplyView(catNo, pageName)
-{
-	Fancybox.show([
-	{
-		src: "/backoffice/module/shop/"+pageName+".php?cat_no="+catNo,
-		type: "iframe",
-		preload: false,
-		width: 1100,
-		height: 700
-	},
-	]);
-}
-//-->
-</script>
-<?######################################### iframe fancybox ######################################### ED?>
-<style type="text/css">
-	.inputinit{background:#ececec;width:100%;}
-</style>
-<script type="text/javascript">
-<!--
-$( document ).ready(function() {
-	$(".inputinit").click(function () {
-		$(this).css("background","#ffffff");
-	});
-});
-function fnCategory(cno){
-	location.href = 'category.php?cat_no='+cno;
-}
-//-->
-</script>
-<div class="container">
-
-	<div class="title"><?=$arrPath['list'][0]['cat_name']?> 관리</div>
-
-	<div class="inbox">
-		<div class="bdr_top">
-			<div class="left">
-				<div class="total">
-				<a href="<?=$_SERVER['PHP_SELF']?>?cat_no=<?=$arrPath['list'][0]['cat_no']?>">ROOT</a>
-				<?
-				if($arrPath['total'] > 0){
-					for($i=0; $i < $arrPath['total']; $i++){
-				?>
-				 > <a href="<?=$_SERVER['PHP_SELF']?>?cat_no=<?=$arrPath['list'][$i]['cat_no']?>"><?=$arrPath['list'][$i]['cat_name']?></a>
-				<?
-					}
-				}
-				?>
-				<!-- Total : <strong><?=number_format($arrList['total'])?></strong>--></div>
-			</div>
-			<script type="text/javascript">
-			<!--
-			function fnCategoryWrite3(){
-				var frm = document.categoryFrm3;
-				if(frm.new_name.value.length < 1){
-					alert('신규 생성할 분류 명칭을 입력하세요.');
-					frm.new_name.focus();
-					return;
-				}
-				frm.submit();
-
-			}
-			//-->
-			</script>
-			<?php if($_REQUEST["cat_no"]!="3" && $arrPath['list'][0]['cat_no'] != "3"){ ?>
-			<div class="bdr_right">
-				<div class="btns flx">
-					<form action="category_evn.php" method="post" name="categoryFrm3">
-						<input type="hidden" name="evnMode" value="createCategory">
-						<input type="hidden" name="s_cat_no" value='<?=$arrInfo["list"][0]["cat_no"]?>'>
-						<input type="hidden" name="s_category" value='<?=$arrInfo["list"][0]["cat_code"]?>'>
-						<input type="hidden" name="s_depth" value='<?=($arrInfo["list"][0]["cat_no"]?$arrInfo["list"][0]["cat_depth"]+1:$arrInfo["list"][0]["cat_depth"])?>'>
-						<div>
-							<label for="id">신규 생성 :</label>
-							<input type="text" name="new_name" id="id" maxlength="30" style="width:160px;" class="input"/>
-						</div>
-					</form>
-					<a href="javascript:void(0);" class="btn" onclick="fnCategoryWrite3()">등록</a>
-				</div>
-			</div>
-			<?php } ?>
-		</div>
-		<?
-		if($arrPath['total']=="0"){
-		######################################## 0Depth ################################## ST
-		?>
-		<div class="over_tbl mo_break_tbl">
-			<div class="bdr_list tac">
-				<table>
-					<colgroup class="pc_vw">
-						<col class="w6p">
-						<col class="w8p">
-						<col class="w10p">
-						<col class="*">
-					</colgroup>
-					<thead>
-						<tr>
-							<th class="pc_vw">No.</th>
-							<th class="pc_vw">하위</th>
-							<th class="pc_vw">하위보기</th>
-							<th class="pc_vw">분류명</th>
-						</tr>
-					</thead>
-					<tbody>
-					<?
-					if($arrList['total'] > 0){
-						for ($i=0;$i<$arrList['total'];$i++){
-					?>
-						<tr>
-							<td><i class="mo_vw">No.</i><?=$arrList["list"][$i]['cat_no']?></td>
-							<td><i class="mo_vw">하위</i><?=number_format($arrList["list"][$i]['total_sub'])?></td>
-							<td><i class="mo_vw">하위보기</i><a href="<?=$_SERVER['PHP_SELF']?>?cat_no=<?=$arrList["list"][$i]['cat_no']?>"><img src="./images/btn_view.gif" border=0 alt="<?=$arrList["list"][$i]['cat_name']?>"></a></td>
-							<td><i class="mo_vw">명칭</i><?=stripslashes($arrList["list"][$i]['cat_name'])?>
-								<?if($arrList["list"][$i]['cat_no']=="11" || $arrList["list"][$i]['cat_no']=="17"){?>
-							<button type="button" class="btn perf" onclick="OpenApplyView('<?=$arrList["list"][$i]['cat_no']?>','pop_good_event');" style="width:100px;">상품확인</button>
-							<?}?>
-							</td>
-							<!--
-							<td style="width:10%">
-								<div class="btns">
-									<a href="category_info.php?cat_no=<?=$arrList["list"][$i]['cat_no']?>" class="btn modi">수정</a>
-									<button type="button" class="btn del" onclick="fnCategoryDel('<?=$arrList["list"][$i]['cat_no']?>','<?=$arrInfo["list"][0]["cat_no"]?>');">삭제</button>
-								</div>
-							</td>
-							-->
-						</tr>
-					<?
-						}
-					}else{
-					?>
-					<tr height="100">
-						<td width="100%" colspan="4" >생성된 데이터가 없습니다.</td>
-					</tr>
-					<?}?>
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<!--신규생성-->
-		<div class="bdr_btm">
-
-			<div class="btns">
-				<form action="category_evn.php" method="post" name="categoryFrm">
-					<input type="hidden" name="evnMode" value="createCategory">
-					<input type="hidden" name="s_cat_no" value='<?=$arrInfo["list"][0]["cat_no"]?>'>
-					<input type="hidden" name="s_category" value='<?=$arrInfo["list"][0]["cat_code"]?>'>
-					<input type="hidden" name="s_depth" value='<?=($arrInfo["list"][0]["cat_no"]?$arrInfo["list"][0]["cat_depth"]+1:$arrInfo["list"][0]["cat_depth"])?>'>
-					<div>
-						<label for="id">신규 생성 :</label>
-						<input type="text" name="new_name" id="id" maxlength="20" style="width:160px;" class="input"/>
-					</div>
-				</form>
-				<a href="javascript:void(0);" class="btn" onclick="document.categoryFrm.submit()">등록</a>
-			</div>
-		</div>
-		<?
-		######################################## 0Depth ################################## ED
-		}else if($arrPath['total']=="1"){
-		######################################## 1Depth ################################## ST
-        if($_REQUEST["cat_no"]=="3"){	// 검색
-		?>
-		<div class="over_tbl mo_break_tbl">
-			<div class="bdr_list tac">
-				<table>
-					<colgroup class="pc_vw">
-						<col class="w6p">
-						<col class="*">
-                        <col class="*">
-						<col class="w4p">
-						<col class="w6p">
-					</colgroup>
-					<thead>
-						<tr>
-							<th class="pc_vw">순서</th>
-							<th class="pc_vw"><?=$arrPath['list'][0]['cat_name']?> 명</th>
-                            <th class="pc_vw"><?=$arrPath['list'][0]['cat_name']?> URL</th>
-							<th class="pc_vw">사용</th>
-							<th class="pc_vw">관리</th>
-						</tr>
-					</thead>
-					<tbody id="sortWrap">
-					<?
-					//DB연결
-					$dblink = SetConn($_conf_db["main_db"]);
-
-					if($arrList['total'] > 0){
-						for ($i=0;$i<$arrList['total'];$i++){
-					?>
-						<tr data-order="<?=$arrList["list"][$i]['cat_no']?>">
-							<td><i class="mo_vw">UP / DOWN</i><a href="category_evn.php?evnMode=sort_up&cat_no=<?=$arrList["list"][$i]['cat_no']?>&s_cat_no=<?=$arrInfo["list"][0]["cat_no"]?>"><img src="/backoffice/images/k_up.gif" alt="UP" /></a> <a href="category_evn.php?evnMode=sort_down&cat_no=<?=$arrList["list"][$i]['cat_no']?>&s_cat_no=<?=$arrInfo["list"][0]["cat_no"]?>"><img src="/backoffice/images/k_down.gif" alt="DOWN" /></a></td>
-<!--							<td><i class="mo_vw">하위</i>--><?php //=number_format($arrList["list"][$i]['total_sub'])?><!--</td>-->
-<!--							<td><i class="mo_vw">하위보기</i><a href="--><?php //=$_SERVER['PHP_SELF']?><!--?cat_no=--><?php //=$arrList["list"][$i]['cat_no']?><!--"><img src="./images/btn_view.gif" border=0 alt="--><?php //=$arrList["list"][$i]['cat_name']?><!--"></a></td>-->
-
-							<td><i class="mo_vw">명칭</i><input type="text" id="cateKor_<?=$arrList["list"][$i]['cat_no']?>" class="inputinit" maxlength="100" value="<?=stripslashes($arrList["list"][$i]['cat_name'])?>"></td>
-                            <td><i class="mo_vw">명칭</i><input type="text" id="cateEng_<?=$arrList["list"][$i]['cat_no']?>" class="inputinit" maxlength="100" value="<?=stripslashes($arrList["list"][$i]['cat_engname'])?>"></td>
-<!--							<td><i class="mo_vw">명칭</i><input type="text" id="cateEng_--><?php //=$arrList["list"][$i]['cat_no']?><!--" class="inputinit" maxlength="100" value="--><?php //=stripslashes($arrList["list"][$i]['cat_engname'])?><!--"></td>-->
-
-							<td style="width:5%;"><label class="check notxt"><input type="checkbox" value="<?=$arrList["list"][$i]['cat_no']?>" name="chk_list" <?=$arrList["list"][$i]['cat_is_show']=="Y"?"checked":""?> onclick="fnShow(this)"><i></i></label></td>
-							<td style="width:12%">
-								<div class="btns">
-									<!--<a href="category_info.php?cat_no=<?=$arrList["list"][$i]['cat_no']?>" class="btn modi">수정</a>-->
-									<a href="javascript:void(0);" onclick="fnCategoryEdit('<?=$arrList["list"][$i]['cat_no']?>')" class="btn modi">저장</a>
-									<!--<button type="button" class="btn del" onclick="fnCategoryDel('<?=$arrList["list"][$i]['cat_no']?>','<?=$arrInfo["list"][0]["cat_no"]?>');">삭제</button>-->
-								</div>
-							</td>
-						</tr>
-					<?
-						}
-					}else{
-					?>
-					<tr height="100">
-						<td width="100%" colspan="5" >생성된 데이터가 없습니다.</td>
-					</tr>
-					<?
-					}
-					//DB해제
-					SetDisConn($dblink);
-					?>
-					</tbody>
-				</table>
-			</div>
-		</div>
-        <?
-		}else if($_REQUEST["cat_no"]=="4"){	// 검색
-
-		?>
-        <div class="over_tbl mo_break_tbl">
-            <div class="bdr_list tac">
-                <table>
-                    <colgroup class="pc_vw">
-                        <col class="w6p">
-                        <col class="w6p">
-                        <col class="w6p">
-                        <col class="*">
-                        <col class="w4p">
-                        <col class="w10p">
-                    </colgroup>
-                    <thead>
-                    <tr>
-                        <th class="pc_vw">순서</th>
-                        <th class="pc_vw">하위</th>
-                        <th class="pc_vw">하위보기</th>
-                        <th class="pc_vw"><?=$arrPath['list'][0]['cat_name']?> 명</th>
-                        <th class="pc_vw">사용</th>
-                        <th class="pc_vw">관리</th>
-                    </tr>
-                    </thead>
-                    <tbody id="sortWrap">
-					<?
-					//DB연결
-					$dblink = SetConn($_conf_db["main_db"]);
-
-					if($arrList['total'] > 0){
-						for ($i=0;$i<$arrList['total'];$i++){
-							?>
-                            <tr data-order="<?=$arrList["list"][$i]['cat_no']?>">
-                                <td><i class="mo_vw">UP / DOWN</i><a href="category_evn.php?evnMode=sort_up&cat_no=<?=$arrList["list"][$i]['cat_no']?>&s_cat_no=<?=$arrInfo["list"][0]["cat_no"]?>"><img src="/backoffice/images/k_up.gif" alt="UP" /></a> <a href="category_evn.php?evnMode=sort_down&cat_no=<?=$arrList["list"][$i]['cat_no']?>&s_cat_no=<?=$arrInfo["list"][0]["cat_no"]?>"><img src="/backoffice/images/k_down.gif" alt="DOWN" /></a></td>
-                                <td><i class="mo_vw">하위</i><?=number_format($arrList["list"][$i]['total_sub'])?></td>
-                                <td><i class="mo_vw">하위보기</i><a href="<?=$_SERVER['PHP_SELF']?>?cat_no=<?=$arrList["list"][$i]['cat_no']?>"><img src="./images/btn_view.gif" border=0 alt="<?=$arrList["list"][$i]['cat_name']?>"></a></td>
-
-                                <td><i class="mo_vw">명칭</i><input type="text" id="cateKor_<?=$arrList["list"][$i]['cat_no']?>" class="inputinit" maxlength="100" value="<?=stripslashes($arrList["list"][$i]['cat_name'])?>"></td>
-
-                                <td style="width:5%;"><label class="check notxt"><input type="checkbox" value="<?=$arrList["list"][$i]['cat_no']?>" name="chk_list" <?=$arrList["list"][$i]['cat_is_show']=="Y"?"checked":""?> onclick="fnShow(this)"><i></i></label></td>
-                                <td style="width:12%">
-                                    <div class="btns">
-                                        <!--<a href="category_info.php?cat_no=<?=$arrList["list"][$i]['cat_no']?>" class="btn modi">수정</a>-->
-                                        <a href="javascript:void(0);" onclick="fnCategoryEdit('<?=$arrList["list"][$i]['cat_no']?>')" class="btn modi">저장</a>
-                                        <button type="button" class="btn del" onclick="fnCategoryDel('<?=$arrList["list"][$i]['cat_no']?>','<?=$arrInfo["list"][0]["cat_no"]?>');">삭제</button>
-                                    </div>
-                                </td>
-                            </tr>
-							<?
-						}
-					}else{
-						?>
-                        <tr height="100">
-                            <td width="100%" colspan="5" >생성된 데이터가 없습니다.</td>
-                        </tr>
-						<?
-					}
-					//DB해제
-					SetDisConn($dblink);
-					?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-		<?
-            }						// 카테고리
-		######################################## 1Depth ################################## ED
-		}else if($arrPath['total']=="2"){
-		######################################## 2Depth ################################## ST
-		?>
-		<div class="over_tbl mo_break_tbl">
-			<div class="bdr_list tac">
-				<table>
-                    <colgroup class="pc_vw">
-                        <col class="w6p">
-                        <col class="w6p">
-                        <col class="w6p">
-                        <col class="*">
-                        <col class="w4p">
-                        <col class="w10p">
-                    </colgroup>
-                    <thead>
-                    <tr>
-                        <th class="pc_vw">순서</th>
-                        <th class="pc_vw">하위</th>
-                        <th class="pc_vw">하위보기</th>
-                        <th class="pc_vw"><?=$arrPath['list'][0]['cat_name']?> 명</th>
-                        <th class="pc_vw">사용</th>
-                        <th class="pc_vw">관리</th>
-						</tr>
-					</thead>
-					<tbody id="sortWrap">
-					<?
-					//DB연결
-					$dblink = SetConn($_conf_db["main_db"]);
-
-					if($arrList['total'] > 0){
-						for ($i=0;$i<$arrList['total'];$i++){
-					?>
-						<tr data-order="<?=$arrList["list"][$i]['cat_no']?>">
-							<td><i class="mo_vw">UP / DOWN</i><a href="category_evn.php?evnMode=sort_up&cat_no=<?=$arrList["list"][$i]['cat_no']?>&s_cat_no=<?=$arrInfo["list"][0]["cat_no"]?>"><img src="/backoffice/images/k_up.gif" alt="UP" /></a> <a href="category_evn.php?evnMode=sort_down&cat_no=<?=$arrList["list"][$i]['cat_no']?>&s_cat_no=<?=$arrInfo["list"][0]["cat_no"]?>"><img src="/backoffice/images/k_down.gif" alt="DOWN" /></a></td>
-                            <td><i class="mo_vw">하위</i><?=number_format($arrList["list"][$i]['total_sub'])?></td>
-                            <td><i class="mo_vw">하위보기</i><a href="<?=$_SERVER['PHP_SELF']?>?cat_no=<?=$arrList["list"][$i]['cat_no']?>"><img src="./images/btn_view.gif" border=0 alt="<?=$arrList["list"][$i]['cat_name']?>"></a></td>
-
-							<td><i class="mo_vw">명칭</i><input type="text" id="cateKor_<?=$arrList["list"][$i]['cat_no']?>" class="inputinit" maxlength="100" value="<?=stripslashes($arrList["list"][$i]['cat_name'])?>"></td>
-
-							<td style="width:5%;"><label class="check notxt"><input type="checkbox" value="<?=$arrList["list"][$i]['cat_no']?>" name="chk_list" <?=$arrList["list"][$i]['cat_is_show']=="Y"?"checked":""?> onclick="fnShow(this)"><i></i></label></td>
-							<td style="width:12%">
-								<div class="btns">
-									<!--<a href="category_info.php?cat_no=<?=$arrList["list"][$i]['cat_no']?>" class="btn modi">수정</a>-->
-									<a href="javascript:void(0);" onclick="fnCategoryEdit('<?=$arrList["list"][$i]['cat_no']?>')" class="btn modi">저장</a>
-                                    <button type="button" class="btn del" onclick="fnCategoryDel('<?=$arrList["list"][$i]['cat_no']?>','<?=$arrInfo["list"][0]["cat_no"]?>');">삭제</button>
-								</div>
-							</td>
-						</tr>
-					<?
-						}
-					}else{
-					?>
-					<tr height="100">
-						<td width="100%" colspan="5" >생성된 데이터가 없습니다.</td>
-					</tr>
-					<?
-					}
-					//DB해제
-					SetDisConn($dblink);
-					?>
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<?
-		######################################## 2Depth ################################## ED
-		}else if($arrPath['total']=="3"){
-		######################################## 3Depth ################################## ST
-		?>
-        <div class="over_tbl mo_break_tbl">
-            <div class="bdr_list tac">
-                <table>
-                    <colgroup class="pc_vw">
-                        <col class="w6p">
-                        <col class="*">
-                        <col class="w6p">
-                        <col class="w10p">
-                    </colgroup>
-                    <thead>
-                    <tr>
-                        <th class="pc_vw">순서</th>
-                        <th class="pc_vw"><?=$arrPath['list'][0]['cat_name']?> 명</th>
-                        <th class="pc_vw">사용</th>
-                        <th class="pc_vw">관리</th>
-                    </tr>
-                    </thead>
-                    <tbody id="sortWrap">
-					<?
-					//DB연결
-					$dblink = SetConn($_conf_db["main_db"]);
-
-					if($arrList['total'] > 0){
-						for ($i=0;$i<$arrList['total'];$i++){
-							?>
-                            <tr data-order="<?=$arrList["list"][$i]['cat_no']?>">
-                                <td><i class="mo_vw">UP / DOWN</i><a href="category_evn.php?evnMode=sort_up&cat_no=<?=$arrList["list"][$i]['cat_no']?>&s_cat_no=<?=$arrInfo["list"][0]["cat_no"]?>"><img src="/backoffice/images/k_up.gif" alt="UP" /></a> <a href="category_evn.php?evnMode=sort_down&cat_no=<?=$arrList["list"][$i]['cat_no']?>&s_cat_no=<?=$arrInfo["list"][0]["cat_no"]?>"><img src="/backoffice/images/k_down.gif" alt="DOWN" /></a></td>
-                                <td><i class="mo_vw">명칭</i><input type="text" id="cateKor_<?=$arrList["list"][$i]['cat_no']?>" class="inputinit" maxlength="100" value="<?=stripslashes($arrList["list"][$i]['cat_name'])?>"></td>
-
-                                <td style="width:5%;"><label class="check notxt"><input type="checkbox" value="<?=$arrList["list"][$i]['cat_no']?>" name="chk_list" <?=$arrList["list"][$i]['cat_is_show']=="Y"?"checked":""?> onclick="fnShow(this)"><i></i></label></td>
-                                <td style="width:12%">
-                                    <div class="btns">
-                                        <!--<a href="category_info.php?cat_no=<?=$arrList["list"][$i]['cat_no']?>" class="btn modi">수정</a>-->
-                                        <a href="javascript:void(0);" onclick="fnCategoryEdit('<?=$arrList["list"][$i]['cat_no']?>')" class="btn modi">저장</a>
-                                        <button type="button" class="btn del" onclick="fnCategoryDel('<?=$arrList["list"][$i]['cat_no']?>','<?=$arrInfo["list"][0]["cat_no"]?>');">삭제</button>
-                                    </div>
-                                </td>
-                            </tr>
-							<?
-						}
-					}else{
-						?>
-                        <tr height="100">
-                            <td width="100%" colspan="4" >생성된 데이터가 없습니다.</td>
-                        </tr>
-						<?
-					}
-					//DB해제
-					SetDisConn($dblink);
-					?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <?
-		######################################## 3Depth ################################## ED
-		}else{
-		######################################## Root OR ETC ################################## ST
-		?>
-		<div class="over_tbl mo_break_tbl">
-			<div class="bdr_list tac">
-				<table>
-					<colgroup class="pc_vw">
-						<col class="w6p">
-						<col class="w8p">
-						<col class="w10p">
-						<col class="w10p">
-						<col class="*">
-						<col class="w12p">
-						<col class="w10p">
-					</colgroup>
-					<thead>
-						<tr>
-							<th class="pc_vw">No.</th>
-							<th class="pc_vw">하위</th>
-							<th class="pc_vw">하위보기</th>
-							<th class="pc_vw">UP / DOWN</th>
-							<th class="pc_vw">분류명</th>
-							<th class="pc_vw">노출여부</th>
-							<th class="pc_vw">관리</th>
-						</tr>
-					</thead>
-					<tbody id="sortWrap">
-					<?
-					if($arrList['total'] > 0){
-						for ($i=0;$i<$arrList['total'];$i++){
-					?>
-						<tr>
-							<td><i class="mo_vw">No.</i><?=$arrList["list"][$i]['cat_no']?></td>
-							<td><i class="mo_vw">하위</i><?=number_format($arrList["list"][$i]['total_sub'])?></td>
-							<td><i class="mo_vw">하위보기</i><a href="<?=$_SERVER['PHP_SELF']?>?cat_no=<?=$arrList["list"][$i]['cat_no']?>"><img src="./images/btn_view.gif" border=0 alt="<?=$arrList["list"][$i]['cat_name']?>"></a></td>
-							<td><i class="mo_vw">UP / DOWN</i><a href="category_evn.php?evnMode=sort_up&cat_no=<?=$arrList["list"][$i]['cat_no']?>&s_cat_no=<?=$arrInfo["list"][0]["cat_no"]?>"><img src="/backoffice/images/k_up.gif" alt="UP" /></a> <a href="category_evn.php?evnMode=sort_down&cat_no=<?=$arrList["list"][$i]['cat_no']?>&s_cat_no=<?=$arrInfo["list"][0]["cat_no"]?>"><img src="/backoffice/images/k_down.gif" alt="DOWN" /></a></td>
-							<td><i class="mo_vw">명칭</i><?=stripslashes($arrList["list"][$i]['cat_name'])?></td>
-							<td><i class="mo_vw">노출여부</i><?=stripslashes($arrList["list"][$i]['cat_is_show'])?></td>
-							<td class="mono_btm"><i class="mo_vw">관리</i>
-								<div class="btns">
-									<a href="category_info.php?cat_no=<?=$arrList["list"][$i]['cat_no']?>" class="btn modi">수정</a>
-									<button type="button" class="btn del" onclick="fnCategoryDel('<?=$arrList["list"][$i]['cat_no']?>','<?=$arrInfo["list"][0]["cat_no"]?>');">삭제</button>
-								</div>
-							</td>
-						</tr>
-					<?
-						}
-					}else{
-					?>
-					<tr height="100">
-						<td width="100%" colspan="4" >생성된 데이터가 없습니다.</td>
-					</tr>
-					<?}?>
-					</tbody>
-				</table>
-			</div>
-		</div>
-
-		<div class="bdr_btm">
-			<!--div class="paging">
-			<?=pageNavigationBackoffice($arrList['total'],$scale,$pagescale,$offset,"")?>
-			</div-->
-			<div class="btns">
-				<form action="category_evn.php" method="post" name="categoryFrm">
-					<input type="hidden" name="evnMode" value="createCategory">
-					<input type="hidden" name="s_cat_no" value='<?=$arrInfo["list"][0]["cat_no"]?>'>
-					<input type="hidden" name="s_category" value='<?=$arrInfo["list"][0]["cat_code"]?>'>
-					<input type="hidden" name="s_depth" value='<?=($arrInfo["list"][0]["cat_no"]?$arrInfo["list"][0]["cat_depth"]+1:$arrInfo["list"][0]["cat_depth"])?>'>
-					<div>
-						<label for="id">신규 생성 :</label>
-						<input type="text" name="new_name" id="id" maxlength="20" style="width:160px;" class="input"/>
-					</div>
-				</form>
-				<a href="javascript:void(0);" class="btn" onclick="document.categoryFrm.submit()">등록</a>
-			</div>
-		</div>
-		<?}?>
-	</div>
-</div>
-<?php include("pub/inc/footer.php") ?>
+<?############################ 저장후 리턴페이지 설정 ############################ STif($_GET['rlist']=="T"){	session_start();	header("location: ".$_SERVER['PHP_SELF']."?".$_SESSION['searchParam']);	exit();}############################ 저장후 리턴페이지 설정 ############################ EDinclude $_SERVER['DOCUMENT_ROOT'] . "/backoffice/pub/inc/admin_top.php";include "./menu.php";include_once $_SERVER['DOCUMENT_ROOT'] . "/module/category/category.lib.php";if(!in_array("admin_manage",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTH"]) && $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]!="ROOT"):	jsMsg("권한이 없습니다.");	jsHistory("-1");endif;############################ 저장후 리턴페이지 설정 ############################ STif($_GET['rlist']!="T"){	if($_SERVER['QUERY_STRING']){		$_SESSION['searchParam'] = $_SERVER['QUERY_STRING'];	}}############################ 저장후 리턴페이지 설정 ############################ ED//DB연결$dblink = SetConn($_conf_db["main_db"]);//현재카테고리 정보$arrInfo = getCategoryInfo(mysqli_real_escape_string($GLOBALS['dblink'], $_REQUEST["cat_no"]));//현재카테고리 패쓰$arrPath = getCategoryPath(mysqli_real_escape_string($GLOBALS['dblink'], $_REQUEST["cat_no"]));//카테고리 목록$subQuery = "";if($_GET['sk']){	$subQuery = " AND cat_name like '%".$_GET['sk']."%' ";}$arrList = getCategoryList(mysqli_real_escape_string($GLOBALS['dblink'], $_REQUEST["cat_no"]), "", "", $subQuery );//_DEBUG($arrList);//DB해제SetDisConn($dblink);$arrCate = explode("/", $arrInfo["list"][0]['cat_code']);?><style type="text/css">	.cat_image{max-width:120px;max-height:40px;}</style><script type="text/javascript"><!--function fnCategoryDel(catNo, s_catNo){	if(confirm('삭제 하시겠습니까?')){		location.href= "category_evn.php?evnMode=deleteCategory&cat_no="+catNo+"&s_cat_no="+s_catNo;	}}function fnCategoryEdit(catNo){	var strKor = $("#cateKor_"+catNo).val();	var strEng = $("#cateEng_"+catNo).val();	//	alert(strKor+strEng)	$.post("/module/category/ajax_category_edit.php", { kornm : strKor, engnm : strEng, cat_no: catNo },		function(data){			if(data=="true"){				//location.reload();				$("#cateKor_"+catNo).css("background","#ececec");				$("#cateEng_"+catNo).css("background","#ececec");			}else{				//	alert(data)				alert("실패.");			}		}	);}// 브랜드 순위변경function fnBest(strBest, catNo){	$.post("/module/category/ajax_selectbox_best.php", { bestnum : strBest,cat_no: catNo },		function(data){			if(data=="true"){				location.reload();			}else{				alert("실패.");			}		}	);}/************$(function() {	$("#sortWrap").sortable({		axis: "y",		containment: "parent",		update: function (event, ui) {			var order = $(this).sortable('toArray', {				attribute: 'data-order'			});			console.log(order);			fnOrderSave(order);		}	});});*************/var arrIdx=[];function fnOrderSave(order){	arrIdx = order;	fnGoodOrderby();}// 상품 순서 변경function fnGoodOrderby(){	var idxs = "";	var comma = "";	for(var i=0;i<arrIdx.length;i++){		idxs += comma+arrIdx[i];		comma = "|";	}	//alert(idxs)	if(idxs){		$.post("/module/category/ajax_orderby_category.php", { gidx: idxs },			function(data){				if(data){				//	alert(data);					location.reload();				}			}		);	}else{		alert('변경된 순서가 없습니다.');	}}function fnShow(ths){	var catNo = $(ths).val();	var ckVal = "";	if($(ths).is(':checked')){		ckVal = "Y";	}else{		ckVal = "N";	}	$.post("/module/category/ajax_category_show.php", { cat_no: catNo, cat_is_show : ckVal },		function(data){			if(data){			//	alert(data);			}		}	);}//--></script><?######################################### iframe fancybox ######################################### ST?><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"/><style type="text/css">.fancybox__content { padding: 5px 0;border-radius: 4px; }.fancybox__slide {padding-bottom:20px;}</style><script type="text/javascript"><!--function OpenApplyView(catNo, pageName){	Fancybox.show([	{		src: "/backoffice/module/shop/"+pageName+".php?cat_no="+catNo,		type: "iframe",		preload: false,		width: 1100,		height: 700	},	]);}//--></script><?######################################### iframe fancybox ######################################### ED?><style type="text/css">	.inputinit{background:#ececec;width:100%;}</style><script type="text/javascript"><!--$( document ).ready(function() {	$(".inputinit").click(function () {		$(this).css("background","#ffffff");	});});function fnCategory(cno){	location.href = 'category.php?cat_no='+cno;}//--></script><div class="container">	<div class="title"><?=$arrPath['list'][0]['cat_name']?> 관리</div>	<div class="inbox">		<div class="bdr_top">			<div class="left">				<div class="total">				<a href="<?=$_SERVER['PHP_SELF']?>?cat_no=<?=$arrPath['list'][0]['cat_no']?>">ROOT</a>				<?				if($arrPath['total'] > 0){					for($i=0; $i < $arrPath['total']; $i++){				?>				 > <a href="<?=$_SERVER['PHP_SELF']?>?cat_no=<?=$arrPath['list'][$i]['cat_no']?>"><?=$arrPath['list'][$i]['cat_name']?></a>				<?					}				}				?>				<!-- Total : <strong><?=number_format($arrList['total'])?></strong>--></div>			</div>			<script type="text/javascript">			<!--			function fnCategoryWrite3(){				var frm = document.categoryFrm3;				if(frm.new_name.value.length < 1){					alert('신규 생성할 분류 명칭을 입력하세요.');					frm.new_name.focus();					return;				}				frm.submit();			}			//-->			</script>			<?php if($_REQUEST["cat_no"]!="3" && $arrPath['list'][0]['cat_no'] != "3"){ ?>			<div class="bdr_right">				<div class="btns flx">					<form action="category_evn.php" method="post" name="categoryFrm3">						<input type="hidden" name="evnMode" value="createCategory">						<input type="hidden" name="s_cat_no" value='<?=$arrInfo["list"][0]["cat_no"]?>'>						<input type="hidden" name="s_category" value='<?=$arrInfo["list"][0]["cat_code"]?>'>						<input type="hidden" name="s_depth" value='<?=($arrInfo["list"][0]["cat_no"]?$arrInfo["list"][0]["cat_depth"]+1:$arrInfo["list"][0]["cat_depth"])?>'>						<div>							<label for="id">신규 생성 :</label>							<input type="text" name="new_name" id="id" maxlength="30" style="width:160px;" class="input"/>						</div>					</form>					<a href="javascript:void(0);" class="btn" onclick="fnCategoryWrite3()">등록</a>				</div>			</div>			<?php } ?>		</div>		<?		if($arrPath['total']=="0"){		######################################## 0Depth ################################## ST		?>		<div class="over_tbl mo_break_tbl">			<div class="bdr_list tac">				<table>					<colgroup class="pc_vw">						<col class="w6p">						<col class="w8p">						<col class="w10p">						<col class="*">					</colgroup>					<thead>						<tr>							<th class="pc_vw">No.</th>							<th class="pc_vw">하위</th>							<th class="pc_vw">하위보기</th>							<th class="pc_vw">분류명</th>						</tr>					</thead>					<tbody>					<?					if($arrList['total'] > 0){						for ($i=0;$i<$arrList['total'];$i++){					?>						<tr>							<td><i class="mo_vw">No.</i><?=$arrList["list"][$i]['cat_no']?></td>							<td><i class="mo_vw">하위</i><?=number_format($arrList["list"][$i]['total_sub'])?></td>							<td><i class="mo_vw">하위보기</i><a href="<?=$_SERVER['PHP_SELF']?>?cat_no=<?=$arrList["list"][$i]['cat_no']?>"><img src="./images/btn_view.gif" border=0 alt="<?=$arrList["list"][$i]['cat_name']?>"></a></td>							<td><i class="mo_vw">명칭</i><?=stripslashes($arrList["list"][$i]['cat_name'])?>								<?if($arrList["list"][$i]['cat_no']=="11" || $arrList["list"][$i]['cat_no']=="17"){?>							<button type="button" class="btn perf" onclick="OpenApplyView('<?=$arrList["list"][$i]['cat_no']?>','pop_good_event');" style="width:100px;">상품확인</button>							<?}?>							</td>							<!--							<td style="width:10%">								<div class="btns">									<a href="category_info.php?cat_no=<?=$arrList["list"][$i]['cat_no']?>" class="btn modi">수정</a>									<button type="button" class="btn del" onclick="fnCategoryDel('<?=$arrList["list"][$i]['cat_no']?>','<?=$arrInfo["list"][0]["cat_no"]?>');">삭제</button>								</div>							</td>							-->						</tr>					<?						}					}else{					?>					<tr height="100">						<td width="100%" colspan="4" >생성된 데이터가 없습니다.</td>					</tr>					<?}?>					</tbody>				</table>			</div>		</div>		<!--신규생성-->		<div class="bdr_btm">			<div class="btns">				<form action="category_evn.php" method="post" name="categoryFrm">					<input type="hidden" name="evnMode" value="createCategory">					<input type="hidden" name="s_cat_no" value='<?=$arrInfo["list"][0]["cat_no"]?>'>					<input type="hidden" name="s_category" value='<?=$arrInfo["list"][0]["cat_code"]?>'>					<input type="hidden" name="s_depth" value='<?=($arrInfo["list"][0]["cat_no"]?$arrInfo["list"][0]["cat_depth"]+1:$arrInfo["list"][0]["cat_depth"])?>'>					<div>						<label for="id">신규 생성 :</label>						<input type="text" name="new_name" id="id" maxlength="20" style="width:160px;" class="input"/>					</div>				</form>				<a href="javascript:void(0);" class="btn" onclick="document.categoryFrm.submit()">등록</a>			</div>		</div>		<?		######################################## 0Depth ################################## ED		}else if($arrPath['total']=="1"){		######################################## 1Depth ################################## ST        if($_REQUEST["cat_no"]=="3"){	// 검색		?>		<div class="over_tbl mo_break_tbl">			<div class="bdr_list tac">				<table>					<colgroup class="pc_vw">						<col class="w6p">						<col class="*">                        <col class="*">						<col class="w4p">						<col class="w6p">					</colgroup>					<thead>						<tr>							<th class="pc_vw">순서</th>							<th class="pc_vw"><?=$arrPath['list'][0]['cat_name']?> 명</th>                            <th class="pc_vw"><?=$arrPath['list'][0]['cat_name']?> URL</th>							<th class="pc_vw">사용</th>							<th class="pc_vw">관리</th>						</tr>					</thead>					<tbody id="sortWrap">					<?					//DB연결					$dblink = SetConn($_conf_db["main_db"]);					if($arrList['total'] > 0){						for ($i=0;$i<$arrList['total'];$i++){					?>						<tr data-order="<?=$arrList["list"][$i]['cat_no']?>">							<td><i class="mo_vw">UP / DOWN</i><a href="category_evn.php?evnMode=sort_up&cat_no=<?=$arrList["list"][$i]['cat_no']?>&s_cat_no=<?=$arrInfo["list"][0]["cat_no"]?>"><img src="/backoffice/images/k_up.gif" alt="UP" /></a> <a href="category_evn.php?evnMode=sort_down&cat_no=<?=$arrList["list"][$i]['cat_no']?>&s_cat_no=<?=$arrInfo["list"][0]["cat_no"]?>"><img src="/backoffice/images/k_down.gif" alt="DOWN" /></a></td><!--							<td><i class="mo_vw">하위</i>--><?php //=number_format($arrList["list"][$i]['total_sub'])?><!--</td>--><!--							<td><i class="mo_vw">하위보기</i><a href="--><?php //=$_SERVER['PHP_SELF']?><!--?cat_no=--><?php //=$arrList["list"][$i]['cat_no']?><!--"><img src="./images/btn_view.gif" border=0 alt="--><?php //=$arrList["list"][$i]['cat_name']?><!--"></a></td>-->							<td><i class="mo_vw">명칭</i><input type="text" id="cateKor_<?=$arrList["list"][$i]['cat_no']?>" class="inputinit" maxlength="100" value="<?=stripslashes($arrList["list"][$i]['cat_name'])?>"></td>                            <td><i class="mo_vw">명칭</i><input type="text" id="cateEng_<?=$arrList["list"][$i]['cat_no']?>" class="inputinit" maxlength="100" value="<?=stripslashes($arrList["list"][$i]['cat_engname'])?>"></td><!--							<td><i class="mo_vw">명칭</i><input type="text" id="cateEng_--><?php //=$arrList["list"][$i]['cat_no']?><!--" class="inputinit" maxlength="100" value="--><?php //=stripslashes($arrList["list"][$i]['cat_engname'])?><!--"></td>-->							<td style="width:5%;"><label class="check notxt"><input type="checkbox" value="<?=$arrList["list"][$i]['cat_no']?>" name="chk_list" <?=$arrList["list"][$i]['cat_is_show']=="Y"?"checked":""?> onclick="fnShow(this)"><i></i></label></td>							<td style="width:12%">								<div class="btns">									<!--<a href="category_info.php?cat_no=<?=$arrList["list"][$i]['cat_no']?>" class="btn modi">수정</a>-->									<a href="javascript:void(0);" onclick="fnCategoryEdit('<?=$arrList["list"][$i]['cat_no']?>')" class="btn modi">저장</a>									<!--<button type="button" class="btn del" onclick="fnCategoryDel('<?=$arrList["list"][$i]['cat_no']?>','<?=$arrInfo["list"][0]["cat_no"]?>');">삭제</button>-->								</div>							</td>						</tr>					<?						}					}else{					?>					<tr height="100">						<td width="100%" colspan="5" >생성된 데이터가 없습니다.</td>					</tr>					<?					}					//DB해제					SetDisConn($dblink);					?>					</tbody>				</table>			</div>		</div>        <?		}else if($_REQUEST["cat_no"]=="4"){	// 카테고리 메뉴		?>        <div class="over_tbl mo_break_tbl">            <div class="bdr_list tac">                <table>                    <colgroup class="pc_vw">                        <col class="w6p">                        <col class="w6p">                        <col class="w6p">                        <col class="*">                        <col class="w4p">                        <col class="w10p">                    </colgroup>                    <thead>                    <tr>                        <th class="pc_vw">순서</th>                        <th class="pc_vw">하위</th>                        <th class="pc_vw">하위보기</th>                        <th class="pc_vw"><?=$arrPath['list'][0]['cat_name']?> 명</th>                        <th class="pc_vw">사용</th>                        <th class="pc_vw">관리</th>                    </tr>                    </thead>                    <tbody id="sortWrap">					<?					//DB연결					$dblink = SetConn($_conf_db["main_db"]);					if($arrList['total'] > 0){						for ($i=0;$i<$arrList['total'];$i++){							?>                            <tr data-order="<?=$arrList["list"][$i]['cat_no']?>">                                <td><i class="mo_vw">UP / DOWN</i><a href="category_evn.php?evnMode=sort_up&cat_no=<?=$arrList["list"][$i]['cat_no']?>&s_cat_no=<?=$arrInfo["list"][0]["cat_no"]?>"><img src="/backoffice/images/k_up.gif" alt="UP" /></a> <a href="category_evn.php?evnMode=sort_down&cat_no=<?=$arrList["list"][$i]['cat_no']?>&s_cat_no=<?=$arrInfo["list"][0]["cat_no"]?>"><img src="/backoffice/images/k_down.gif" alt="DOWN" /></a></td>                                <td><i class="mo_vw">하위</i><?=number_format($arrList["list"][$i]['total_sub'])?></td>                                <td><i class="mo_vw">하위보기</i><a href="<?=$_SERVER['PHP_SELF']?>?cat_no=<?=$arrList["list"][$i]['cat_no']?>"><img src="./images/btn_view.gif" border=0 alt="<?=$arrList["list"][$i]['cat_name']?>"></a></td>                                <td><i class="mo_vw">명칭</i><input type="text" id="cateKor_<?=$arrList["list"][$i]['cat_no']?>" class="inputinit" maxlength="100" value="<?=stripslashes($arrList["list"][$i]['cat_name'])?>"></td>                                <td style="width:5%;"><label class="check notxt"><input type="checkbox" value="<?=$arrList["list"][$i]['cat_no']?>" name="chk_list" <?=$arrList["list"][$i]['cat_is_show']=="Y"?"checked":""?> onclick="fnShow(this)"><i></i></label></td>                                <td style="width:12%">                                    <div class="btns">                                        <!--<a href="category_info.php?cat_no=<?=$arrList["list"][$i]['cat_no']?>" class="btn modi">수정</a>-->                                        <a href="javascript:void(0);" onclick="fnCategoryEdit('<?=$arrList["list"][$i]['cat_no']?>')" class="btn modi">저장</a>                                        <button type="button" class="btn del" onclick="fnCategoryDel('<?=$arrList["list"][$i]['cat_no']?>','<?=$arrInfo["list"][0]["cat_no"]?>');">삭제</button>                                    </div>                                </td>                            </tr>							<?						}					}else{						?>                        <tr height="100">                            <td width="100%" colspan="5" >생성된 데이터가 없습니다.</td>                        </tr>						<?					}					//DB해제					SetDisConn($dblink);					?>                    </tbody>                </table>            </div>        </div>		<?            }						// 카테고리		######################################## 1Depth ################################## ED		}else if($arrPath['total']=="2"){		######################################## 2Depth ################################## ST		?>		<div class="over_tbl mo_break_tbl">			<div class="bdr_list tac">				<table>                    <colgroup class="pc_vw">                        <col class="w6p">                        <col class="w6p">                        <col class="w6p">                        <col class="*">                        <col class="w4p">                        <col class="w10p">                    </colgroup>                    <thead>                    <tr>                        <th class="pc_vw">순서</th>                        <th class="pc_vw">하위</th>                        <th class="pc_vw">하위보기</th>                        <th class="pc_vw"><?=$arrPath['list'][0]['cat_name']?> 명</th>                        <th class="pc_vw">사용</th>                        <th class="pc_vw">관리</th>						</tr>					</thead>					<tbody id="sortWrap">					<?					//DB연결					$dblink = SetConn($_conf_db["main_db"]);					if($arrList['total'] > 0){						for ($i=0;$i<$arrList['total'];$i++){					?>						<tr data-order="<?=$arrList["list"][$i]['cat_no']?>">							<td><i class="mo_vw">UP / DOWN</i><a href="category_evn.php?evnMode=sort_up&cat_no=<?=$arrList["list"][$i]['cat_no']?>&s_cat_no=<?=$arrInfo["list"][0]["cat_no"]?>"><img src="/backoffice/images/k_up.gif" alt="UP" /></a> <a href="category_evn.php?evnMode=sort_down&cat_no=<?=$arrList["list"][$i]['cat_no']?>&s_cat_no=<?=$arrInfo["list"][0]["cat_no"]?>"><img src="/backoffice/images/k_down.gif" alt="DOWN" /></a></td>                            <td><i class="mo_vw">하위</i><?=number_format($arrList["list"][$i]['total_sub'])?></td>                            <td><i class="mo_vw">하위보기</i><a href="<?=$_SERVER['PHP_SELF']?>?cat_no=<?=$arrList["list"][$i]['cat_no']?>"><img src="./images/btn_view.gif" border=0 alt="<?=$arrList["list"][$i]['cat_name']?>"></a></td>							<td><i class="mo_vw">명칭</i><input type="text" id="cateKor_<?=$arrList["list"][$i]['cat_no']?>" class="inputinit" maxlength="100" value="<?=stripslashes($arrList["list"][$i]['cat_name'])?>"></td>							<td style="width:5%;"><label class="check notxt"><input type="checkbox" value="<?=$arrList["list"][$i]['cat_no']?>" name="chk_list" <?=$arrList["list"][$i]['cat_is_show']=="Y"?"checked":""?> onclick="fnShow(this)"><i></i></label></td>							<td style="width:12%">								<div class="btns">									<!--<a href="category_info.php?cat_no=<?=$arrList["list"][$i]['cat_no']?>" class="btn modi">수정</a>-->									<a href="javascript:void(0);" onclick="fnCategoryEdit('<?=$arrList["list"][$i]['cat_no']?>')" class="btn modi">저장</a>                                    <button type="button" class="btn del" onclick="fnCategoryDel('<?=$arrList["list"][$i]['cat_no']?>','<?=$arrInfo["list"][0]["cat_no"]?>');">삭제</button>								</div>							</td>						</tr>					<?						}					}else{					?>					<tr height="100">						<td width="100%" colspan="5" >생성된 데이터가 없습니다.</td>					</tr>					<?					}					//DB해제					SetDisConn($dblink);					?>					</tbody>				</table>			</div>		</div>        <div class="bdr_btm">            <div class="btns" style="margin-right: 1500px;">                <a href="javascript:history.back();" class="btn">뒤로가기</a>            </div>        </div>		<?		######################################## 2Depth ################################## ED		}else if($arrPath['total']=="3"){		######################################## 3Depth ################################## ST		?>        <div class="over_tbl mo_break_tbl">            <div class="bdr_list tac">                <table>                    <colgroup class="pc_vw">                        <col class="w6p">                        <col class="*">                        <col class="w6p">                        <col class="w10p">                    </colgroup>                    <thead>                    <tr>                        <th class="pc_vw">순서</th>                        <th class="pc_vw"><?=$arrPath['list'][0]['cat_name']?> 명</th>                        <th class="pc_vw">사용</th>                        <th class="pc_vw">관리</th>                    </tr>                    </thead>                    <tbody id="sortWrap">					<?					//DB연결					$dblink = SetConn($_conf_db["main_db"]);					if($arrList['total'] > 0){						for ($i=0;$i<$arrList['total'];$i++){							?>                            <tr data-order="<?=$arrList["list"][$i]['cat_no']?>">                                <td><i class="mo_vw">UP / DOWN</i><a href="category_evn.php?evnMode=sort_up&cat_no=<?=$arrList["list"][$i]['cat_no']?>&s_cat_no=<?=$arrInfo["list"][0]["cat_no"]?>"><img src="/backoffice/images/k_up.gif" alt="UP" /></a> <a href="category_evn.php?evnMode=sort_down&cat_no=<?=$arrList["list"][$i]['cat_no']?>&s_cat_no=<?=$arrInfo["list"][0]["cat_no"]?>"><img src="/backoffice/images/k_down.gif" alt="DOWN" /></a></td>                                <td><i class="mo_vw">명칭</i><input type="text" id="cateKor_<?=$arrList["list"][$i]['cat_no']?>" class="inputinit" maxlength="100" value="<?=stripslashes($arrList["list"][$i]['cat_name'])?>"></td>                                <td style="width:5%;"><label class="check notxt"><input type="checkbox" value="<?=$arrList["list"][$i]['cat_no']?>" name="chk_list" <?=$arrList["list"][$i]['cat_is_show']=="Y"?"checked":""?> onclick="fnShow(this)"><i></i></label></td>                                <td style="width:12%">                                    <div class="btns">                                        <!--<a href="category_info.php?cat_no=<?=$arrList["list"][$i]['cat_no']?>" class="btn modi">수정</a>-->                                        <a href="javascript:void(0);" onclick="fnCategoryEdit('<?=$arrList["list"][$i]['cat_no']?>')" class="btn modi">저장</a>                                        <button type="button" class="btn del" onclick="fnCategoryDel('<?=$arrList["list"][$i]['cat_no']?>','<?=$arrInfo["list"][0]["cat_no"]?>');">삭제</button>                                    </div>                                </td>                            </tr>							<?						}					}else{						?>                        <tr height="100">                            <td width="100%" colspan="4" >생성된 데이터가 없습니다.</td>                        </tr>						<?					}					//DB해제					SetDisConn($dblink);					?>                    </tbody>                </table>            </div>        </div>            <div class="bdr_btm">                <div class="btns" style="margin-right: 1500px;">                    <a href="javascript:history.back();" class="btn">뒤로가기</a>                </div>            </div>        <?		######################################## 3Depth ################################## ED		}else{		######################################## Root OR ETC ################################## ST		?>		<div class="over_tbl mo_break_tbl">			<div class="bdr_list tac">				<table>					<colgroup class="pc_vw">						<col class="w6p">						<col class="w8p">						<col class="w10p">						<col class="w10p">						<col class="*">						<col class="w12p">						<col class="w10p">					</colgroup>					<thead>						<tr>							<th class="pc_vw">No.</th>							<th class="pc_vw">하위</th>							<th class="pc_vw">하위보기</th>							<th class="pc_vw">UP / DOWN</th>							<th class="pc_vw">분류명</th>							<th class="pc_vw">노출여부</th>							<th class="pc_vw">관리</th>						</tr>					</thead>					<tbody id="sortWrap">					<?					if($arrList['total'] > 0){						for ($i=0;$i<$arrList['total'];$i++){					?>						<tr>							<td><i class="mo_vw">No.</i><?=$arrList["list"][$i]['cat_no']?></td>							<td><i class="mo_vw">하위</i><?=number_format($arrList["list"][$i]['total_sub'])?></td>							<td><i class="mo_vw">하위보기</i><a href="<?=$_SERVER['PHP_SELF']?>?cat_no=<?=$arrList["list"][$i]['cat_no']?>"><img src="./images/btn_view.gif" border=0 alt="<?=$arrList["list"][$i]['cat_name']?>"></a></td>							<td><i class="mo_vw">UP / DOWN</i><a href="category_evn.php?evnMode=sort_up&cat_no=<?=$arrList["list"][$i]['cat_no']?>&s_cat_no=<?=$arrInfo["list"][0]["cat_no"]?>"><img src="/backoffice/images/k_up.gif" alt="UP" /></a> <a href="category_evn.php?evnMode=sort_down&cat_no=<?=$arrList["list"][$i]['cat_no']?>&s_cat_no=<?=$arrInfo["list"][0]["cat_no"]?>"><img src="/backoffice/images/k_down.gif" alt="DOWN" /></a></td>							<td><i class="mo_vw">명칭</i><?=stripslashes($arrList["list"][$i]['cat_name'])?></td>							<td><i class="mo_vw">노출여부</i><?=stripslashes($arrList["list"][$i]['cat_is_show'])?></td>							<td class="mono_btm"><i class="mo_vw">관리</i>								<div class="btns">									<a href="category_info.php?cat_no=<?=$arrList["list"][$i]['cat_no']?>" class="btn modi">수정</a>									<button type="button" class="btn del" onclick="fnCategoryDel('<?=$arrList["list"][$i]['cat_no']?>','<?=$arrInfo["list"][0]["cat_no"]?>');">삭제</button>								</div>							</td>						</tr>					<?						}					}else{					?>					<tr height="100">						<td width="100%" colspan="4" >생성된 데이터가 없습니다.</td>					</tr>					<?}?>					</tbody>				</table>			</div>		</div>		<div class="bdr_btm">			<!--div class="paging">			<?=pageNavigationBackoffice($arrList['total'],$scale,$pagescale,$offset,"")?>			</div-->			<div class="btns">				<form action="category_evn.php" method="post" name="categoryFrm">					<input type="hidden" name="evnMode" value="createCategory">					<input type="hidden" name="s_cat_no" value='<?=$arrInfo["list"][0]["cat_no"]?>'>					<input type="hidden" name="s_category" value='<?=$arrInfo["list"][0]["cat_code"]?>'>					<input type="hidden" name="s_depth" value='<?=($arrInfo["list"][0]["cat_no"]?$arrInfo["list"][0]["cat_depth"]+1:$arrInfo["list"][0]["cat_depth"])?>'>					<div>						<label for="id">신규 생성 :</label>						<input type="text" name="new_name" id="id" maxlength="20" style="width:160px;" class="input"/>					</div>				</form>				<a href="javascript:void(0);" class="btn" onclick="document.categoryFrm.submit()">등록</a>			</div>		</div>		<?}?>	</div></div><?php include("pub/inc/footer.php") ?>

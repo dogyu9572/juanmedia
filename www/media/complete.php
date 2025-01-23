@@ -27,7 +27,7 @@
 								<div class="txt">2024-10-29 24:00:00</div>
 							</div>
 						</div >
-						<a href="/mypage/orderListPlace.php" class="btnType1 black">신청내역 확인하기</a>
+						<a href="/mypage/orderListPlace.php" class="btnType1 black">신청리스트 확인하기</a>
 					</div>
 				</div>
 			</div>-->

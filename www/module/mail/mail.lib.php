@@ -1,1410 +1,1 @@
-<?
-include $_SERVER['DOCUMENT_ROOT'] . "/module/mail/class.http.php";
-include $_SERVER['DOCUMENT_ROOT'] . "/module/mail/Services_JSON.php";
-include $_SERVER['DOCUMENT_ROOT'] . "/module/mail/class.EmmaSMS.php";
-
-//정보 수정하기
-function setMailConfig($code){
-	//메일정보 테이블
-	$tbl = $GLOBALS["_conf_tbl"]["mail_config"];
-
-	if(mysqli_real_escape_string($GLOBALS['dblink'], $_POST['is_use'])=="Y"){
-		$is_use = "Y";
-	}else{
-		$is_use = "N";
-	}
-	if(mysqli_real_escape_string($GLOBALS['dblink'], $_POST['is_use_m'])=="Y"){
-		$is_use_m = "Y";
-	}else{
-		$is_use_m = "N";
-	}
-
-	//상품정보 테이블에 입력
-	$sql = "UPDATE ".$tbl." set 
-		code_subject='".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['code_subject'])."',
-		is_use='".$is_use."',
-		subject='".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['subject'])."',
-		is_use_m='".$is_use_m."',
-		m_subject='".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['m_subject'])."',
-		contents='".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['contents'])."'
-		WHERE code = '".$code."'
-	";
-
-	$rs = mysqli_query($GLOBALS['dblink'], $sql);
-
-	if($rs > 0){
-		return true;
-	}else{
-		return false;
-	}
-}
-
-//메일등록
-function insertSend($code){
-	//메일정보 테이블
-	$tbl = $GLOBALS["_conf_tbl"]["mail_config"];
-
-	if(mysqli_real_escape_string($GLOBALS['dblink'], $_POST['is_use'])=="Y"){
-		$is_use = "Y";
-	}else{
-		$is_use = "N";
-	}
-	if(mysqli_real_escape_string($GLOBALS['dblink'], $_POST['is_use_m'])=="Y"){
-		$is_use_m = "Y";
-	}else{
-		$is_use_m = "N";
-	}
-
-	//상품정보 테이블에 입력
-	$sql = "INSERT INTO ".$tbl." set 
-		code = '".$code."',
-		is_use='".$is_use."',
-		is_use_m='".$is_use_m."'
-	";
-	$rs = mysqli_query($GLOBALS['dblink'], $sql);
-
-	if($rs > 0){
-		return true;
-	}else{
-		return false;
-	}
-}
-
-
-//정보 삭제하기
-function deleteMail($code){
-	$tbl = $GLOBALS["_conf_tbl"]["mail_config"];
-
-	$sql = "DELETE FROM $tbl WHERE code='$code' ";
-	$rs = mysqli_query($GLOBALS['dblink'], $sql);
-
-	if($rs > 0){
-		return true;
-	}else{
-		return false;
-	}
-
-}
-
-//정보 가져오기
-function getMailConfig($code){
-	$tbl = $GLOBALS["_conf_tbl"]["mail_config"];
-
-    $sql  = "SELECT * ";
-    $sql .= "FROM " .$tbl." ";
-    $sql .= "WHERE code = '$code' ";
-
-    $rs = mysqli_query($GLOBALS['dblink'], $sql);
-    $total_rs = mysqli_num_rows($rs);
-    
-    if($total_rs > 0){
-        $list['total'] = $total_rs;
-        for($i=0; $i < $total_rs; $i++){
-            $list['list'][$i] = mysqli_fetch_assoc($rs);
-        }
-    }else{
-        $list['total'] = 0;
-    }
-    return $list;
-}
-
-
-//메일발송 
-function sendMailQna($arrInfo){
-		
-	$mail_body = '';
-
-	if (file_exists($_SERVER['DOCUMENT_ROOT']."/_mailform/mailform02.html")) {
-		$fo = fopen($_SERVER['DOCUMENT_ROOT']."/_mailform/mailform02.html", "r");
-		while (!feof($fo)) $mail_body .= fgets($fo, 1024);
-		fclose($fo);
-	}		
-		
-	$Mail_Subject	= "[".$GLOBALS["_SITE"]["NAME"]."] 문의하신 내용에 답변드립니다.";
-	$toName			= $arrInfo["list"][0]["name"];
-	$fromName		= $GLOBALS["_SITE"]["NAME"];
-	$mailFrom		= "no-reply@".$_SERVER['SERVER_NAME'];
-
-	$arrCategory = array(
-		"1" => "1:1문의",
-		"2" => "고객Q&A",
-		"3" => "전화문의",
-		"4" => "카카오문의",
-		"5" => "이메일문의"
-	);
-
-	
-//		$mail_body = str_replace("<!--[@ctx01]-->", $arrInfo["list"][0]["homepage"], $mail_body);								//
-	$mail_body = str_replace("<!--[category]-->", $arrCategory[$arrInfo["list"][0]["category"]], $mail_body);								//
-	$mail_body = str_replace("<!--[etc_2]-->", $arrInfo["list"][0]["etc_2"], $mail_body);								//	
-	$mail_body = str_replace("<!--[etc_3]-->", $arrInfo["list"][0]["etc_3"], $mail_body);								//	
-	$mail_body = str_replace("<!--[name]-->", $arrInfo["list"][0]["name"], $mail_body);								//	
-	$mail_body = str_replace("<!--[email]-->", $arrInfo["list"][0]["email"], $mail_body);								//	
-	$mail_body = str_replace("<!--[tel]-->", $arrInfo["list"][0]["tel"], $mail_body);								//	
-	$mail_body = str_replace("<!--[wdate]-->", date("Y-m-d",strtotime($arrInfo["list"][0]["wdate"])), $mail_body);								//	
-	$mail_body = str_replace("<!--[subject]-->", $arrInfo["list"][0]["subject"], $mail_body);								//	
-	$mail_body = str_replace("<!--[contents]-->", $arrInfo["list"][0]["contents"], $mail_body);								//									//	
-	$mail_body = str_replace("<!--[etc_5]-->", $arrInfo["list"][0]["etc_5"], $mail_body);								//	
-
-	$mail_body = str_replace("kcapg.hk-test.co.kr", $_SERVER['SERVER_NAME'], $mail_body);				//사이트주소변경
-
-	$mailTo	= $arrInfo["list"][0]["email"];	//받는분 이메일
-
-	sendMail($mailFrom,$fromName, $mailTo, $toName, $Mail_Subject, $mail_body);	
-	
-	return true;
-}
-
-//메일발송 / 회원가입 완료
-function sendMailJoin($arrInfo){
-		
-	$mail_body = '';
-
-	if (file_exists($_SERVER['DOCUMENT_ROOT']."/_mailform/mailform01.html")) {
-		$fo = fopen($_SERVER['DOCUMENT_ROOT']."/_mailform/mailform01.html", "r");
-		while (!feof($fo)) $mail_body .= fgets($fo, 1024);
-		fclose($fo);
-	}		
-		
-	$Mail_Subject	= "[".$GLOBALS["_SITE"]["NAME"]."] 회원가입을 축하드립니다.";
-	$toName			= $arrInfo["list"][0]["user_name"];
-	$fromName		= $GLOBALS["_SITE"]["NAME"];
-	$mailFrom		= "no-reply@".$_SERVER['SERVER_NAME'];
-
-	$mail_body = str_replace("kcapg.hk-test.co.kr", $_SERVER['SERVER_NAME'], $mail_body);				//사이트주소변경
-
-	$mailTo	= $arrInfo["list"][0]["email"];	//받는분 이메일
-
-	sendMail($mailFrom,$fromName, $mailTo, $toName, $Mail_Subject, $mail_body);	
-	
-	return true;
-}
-
-
-//임시비번 메일발송
-function sendMailPasswdInfo($arrInfo, $arrMailInfo){
-	if($arrMailInfo["list"][0]["is_use"]=="Y"){
-		$passwd = generatePasswd();
-
-		//변수치환
-		$Mail_Subject = str_replace("{NAME}", $arrInfo["list"][0]['user_name'], stripslashes($arrMailInfo["list"][0]["subject"]));
-		$Mail_Contents = stripslashes($arrMailInfo["list"][0]["contents"]);
-		$Mail_Contents = str_replace("{ID}", $arrInfo["list"][0]["user_id"], $Mail_Contents);
-		$Mail_Contents = str_replace("{NAME}", $arrInfo["list"][0]["user_name"], $Mail_Contents);
-		$Mail_Contents = str_replace("{EMAIL}", stripslashes($arrInfo["list"][0]["email"]), $Mail_Contents);
-		$Mail_Contents = str_replace("{PASS}", $passwd, $Mail_Contents);
-		
-		//임시비밀번호로 수정
-		$sql = "update tbl_member set user_pw = password('".$passwd."') where user_id='".$arrInfo["list"][0]["user_id"]."'";
-		$rs = mysqli_query($GLOBALS['dblink'], $sql);
-
-		$mailFrom		= "no-reply@".$_SERVER['SERVER_NAME'];
-		$fromName		= "ECOTHON";
-
-		//echo $GLOBALS["_SITE"]["EMAIL"]."/".$GLOBALS["_SITE"]["NAME"]."/".$arrInfo["list"][0]["user_id"]."/".$arrInfo["list"][0]["user_name"];
-		sendMail($mailFrom, $fromName, $arrInfo["list"][0]["email"], $arrInfo["list"][0]["user_name"], $Mail_Subject , $Mail_Contents);
-
-		return true;
-	}else{
-		return false;
-	}
-}
-
-//임시비번 메일발송
-function sendMailPasswdRobo($arrInfo, $arrMailInfo){
-	if($arrMailInfo["list"][0]["is_use"]=="Y"){
-		$passwd = generatePasswd();
-
-		//변수치환
-		$Mail_Subject = str_replace("{NAME}", $arrInfo["list"][0]['user1_name'], stripslashes($arrMailInfo["list"][0]["subject"]));
-		$Mail_Contents = stripslashes($arrMailInfo["list"][0]["contents"]);
-		$Mail_Contents = str_replace("{NAME}", $arrInfo["list"][0]["user1_name"], $Mail_Contents);
-		$Mail_Contents = str_replace("{EMAIL}", stripslashes($arrInfo['list'][0]['user1_email']), $Mail_Contents);
-		$Mail_Contents = str_replace("{PASS}", $passwd, $Mail_Contents);
-		
-		//임시비밀번호로 수정
-		$sql = "update tbl_board_apply set pass = '".$passwd."' where registration='".$arrInfo["list"][0]["registration"]."'";		
-		$rs = mysqli_query($GLOBALS['dblink'], $sql);
-
-		$mailFrom		= "no-reply@".$_SERVER['SERVER_NAME'];
-		$fromName		= "로보월드";
-
-		//echo $GLOBALS["_SITE"]["EMAIL"]."/".$GLOBALS["_SITE"]["NAME"]."/".$arrInfo["list"][0]["user_id"]."/".$arrInfo["list"][0]["user_name"];
-		sendMail($mailFrom, $fromName, $arrInfo["list"][0]["user1_email"], $arrInfo["list"][0]["user1_name"], $Mail_Subject , $Mail_Contents);
-
-		return true;
-	}else{
-		return false;
-	}
-}
-
-//임시비번 메일발송
-function sendMailPasswdRobo2($arrInfo, $arrMailInfo){
-	if($arrMailInfo["list"][0]["is_use"]=="Y"){
-		$passwd = generatePasswd();
-
-		//변수치환
-		$Mail_Subject = str_replace("{NAME}", $arrInfo["list"][0]['user_name'], stripslashes($arrMailInfo["list"][0]["subject"]));
-		$Mail_Contents = stripslashes($arrMailInfo["list"][0]["contents"]);
-		$Mail_Contents = str_replace("{NAME}", $arrInfo["list"][0]["user_name"], $Mail_Contents);
-		$Mail_Contents = str_replace("{EMAIL}", stripslashes($arrInfo['list'][0]['email']), $Mail_Contents);
-		$Mail_Contents = str_replace("{PASS}", $passwd, $Mail_Contents);
-		
-		//임시비밀번호로 수정
-		$sql = "update tbl_board_apply_user set pass = '".$passwd."' where email='".$arrInfo["list"][0]["email"]."'";		
-		$rs = mysqli_query($GLOBALS['dblink'], $sql);
-
-		$mailFrom		= "no-reply@".$_SERVER['SERVER_NAME'];
-		$fromName		= "로보월드";
-
-		//echo $GLOBALS["_SITE"]["EMAIL"]."/".$GLOBALS["_SITE"]["NAME"]."/".$arrInfo["list"][0]["user_id"]."/".$arrInfo["list"][0]["user_name"];
-		sendMail($mailFrom, $fromName, $arrInfo["list"][0]["email"], $arrInfo["list"][0]["user_name"], $Mail_Subject , $Mail_Contents);
-
-		return true;
-	}else{
-		return false;
-	}
-}
-
-function generatePasswd($numAlpha=8,$numNonAlpha=2)
-{
-   $listAlpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-   $listNonAlpha = ',;:!?.$/*-+&@_+;./*&?$-!,';
-   return str_shuffle(
-      substr(str_shuffle($listAlpha),0,$numAlpha) .
-      substr(str_shuffle($listNonAlpha),0,$numNonAlpha)
-    );
-}
-
-
-function sendMail($mailFrom,$fromName, $mailTo, $toName, $subject, $message) { 
-
-	//echo "mailTo1====>>>>".$mailTo;
-	$mailTo = "=?utf-8?b?".base64_encode($toName)."?="."<" . $mailTo . ">\n"; 
-	$mailFrom = "=?utf-8?b?".base64_encode($fromName)."?="."<" . $mailFrom . ">\n"; 
-	$subject    = "=?utf-8?b?".base64_encode($subject)."?=\n"; 
-
-	$mailHeader = "from:{$mailFrom} \n"; 
-	$mailHeader .= "Return-Path:{$mailFrom} \n"; 
-	$mailHeader .= "Reply-To:{$mailFrom} \n"; 
-	$mailHeader .= "MIME-Version:1.0 \n"; 
-	$mailHeader .= "Content-Type: text/html;\n \tcharset=utf8\n"; 
-
-	$flag = mail($mailTo, $subject, $message, $mailHeader);
-	return $flag; 
-} 
-
-
-########################################### 메일 발송 ST ###################################################
-function mailSendSemina($mailform, $mailTo, $subject, $arrInfo, $arrGoodInfo){
-			
-	$mail_body = '';
-
-	if (file_exists($_SERVER['DOCUMENT_ROOT']."/_mailform/".$mailform.".html")) {
-		$fo = fopen($_SERVER['DOCUMENT_ROOT']."/_mailform/".$mailform.".html", "r");
-		while (!feof($fo)) $mail_body .= fgets($fo, 1024);
-		fclose($fo);
-	}		
-		
-	$Mail_Subject	= $subject;
-	$toName			= $arrInfo['list'][0]['order_name'];
-	$fromName		= "(주)하이덴탈코리아";
-	$mailFrom		= "no-reply@".$_SERVER['SERVER_NAME'];
-
-	if($subject=="세미나신청완료"){
-		$arrInfo['list'][0]['title']	= "세 미 나 신 청 완 료";
-		$arrInfo['list'][0]['subttl']	= "신청이";
-		$arrInfo['list'][0]['strttl']	= "신청내역";
-	}else{
-		$arrInfo['list'][0]['title']	= "세 미 나 구 매 완 료";
-		$arrInfo['list'][0]['subttl']	= "구매가";
-		$arrInfo['list'][0]['strttl']	= "구매내역";	
-	}
-	
-	$mail_body = str_replace("<!--[@PAGETITLE]-->", $subject, $mail_body);								//타이틀
-	$mail_body = str_replace("highdentalpg.hk-test.co.kr", $_SERVER['SERVER_NAME'], $mail_body);				//사이트주소변경
-	$mail_body = str_replace("<!--[@ctx01]-->", $arrInfo['list'][0]['title'], $mail_body);									//
-	$mail_body = str_replace("<!--[@ctx02]-->", $arrInfo['list'][0]['order_name'], $mail_body);									//
-	$mail_body = str_replace("<!--[@ctx03]-->", $arrInfo['list'][0]['subttl'], $mail_body);									//	
-	$mail_body = str_replace("<!--[@ctx04]-->", $arrInfo['list'][0]['strttl'], $mail_body);									//	
-	$mail_body = str_replace("<!--[@ctx05]-->", $arrInfo['list'][0]['order_summary'], $mail_body);									//
-	$mail_body = str_replace("<!--[@ctx06]-->", $arrInfo['list'][0]['pay_amount_txt'], $mail_body);									//
-	$mail_body = str_replace("<!--[@ctx07]-->", $arrInfo['list'][0]['pay_type_txt'], $mail_body);									//
-	$mail_body = str_replace("<!--[@ctx08]-->", $arrInfo['list'][0]['order_date'], $mail_body);									//	
-	$mail_body = str_replace("<!--[@ctx09]-->", $arrInfo['list'][0]['send_date_txt'], $mail_body);									//	
-	
-	//	echo $mail_body;
-	sendMail($mailFrom,$fromName, $mailTo, $toName, $Mail_Subject, $mail_body);	
-	return true;
-}
-########################################### 메일 발송 ED ###################################################
-########################################### 인포뱅크 문자 발송 ST ###################################################
-function smsInfobank($mtype, $toPhone, $toCountry="82", $toName, $toCode, $toDate, $toTime, $toEtc01="", $toEtc02=""){		## type (1:예약완료_K, 2:결과안내_K, 3:파일전송, 4:예약완료_E, 5:결과안내_E)
-	$message = 'mtype이 없습니다. 설정하세요';
-	############################################################# 1 국문 > 예약완료 ST #############################################################
-	if($mtype=="1"){
-$message = '[이화의원] 코로나19 검사 예약 안내
-'.$toName.'님, 코로나19 검사가 예약되었습니다.
-
-[예약내역]
-1.	예약번호: '.$toCode.'
-2.	수검자명: '.$toName.'
-3.	예약일시: '.substr($toDate,0,4).'년 '.substr($toDate,5,2).'월 '.substr($toDate,8,2).'일 '.str_replace(":","시 ",$toTime).'분
-
-검사하러 오실 때는 반드시 여권을 지참하여 주시기 바랍니다.
-예약 수정 및 취소는 홈페이지 (http://'.$_SERVER['SERVER_NAME'].'/corona/inquiry_result.php)에서 확인 부탁드립니다.
-
-이화의원 콜센터: 02)3462-2233
-문의 가능 시간: 08시~18시(평일, 주말·공휴일 동일)
-주소: 서울시 강남구 개포동 1228-6 이화의원';
-	}
-	############################################################# 1 국문 > 예약완료 ED #############################################################
-	############################################################# 2 국문 > 결과안내 ST #############################################################
-	if($mtype=="2"){
-		if($toTime=="양성(positive)"){
-$message = '[이화의원] 코로나19 검사 결과 안내
-'.$toName.'님, 코로나19 '.$toCode.' 결과를 안내해드립니다.
-
-[검사내역]
-1. 검사일시: '.$toDate.'
-2. 수검자명: '.$toName.'
-3. 검사방법: 비인두도말 '.$toCode.'
-4. 검사결과: '.$toTime.'
-
-자택 내 가족과 분리된 공간에서 대기하여 주시기 바랍니다.
-추후 보건소에서 순차적으로 연락드릴 예정입니다.
-
-이화의원 콜센터: 02)3462-2233
-문의가능시간: 08시~18시(평일, 주말·공휴일 동일)
-';
-		}else{
-$message = '[이화의원] 코로나19 검사 결과 안내
-'.$toName.'님, 코로나19 '.$toCode.' 결과를 안내해드립니다.
-
-[검사내역]
-1. 검사일시: '.$toDate.'
-2. 수검자명: '.$toName.'
-3. 검사방법: 비인두도말 '.$toCode.'
-4. 검사결과: '.$toTime.'
-
-홈페이지와 이메일을 통해 결과지를 출력하실 수 있습니다.
-홈페이지에서 결과를 확인하시려면 예약번호와 생년월일(YYYY-MM-DD)을 입력해주시기 바랍니다.
-(http://'.$_SERVER['SERVER_NAME'].'/corona/inquiry_result.php)
-
-이화의원 콜센터: 02)3462-2233
-문의가능시간: 08시~18시(평일, 주말·공휴일 동일)
-';		
-		}
-	}
-	############################################################# 2 국문 > 결과안내 ED #############################################################
-	############################################################# 4 영문 > 예약완료 ST #############################################################
-	if($mtype=="4"){
-$message = '[Ewha Medical Center] COVID-19 testing reservation confirmation
-'.$toEtc01.', Your booking has been confirmed.
-
-[Reservation]
-1. Booking Number: '.$toCode.'
-2. Examinee’s Name: '.$toName.'
-3. Date and Time: '.substr($toDate,0,4).'/'.substr($toDate,5,2).'/'.substr($toDate,8,2).'/ '.$toTime.'
-
-For COVID-19 Testing, please bring your passport.
-For changing reservation, please visit the website. (http://'.$_SERVER['SERVER_NAME'].'/corona/testing_result.php)
-
-Ewha call center: 02-3462-2233 (Extension: 0)
-The call center operates from 08:00 to 18:00 every day for 365 days.
-Address: 1228-6, Gaepo-dong, Gangnam-gu, Seoul, Republic of Korea';
-	}	
-	############################################################# 4 영문 > 예약완료 ED #############################################################
-	############################################################# 5 영문 > 결과안내 ST #############################################################
-	if($mtype=="5"){
-		if($toTime=="Positive"){
-$message = '[Ewha Medical Center] COVID-19 testing results
-'.$toEtc01.', We inform you of the results of the COVID-19 PCR test. 
-
-1. Date and Time: '.substr($toDate,0,4).'/'.substr($toDate,5,2).'/'.substr($toDate,8,2).'
-2. Examinee’s Name: '.$toName.'
-3. method of test: '.$toCode.'
-4. Test result: '.$toTime.'
-
-Please wait in a space separated from your family in your home.
-The public health center will contact you in order.
-
-Ewha call center: 02-3462-2233 (Extension: 0)
-The call center operates from 08:00 to 18:00 every day for 365 days.
-';	
-		}else{
-$message = '[Ewha Medical Center] COVID-19 testing results
-'.$toEtc01.', We inform you of the results of the COVID-19 PCR test. 
-
-1. Date and Time: '.substr($toDate,0,4).'/'.substr($toDate,5,2).'/'.substr($toDate,8,2).'
-2. Examinee’s Name: '.$toName.'
-3. method of test: '.$toCode.'
-4. Test result: '.$toTime.'
-
-Results can be printed on the website or via e-mail.
-To check the results on the website, please enter your reservation number and date of birth (YYYY-MM-DD).
-(http://'.$_SERVER['SERVER_NAME'].'/corona/testing_result.php)
-
-Ewha call center: 02-3462-2233 (Extension: 0)
-The call center operates from 08:00 to 18:00 every day for 365 days.
-';		
-		}
-	}
-	############################################################# 5 영문 > 결과안내 ED #############################################################
-
-	############################################################# 9 직접입력 ST #############################################################
-	if($mtype=="9"){
-		$message = $toTime;		
-	}
-	############################################################# 9 직접입력 ED #############################################################
-	if(strlen($toPhone)>8){
-		$url = 'https://rest.supersms.co/sms/xml?' . http_build_query([
-			'id' => 'ewhalab_http',
-			'pwd' => '8Z16319QHLC103BZDHF3',
-			'from' => '0234624837',
-			'to_country' => $toCountry,
-			'to' => $toPhone,
-			'message' => $message,
-			'report_req' => '1'
-		]);
-		
-		$ch = curl_init($url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		$response = curl_exec($ch);
-
-		$xml = simplexml_load_string($response);
-
-		if ($xml === false){
-			echo "Failed loading XML: ";
-		} else {
-			//print_r($xml);
-			//echo($xml->to_country);
-			//echo($xml->to);
-			echo("response code : " . $xml->messages->message->err_code);
-		} 
-	}
-}
-########################################### 인포뱅크 문자 발송 ED ###################################################
-########################################### 문자박사 문자 발송 ST ###################################################
-function munja_send($mtype, $name, $phone, $msg, $callback="010-9213-0647", $contents="", $reserve="", $reserve_time="", $etc1="", $etc2="") {
-	$host = "www.munja123.com";
-	$id = "oneullab"; // 문자박사 아이디 입력
-	$pass = "dhsmffoq2388!!"; // 문자박사 비밀번호 입력
-	$param = "remote_id=".$id;
-	$param .= "&remote_pass=".$pass;
-	$param .= "&remote_reserve=".$reserve;
-	$param .= "&remote_reservetime=".$reserve_time;
-	$param .= "&remote_name=".$name;
-	$param .= "&remote_phone=".$phone;
-	$param .= "&remote_callback=".$callback;
-	$param .= "&remote_msg=".$msg;
-	$param .= "&remote_contents=".$contents;
-	$param .= "&remote_etc1=".$etc1;
-	$param .= "&remote_etc2=".$etc2;
-	
-	if ($mtype == "lms") {
-		$path = "/Remote/RemoteMms.html";
-	} else {
-		$path = "/Remote/RemoteSms.html";
-	}
-	$fp = @fsockopen($host,80,$errno,$errstr,30);
-	$return = "";
-	if (!$fp) {
-		echo $errstr."(".$errno.")";
-	} else {
-		fputs($fp, "POST ".$path." HTTP/1.1\r\n");
-		fputs($fp, "Host: ".$host."\r\n");
-		fputs($fp, "Content-type: application/x-www-form-urlencoded\r\n");
-		fputs($fp, "Content-length: ".strlen($param)."\r\n");
-		fputs($fp, "Connection: close\r\n\r\n");
-		fputs($fp, $param."\r\n\r\n");
-		while(!feof($fp)) $return .= fgets($fp,4096);
-	}
-	fclose ($fp);
-	$_temp_array = explode("\r\n\r\n", $return);
-	$_temp_array2 = explode("\r\n", $_temp_array[1]);
-	if (sizeof($_temp_array2) > 1) {
-		$return_string = $_temp_array2[1];
-	} else {
-		$return_string = $_temp_array2[0];
-	}
-	return $return_string;	
-}
-########################################### 문자박사 문자 발송 ED ###################################################
-function kakaoToken(){
-	$userid		= "ellaboutique";									// 필수입력	// 홈피pw : Ellaboutique1!
-	$userpw		= "d8979ea4bbf7d3ded176e9d27b5f1221b9bff754";		// d8979ea4bbf7d3ded176e9d27b5f1221b9bff754
-
-	//수신자 정보
-	$api_server = "https://www.biztalk-api.com";		// 서버
-	$api_url = "/v2/auth/getToken";						// 토큰
-
-	$jsonVars  = '"bsid":"'.$userid.'"';
-	$jsonVars .= ', "passwd":"'.$userpw.'"';
-	$postvars = '{'.$jsonVars.'}';      //JSON 데이터
-
-	//echo $postvars;
-
-	$headers = array("cache-control: no-cache","content-type: application/json; charset=utf-8");	// header
-
-	// api 호출
-	$ch = curl_init();
-	curl_setopt($ch,CURLOPT_URL, $api_server.$api_url);
-	curl_setopt($ch,CURLOPT_POST, true);
-	curl_setopt($ch,CURLOPT_POSTFIELDS, $postvars);
-	curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,3);
-	curl_setopt($ch,CURLOPT_TIMEOUT, 60);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-	$response = curl_exec($ch);
-
-
-	//curl 에러 확인
-	if(curl_errno($ch)){
-	  //  echo 'Curl error: ' . curl_error($ch);
-	}else{
-	  //  print_r($response);
-	}
-	curl_close ($ch);
-
-	$jsonValue = json_decode($response, true);
-	return $jsonValue['token'];
-}
-########################################### 카카오 알림톡(SureBiz) ########################################### ST
-function kakaoApiTalk($kakao_tpl_no="kca_01", $arrVarData = array(), $userPNum=""){
-
-	$arrJsonData = array();
-
-	if($kakao_tpl_no=="kca_01"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_12";		// 템플릿 코드	
-		$text			= "안녕하십니까 주안영상미디어센터입니다.
-
-귀하의 후보자 접수가 완료되었습니다.
-
-아래의 정보로 최종 평가를 실시하여 
-#{1순위선정발표일} ~ #{2순위선정발표일}경 평가 결과를 순차적으로 안내드릴 예정입니다.
-
-
-[접수 정보 자동 기록]
-상호명 : #{상호명}
-대표자명 : #{대표자명}
-접수번호 : #{접수번호}
-평가 산업명 : #{평가 산업명}
-
-
-접수하신 정보에 대해 수정을 원하실 경우, 상담톡 또는 메일(help@kcakca.com)로 문의하여 주시기 바랍니다.
-
-감사합니다.";
-	########################################################################################### 접수 완료 안내 ED
-	}else if($kakao_tpl_no=="kca_02"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_02";		// 템플릿 코드	
-		$text			= "안녕하십니까 주안영상미디어센터입니다.
-
-귀사의 요청에 따라 정상적으로 접수 취소 처리 되었음을 안내드립니다.
-
-추가 문의사항이 있으신 경우, 상담톡 또는 유선 번호(02-783-7104)로 문의하여 주시기 바랍니다.
-
-감사합니다.
-		";
-	########################################################################################### 접수 완료 안내 ED
-	}else if($kakao_tpl_no=="kca_03"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_03";		// 템플릿 코드	
-		$text			= "안녕하십니까 KCA주안영상미디어센터입니다.
-
-귀하께서 접수하신 KCIA 한국소비자산업평가 #{업종}(업종)의 평가 결과 안내가 지연되고 있습니다.
-
-현재 접수량이 많아 평가 및 검토에 시간이 다소 소요되어 평가 결과 안내는 #{2순위선정발표일}경 순차적으로 이루어질 예정입니다.
-
-이에 후보자분들의 많은 양해 부탁드리며, 문자 또는 카카오톡으로 안내가 이루어질 예정입니다.
-
-항상 공정하고 신뢰성 있는 발표를 위해 노력하는 주안영상미디어센터가 되겠습니다.
-
-감사합니다.
-		";
-	########################################################################################### 접수 완료 안내 ED
-	}else if($kakao_tpl_no=="kca_04"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_04";		// 템플릿 코드	
-		$text			= "안녕하십니까 KCA주안영상미디어센터입니다.
-
-귀사의 접수에 따라 최종 평가를 진행하였으며, 평가 결과 우수 업체로 선정되어 안내드립니다.
-
-최종 우수 선정 업체인 귀하께서는 하단 링크를 통해 결과를 확인하시어 등록 마감일(#{등록마감일})까지 등록을 완료하여 주시기 바랍니다.
-
-▶ 등록 안내 바로가기 : #{평가안내페이지}
-해당 링크는 당사 공식 웹사이트로 연결되며, 안전하게 보호됩니다.
-
-▶ 링크 접속이 어려우실 경우, 홈페이지 상의 '마이페이지' 에서 등록 관련 안내 사항을 확인하실 수 있습니다.
-
-감사합니다.
-
-* 상담시간 : 평일 09시~18시
-(점심시간 : 11시 30분~13시)
-
-* 본 메시지는 #{접수일자} 개인정보 수집 및 이용 동의에 근거하여 발송되었습니다.
-		";
-
-		$arrAttechment = array(
-			"name" => "평가안내페이지",
-			"type" => "WL",
-			"url_mobile" => "".$_SITE["DOMAIN"]."",
-			"url_pc" => "".$_SITE["DOMAIN"].""
-		);
-
-		$arrJsonData["attach"] = array(
-			"button" => $arrAttechment
-		);
-
-	########################################################################################### 접수 완료 안내 ED
-	}else if($kakao_tpl_no=="kca_05"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_05";		// 템플릿 코드	
-		$text			= "안녕하십니까 주안영상미디어센터입니다.
-
-귀하는 현재 최종 우수 업체 선정 안내 후 등록을 하시지 않아 금일까지 미등록 시 접수 취소 처리됨을 최종 안내드립니다.
-
-▶ 등록하기 바로가기 : #{등록하기페이지}
-해당 링크는 당사 공식 웹사이트로 연결되며, 안전하게 보호됩니다.
-
-▶ 링크 접속이 어려우실 경우, 직접 홈페이지로 접속하셔서 [마이페이지] 에서 등록 관련 안내 사항을 확인하실 수 있습니다.
-
-감사합니다.
-
-* 상담시간 : 평일 09시~18시
-   점심시간 : 11시 30분~13시
-		";
-
-		$arrAttechment = array(
-			"name" => "등록하기페이지",
-			"type" => "WL",
-			"url_mobile" => "".$arrVarData["#{등록하기페이지}"]."",
-			"url_pc" => "".$arrVarData["#{등록하기페이지}"].""
-		);
-
-		$arrJsonData["attach"] = array(
-			"button" => $arrAttechment
-		);
-
-	########################################################################################### 접수 완료 안내 ED
-	}else if($kakao_tpl_no=="kca_06"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_06";		// 템플릿 코드	
-		$text			= "안녕하십니까 주안영상미디어센터입니다.
-
-귀하는 현재 최종 우수 업체 선정 안내 후 등록을 하시지 않아 금일까지 미등록 시 접수 취소 처리됨을 최종 안내드립니다.
-
-▶ 등록하기 바로가기 : #{등록하기페이지}
-해당 링크는 당사 공식 웹사이트로 연결되며, 안전하게 보호됩니다.
-
-▶ 링크 접속이 어려우실 경우, 홈페이지의 [마이페이지] 에서 등록 관련 안내 사항을 확인하실 수 있습니다.
-
-상담시간 : 평일 09시~18시
-점심시간 : 11시 30분~13시
-		";
-
-		$arrAttechment = array(
-			"name" => "등록하기페이지",
-			"type" => "WL",
-			"url_mobile" => "".$arrVarData["#{등록하기페이지}"]."",
-			"url_pc" => "".$arrVarData["#{등록하기페이지}"].""
-		);
-
-		$arrJsonData["attach"] = array(
-			"button" => $arrAttechment
-		);
-
-	########################################################################################### 접수 완료 안내 ED
-	}else if($kakao_tpl_no=="kca_07"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_07";		// 템플릿 코드	
-		$text			= "안녕하십니까 주안영상미디어센터입니다.
-
-귀사의 우수 업체 등록이 완료되어 안내드립니다.
-
-홈페이지 내 '마이페이지'에서 최종 등록 정보를 확인 부탁드리며,
-해당 정보를 바탕으로 언론보도 발표와 발급품 제작이 진행될 예정이오니
-수정사항이 있으신 경우 메일(help@kcakca.com) 또는 상담톡을 통해 #{회신가능기한}까지 회신 부탁드립니다.
-
-감사합니다.
-		";
-	########################################################################################### 접수 완료 안내 ED
-	}else if($kakao_tpl_no=="kca_08"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_08";		// 템플릿 코드	
-		$text			= "안녕하십니까 주안영상미디어센터입니다.
-
-귀사의 등록 포기 요청에 따라 최종 선정 취소 처리 완료되었음을 안내드립니다.
-
-추가 문의사항이 있으신 경우, 상담톡 또는 유선 번호(02-783-7104)로 연락 부탁드립니다.
-
-감사합니다.
-		";
-	########################################################################################### 접수 완료 안내 ED
-	}else if($kakao_tpl_no=="kca_09"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_09";		// 템플릿 코드	
-		$text			= "안녕하십니까 주안영상미디어센터입니다.
-
-귀사의 1회차 발표 보도가 완료되어 안내 문자 발송드립니다.
-
-기사링크 : #{기사링크}
-
-발급품은 보도일을 기준으로 아래와 같이 제작 기간이 소요됨을 안내드립니다.
-
-* 온라인 발급품 : 2~3주 내외
-* 오프라인 발급품 : 5~6주 내외
-
-감사합니다.
-		";
-	########################################################################################### 접수 완료 안내 ED
-	}else if($kakao_tpl_no=="kca_10"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_10";		// 템플릿 코드	
-		$text			= "안녕하십니까 주안영상미디어센터입니다.
-
-귀사의 온라인 발급품이 발급 완료되어 안내드립니다.
-
-다운로드 기한(#{다운로드기한}) 내에 홈페이지 상의 '마이페이지'에서 다운로드 버튼을 확인 부탁드립니다.
-
-추가 문의사항이 있으신 경우, 유선 번호(02-783-7104)로 연락 부탁드립니다.
-
-감사합니다.
-		";
-	########################################################################################### 접수 완료 안내 ED
-	}else if($kakao_tpl_no=="kca_11"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_11";		// 템플릿 코드	
-		$text			= "안녕하십니까 주안영상미디어센터입니다.
-
-귀사의 오프라인 발급품이 발송 완료되어 안내드립니다.
-
-송장번호 : #{송장번호}
-
-추가 문의사항이 있으신 경우, 유선 번호(02-783-7104)로 연락 부탁드립니다.
-
-감사합니다.
-		";
-	########################################################################################### 접수 완료 안내 ED
-	}else{
-		return;
-	}
-
-	foreach($arrVarData as $key => $val){
-		$text = str_replace($key,$val,$text);
-	}
-
-	$usercode		= "kcasms1";		// 슈어엠 아이디				
-	$deptcode		= "47-4Q7-2F";		// 회사코드 // 47-4Q7-2F // 슈어엠 회사코드
-	$biz_type		= "at";				// 타입 : at/알림톡
-	$yellowid_key	= "17dd9338a62c696980a827ffac808d575921a597";	// 발신프로필키 : 17dd9338a62c696980a827ffac808d575921a597	
-	//$reqphone		= "15663013";		// 발신번호
-	$reqphone		= "01021817353";		// 발신번호
-
-	$to				= str_replace("010","82-10",str_replace("-","",$userPNum));	// 국가번호 포함 전화번호 82-1066440212
-
-	//수신자 정보
-	$api_server = "https://rest.surem.com";		// 서버	
-	$api_url = "/kakao/v2/alimtalk";					// url
-
-	$arrJsonData["usercode"] = $usercode;
-	$arrJsonData["deptcode"] = $deptcode;
-	$arrJsonData["biz_type"] = $biz_type;
-	$arrJsonData["yellowid_key"] = $yellowid_key;
-	$arrJsonData["template_code"] = $template_code;
-	$arrJsonData["to"] = $to;
-	$arrJsonData["reqphone"] = $reqphone;
-	$arrJsonData["text"] = $text;
-
-	$postvars = json_encode($arrJsonData);
-
-	$headers = array("content-type: application/json; charset=utf-8");	// header
-
-	// api 호출
-	$ch = curl_init();
-	curl_setopt($ch,CURLOPT_URL, $api_server.$api_url);
-	curl_setopt($ch,CURLOPT_POST, true);
-	curl_setopt($ch,CURLOPT_POSTFIELDS, $postvars);
-	curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,3);
-	curl_setopt($ch,CURLOPT_TIMEOUT, 60);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-	//curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-	$response = curl_exec($ch);
-
-	curl_close($ch);
-	//	print_r($response);
-}
-
-########################################### SMS/LMS(SureBiz) ########################################### ST
-function smsLmsSureApi($kakao_tpl_no, $arrVarData = array() ,$to){
-
-	$arrJsonData = array();
-
-	if($kakao_tpl_no=="kca_01"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_01";		// 템플릿 코드	
-		$text			= "안녕하십니까 주안영상미디어센터입니다.
-
-귀하의 후보자 접수가 완료되었습니다.
-
-아래의 정보로 최종 평가를 실시하여 
-#{1순위선정발표일} ~ #{2순위선정발표일}경 평가 결과를 순차적으로 안내드릴 예정입니다.
-
-[접수 정보 자동 기록]
-
-접수하신 정보에 대해 수정을 원하실 경우, 상담톡 또는 메일(help@kcakca.com)로 문의하여 주시기 바랍니다.
-
-감사합니다.";
-	########################################################################################### 접수 완료 안내 ED
-	}else if($kakao_tpl_no=="kca_02"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_02";		// 템플릿 코드	
-		$text			= "안녕하십니까 주안영상미디어센터입니다.
-
-귀사의 요청에 따라 정상적으로 접수 취소 처리 되었음을 안내드립니다.
-
-추가 문의사항이 있으신 경우, 상담톡 또는 유선 번호(02-783-7104)로 문의하여 주시기 바랍니다.
-
-감사합니다.
-		";
-	########################################################################################### 접수 완료 안내 ED
-	}else if($kakao_tpl_no=="kca_03"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_03";		// 템플릿 코드	
-		$text			= "안녕하십니까 KCA주안영상미디어센터입니다.
-
-귀하께서 접수하신 KCIA 한국소비자산업평가 #{업종}(업종)의 평가 결과 안내가 지연되고 있습니다.
-
-현재 접수량이 많아 평가 및 검토에 시간이 다소 소요되어 평가 결과 안내는 #{2순위선정발표일}경 순차적으로 이루어질 예정입니다.
-
-이에 후보자분들의 많은 양해 부탁드리며, 문자 또는 카카오톡으로 안내가 이루어질 예정입니다.
-
-항상 공정하고 신뢰성 있는 발표를 위해 노력하는 주안영상미디어센터가 되겠습니다.
-
-감사합니다.
-		";
-	########################################################################################### 접수 완료 안내 ED
-	}else if($kakao_tpl_no=="kca_04"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_04";		// 템플릿 코드	
-		$text			= "안녕하십니까 KCA주안영상미디어센터입니다.
-
-귀사의 접수에 따라 최종 평가를 진행하였으며, 평가 결과 우수 업체로 선정되어 안내드립니다.
-
-최종 우수 선정 업체인 귀하께서는 하단 링크를 통해 결과를 확인하시어 등록 마감일(#{등록마감일})까지 등록을 완료하여 주시기 바랍니다.
-
-▶ 등록 안내 바로가기 : #{평가안내페이지}
-해당 링크는 당사 공식 웹사이트로 연결되며, 안전하게 보호됩니다.
-
-▶ 링크 접속이 어려우실 경우, 홈페이지 상의 '마이페이지' 에서 등록 관련 안내 사항을 확인하실 수 있습니다.
-
-감사합니다.
-
-* 상담시간 : 평일 09시~18시
-(점심시간 : 11시 30분~13시)
-
-* 본 메시지는 #{접수일자} 개인정보 수집 및 이용 동의에 근거하여 발송되었습니다.";
-
-		$arrAttechment = array(
-			"name" => "평가안내페이지",
-			"type" => "WL",
-			"url_mobile" => "".$_SITE["DOMAIN"]."",
-			"url_pc" => "".$_SITE["DOMAIN"].""
-		);
-
-		$arrJsonData["attach"] = array(
-			"button" => $arrAttechment
-		);
-
-	########################################################################################### 접수 완료 안내 ED
-	}else if($kakao_tpl_no=="kca_05"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_05";		// 템플릿 코드	
-		$text			= "안녕하십니까 주안영상미디어센터입니다.
-
-최종 우수 발표 업체로 선정되신 귀하께 #{최종선정일}경 안내 문자 또는 알림톡을 발송해드렸습니다.
-안내 사항을 확인하시어 등록을 마감인 오늘 자정까지 완료하여 주시기 바랍니다. 
-
-▶ 등록하기 바로가기 : #{등록하기페이지}
-해당 링크는 당사 공식 웹사이트로 연결되며, 안전하게 보호됩니다.
-
-▶ 링크 접속이 어려우실 경우, 직접 홈페이지로 접속하셔서 [마이페이지] 에서 등록 관련 안내 사항을 확인하실 수 있습니다.
-
-감사합니다.
-
-* 상담시간 : 평일 09시~18시
-   점심시간 : 11시 30분~13시";
-
-		$arrAttechment = array(
-			"name" => "등록하기페이지",
-			"type" => "WL",
-			"url_mobile" => "".$_SITE["DOMAIN"]."",
-			"url_pc" => "".$_SITE["DOMAIN"].""
-		);
-
-		$arrJsonData["attach"] = array(
-			"button" => $arrAttechment
-		);
-
-	########################################################################################### 접수 완료 안내 ED
-	}else if($kakao_tpl_no=="kca_06"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_06";		// 템플릿 코드	
-		$text			= "안녕하십니까 주안영상미디어센터입니다.
-
-귀하는 현재 최종 우수 업체 선정 안내 후 등록을 하시지 않아 금일까지 미등록 시 접수 취소 처리됨을 최종 안내드립니다.
-
-▶ 등록하기 바로가기 : #{등록하기페이지}
-해당 링크는 당사 공식 웹사이트로 연결되며, 안전하게 보호됩니다.
-
-▶ 링크 접속이 어려우실 경우, 홈페이지의 [마이페이지] 에서 등록 관련 안내 사항을 확인하실 수 있습니다.
-
-상담시간 : 평일 09시~18시
-점심시간 : 11시 30분~13시";
-
-		$arrAttechment = array(
-			"name" => "등록하기페이지",
-			"type" => "WL",
-			"url_mobile" => "".$_SITE["DOMAIN"]."",
-			"url_pc" => "".$_SITE["DOMAIN"].""
-		);
-
-		$arrJsonData["attach"] = array(
-			"button" => $arrAttechment
-		);
-
-	########################################################################################### 접수 완료 안내 ED
-	}else if($kakao_tpl_no=="kca_07"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_07";		// 템플릿 코드	
-		$text			= "안녕하십니까 주안영상미디어센터입니다.
-
-귀사의 우수 업체 등록이 완료되어 안내드립니다.
-
-홈페이지 내 '마이페이지'에서 최종 등록 정보를 확인 부탁드리며,
-해당 정보를 바탕으로 언론보도 발표와 발급품 제작이 진행될 예정이오니
-수정사항이 있으신 경우 메일(help@kcakca.com) 또는 상담톡을 통해 #{회신가능기한}까지 회신 부탁드립니다.
-
-감사합니다.";
-	########################################################################################### 접수 완료 안내 ED
-	}else if($kakao_tpl_no=="kca_08"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_08";		// 템플릿 코드	
-		$text			= "안녕하십니까 주안영상미디어센터입니다.
-
-귀사의 등록 포기 요청에 따라 최종 선정 취소 처리 완료되었음을 안내드립니다.
-
-추가 문의사항이 있으신 경우, 상담톡 또는 유선 번호(02-783-7104)로 연락 부탁드립니다.
-
-감사합니다.";
-	########################################################################################### 접수 완료 안내 ED
-	}else if($kakao_tpl_no=="kca_09"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_09";		// 템플릿 코드	
-		$text			= "안녕하십니까 주안영상미디어센터입니다.
-
-귀사의 1회차 발표 보도가 완료되어 안내 문자 발송드립니다.
-
-기사링크 : #{기사링크}
-
-발급품은 보도일을 기준으로 아래와 같이 제작 기간이 소요됨을 안내드립니다.
-
-* 온라인 발급품 : 2~3주 내외
-* 오프라인 발급품 : 5~6주 내외
-
-감사합니다.";
-	########################################################################################### 접수 완료 안내 ED
-	}else if($kakao_tpl_no=="kca_10"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_10";		// 템플릿 코드	
-		$text			= "안녕하십니까 주안영상미디어센터입니다.
-
-귀사의 온라인 발급품이 발급 완료되어 안내드립니다.
-
-다운로드 기한(#{다운로드기한}) 내에 홈페이지 상의 '마이페이지'에서 다운로드 버튼을 확인 부탁드립니다.
-
-추가 문의사항이 있으신 경우, 유선 번호(02-783-7104)로 연락 부탁드립니다.
-
-감사합니다.";
-	########################################################################################### 접수 완료 안내 ED
-	}else if($kakao_tpl_no=="kca_11"){	
-	########################################################################################### 접수 완료 안내 ST
-		$template_code	= "kca_11";		// 템플릿 코드	
-		$text			= "안녕하십니까 주안영상미디어센터입니다.
-
-귀사의 오프라인 발급품이 발송 완료되어 안내드립니다.
-
-송장번호 : #{송장번호}
-
-추가 문의사항이 있으신 경우, 유선 번호(02-783-7104)로 연락 부탁드립니다.
-
-감사합니다.";
-	########################################################################################### 접수 완료 안내 ED
-	}else{
-		return;
-	}
-		
-	$usercode		= "kcasms1";		// nyfood2012				
-	$deptcode		= "47-4Q7-2F";		// 회사코드
-	//$reqphone		= "15663013";		// 발신번호
-	$reqphone		= "16443013";		// 발신번호 // 01021817353
-
-	foreach($arrVarData as $key => $val){
-		$text = str_replace($key,$val,$text);
-	}
-
-	//수신자 정보
-	$api_server = "https://rest.surem.com";		// 서버		- https://rest.surem.com/messages/v2/sms
-	if(mb_strlen($text,"utf-8") < 70){ // 70자 이하인경우
-		$api_url = "/messages/v2/sms";					// SMS url
-	}else{
-		$api_url = "/messages/v2/mms";					// MMS/LMS url
-	}
-
-	$arrJsonData["usercode"] = $usercode;
-	$arrJsonData["deptcode"] = $deptcode;
-	$arrJsonData["to"] = $to;
-	$arrJsonData["reqphone"] = $reqphone;
-	$arrJsonData["text"] = $text;
-
-	$postvars = json_encode($arrJsonData);
-
-	$headers = array("content-type: application/json; charset=utf-8");	// header
-
-	// api 호출
-	$ch = curl_init();
-	curl_setopt($ch,CURLOPT_URL, $api_server.$api_url);
-	curl_setopt($ch,CURLOPT_POST, true);
-	curl_setopt($ch,CURLOPT_POSTFIELDS, $postvars);
-	curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,3);
-	curl_setopt($ch,CURLOPT_TIMEOUT, 60);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-	//curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-	$response = curl_exec($ch);
-
-	curl_close($ch);
-	//echo $api_server.$api_url; 
-	//echo $postvars;
-	//var_dump($response);
-	//exit;
-}
-
-########################################### 카카오 알림톡(directsend) ########################################### ST
-function kakaoAllim($kakao_tpl_no="001", $userName="", $userPNum="", $userID="", $note1="", $note2="", $note3="", $note4="", $note5=""){
-	/*
-	$ch = curl_init();
-	$username			= "hidk8597";					//필수입력
-	$key				= "dlkIKsBGqWp4ziX";			//필수입력
-	$kakao_plus_id		= "하이덴탈코리아";				//필수입력
-	$user_template_no	= $kakao_tpl_no;				//필수입력 (하단 259 라인 API 이용하여 확인)
-	#### 템플릿 넘버 13:주문접수 / 16:상품발송 / 19:주문취소 / 22:세미나 신청완료 / 25:세미나 구매완료 / 28:행사상품 오픈알림
-
-	$receiver = '{"name":"'.$userName.'","mobile":"'.$userPNum.'","note1":"'.$note1.'","note2":"'.$note2.'","note3":"'.$note3.'","note4":"'.$note4.'","note5":"'.$note5.'"}';
-	$receiver = '['.$receiver.']';
-
-	$postvars = '"username":"'.$username.'"';
-	$postvars = $postvars.', "key":"'.$key.'"';
-	$postvars = $postvars.', "kakao_plus_id":"'.$kakao_plus_id.'"';
-	$postvars = $postvars.', "user_template_no":"'.$user_template_no.'"';
-	$postvars = $postvars.', "receiver":'.$receiver;
-	$postvars = '{'.$postvars.'}';      //JSON 데이터
-
-	$url = "https://directsend.co.kr/index.php/api_v2/kakao_notice";         //URL
-
-	//헤더정보
-	$headers = array("cache-control: no-cache","content-type: application/json; charset=utf-8");
-
-	curl_setopt($ch,CURLOPT_URL, $url);
-	curl_setopt($ch,CURLOPT_POST, true);
-	curl_setopt($ch,CURLOPT_POSTFIELDS, $postvars);
-	curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,3);
-	curl_setopt($ch,CURLOPT_TIMEOUT, 60);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-	$response = curl_exec($ch);
-
-	//curl 에러 확인
-	if(curl_errno($ch)){
-	//	echo 'Curl error: ' . curl_error($ch);
-	}else{
-	//	print_r($response);
-	}
-	curl_close ($ch);
-	*/	
-/********************************************
-	$btToken	= kakaoToken();					//필수입력
-	$senderKey	= "ef98eb58a1638f88ed586fd5e7b3ffd260a63aeb";
-	$homepage	=  "http://ellapg.hk-test.co.kr/";
-	$mypage		=  $homepage."member/mypage.php";
-	
-	if($kakao_tpl_no=="001"){			#### 회원가입완료
-		$msgIdx		= "860514";	
-		$message	= "[엘라부티크]
-
-회원가입이 완료되었습니다.
-
-안녕하세요. ".$userName."님
-저희 엘라부티크와 함께 해주셔서 감사합니다.
-
-".$userName."님의 ID : ".$userID."
-
-매일 인스타 그램 라이브 방송과 홈페이지에서 다양한 제품들을 만나보실 수 있습니다.
-
-▶ 홈페이지 바로가기
-".$homepage;
-	}else if($kakao_tpl_no=="002"){		#### 결제완료
-		$msgIdx		= "860515";	
-		$message	= "[엘라부티크]
-
-안녕하세요 .".$userName."님
-소중한 주문이 접수완료 되었습니다.
-고객님께서 주문해주신 상품은 빈티지 및 중고 상품입니다.
-육안으로 도드라지지 않는 미세한 이염, 하자로 인한 교환 및 환불은 불가합니다.
-
-▶ 날짜 : ".$note1."
-▶ 주문번호 : ".$note2."
-▶ 상품명 : ".$note3."
-▶ 금액 : ".$note4."
-
-- 배송 일정은 수선, 감정 혹은 별도 요청사항이 있는 제품이 아닌 경우 주말 제외 “익일 오전” 발송됩니다.
-- 해외 배송은 엘라부티크 채널로 연락 부탁드립니다.
-- 수선 기간은 평균 3~4주 소요, 감정 및 케어 기간은 7-20일 소요 됩니다.
-- 구매당시 미처 안내드리지 못한 부분이 있을 경우 발송 이전에 검수 후 다시 한번 안내 도와드리겠습니다.
-- 구매가 이루어지면 상세컷을 모두 확인 하신 것으로 간주합니다. 상세컷을 반드시 꼼꼼하게 확인해주세요.
-- 제품 하자로 인한 경우가 아닌 단순변심으로 인한 구매취소, 제품 수선,감정 중 중도취소시 취소 수수료 (판매가의 5%) 발생합니다.
-신중한 구매 부탁드립니다.
-
-▶ 홈페이지 바로가기
-".$homepage;
-	}else if($kakao_tpl_no=="003"){		#### 개인 결제창 발송
-		$msgIdx		= "860516";
-		$message	= "[엘라부티크]
-
-안녕하세요. ".$userName."님
-주문 요청이 성공적으로 처리 되었습니다.
-아래 링크(마이페이지)를 통해 확인 해주세요.
-
-".$mypage."
-
-- 빈티지 제품은 기본적으로 사용감이 있는 상품입니다.
-- 육안으로 도드라지지 않는 미세한 이염, 하자로 인한 교환 및 환불은 불가합니다.
-- 상세컷을 통해 컨디션을 자세히 확인해 주시고
-- 구매가 완료되면 모든 내용을 확인하신 것으로 간주합니다.
-- 또한 빈티지 제품 특성상 저희 측으로 오기 이전에 염색되었을 가능성도 염두해 주시고
-신중한 구매 부탁드립니다.
-* 제품이 하나밖에 없기 때문에 단순 변심으로 인한 교환 환불은 불가합니다.";
-	}else if($kakao_tpl_no=="004"){		#### 배송시작
-		$msgIdx		= "860518";
-		$message	= "[엘라부티크]
-
-안녕하세요. ".$userName."님
-주문하신 상품이 발송되었습니다.
-
-▶ 날짜 : ".date("Y-m-d")."
-▶ 상품명 : ".$note2."
-▶ 택배사 : 로젠택배
-▶ 운송장번호 : ".$note3."
-
-공휴일 제외 1~2일이내에 배송될 예정입니다.
-(산간지역 3일)
-주문량이 많을 경우 평소보다 배송이 지연될 수 있는 점 양해 부탁드립니다.
-
-▶ 홈페이지 바로가기
-".$homepage;	
-	}else if($kakao_tpl_no=="005"){		#### 배송완료
-		$msgIdx		= "860519";
-		$message	= "[엘라부티크]
-
-안녕하세요 . ".$userName."님
-주문하신 소중한 상품의 배송이 완료 되었습니다.
-
-▶ 날짜 : ".date("Y-m-d")."
-▶ 주문번호 : ".$note1."
-▶ 상품명 : ".$note2."
-앞으로도 좋은 제품들 많이 보여드릴 수 있게 노력하는 엘라부티크가 되겟습니다.
-오늘도 행복한 하루 되세요 :)
-
-▶ 홈페이지 바로가기
-".$homepage;	
-	}else if($kakao_tpl_no=="006"){		#### 환불처리 완료
-		$msgIdx		= "860520";
-		$message	= "[엘라부티크]
-
-안녕하세요 . ".$userName."님
-주문해주신 상품의 환불요청이 정상적으로 처리되었습니다.
-
-▶ 날짜 : ".date("Y-m-d")."
-▶ 주문번호 : ".$note1."
-▶ 상품명 : ".$note2."
-▶ 금액 : ".$note3."
-
-자세한 내용은 마이페이지에서 확인 가능합니다
-
-▶ 마이페이지 바로가기
-".$mypage."
-(카드 취소의 경우 카드사에 따라 3~5일 정도 소요되실 수 있습니다.)";	
-	}else if($kakao_tpl_no=="007"){		#### 수선 신청 후
-		$msgIdx		= "860522";
-		$message	= "[엘라부티크]
-
-안녕하세요 . ".$userName."님
-주문하신 상품의 수선요청이 정상적으로 접수 되었습니다.
-
-수선 기간은 평균 3~4주 소요, 감정 및 케어 기간은 7-20일 소요 됩니다.
-
-
-▶ 날짜 : ".date("Y-m-d")."
-▶ 상품명 : ".$note1."
-▶ 수선내용: ".$note2."
-
-자세한 진행 내용은 마이페이지에서 확인 가능합니다
-
-▶ 마이페이지 바로가기
-".$mypage;	
-	}else if($kakao_tpl_no=="008"){		#### 쿠폰 발송
-		$msgIdx		= "860523";
-		$message	= "[엘라부티크]
-
-안녕하세요. ".$userName."님
-저희 엘라부티크와 함께 해주셔서 감사합니다.
-
-".$userName."고객님의 동의에 의해 지급된 쿠폰 안내 메시지입니다
-
-".$userName."님의 ID : ".$userID."
-
-".$userName." 고객님 엘라부티크에서 #{쿠폰 제목}쿠폰 이 발송 되었습니다!
-사용 기간까지 사용 부탁드립니다 #{쿠폰 사용기간}
-해당 쿠폰은 쿠폰기간내 미사용시 자동 소멸 됩니다.
-
-자세한 진행 내용은 마이페이지에서 확인 가능합니다
-
-▶ 마이페이지 바로가기
-".$mypage."
-▶ 홈페이지 바로가기
-".$homepage;	
-	}else if($kakao_tpl_no=="009"){		#### 1차 예약결제 완료 후
-		$msgIdx		= "860524";
-		$message	= "[엘라부티크]
-
-안녕하세요 .".$userName."님
-소중한 예약 주문이 접수완료 되었습니다.
-고객님께서 주문해주신 상품은 빈티지 및 중고 상품입니다.
-육안으로 도드라지지 않는 미세한 이염, 하자로 인한 교환 및 환불은 불가합니다.
-
-▶ 날짜 : ".date("Y-m-d")."
-▶ 주문번호 : ".$note1."
-▶ 상품명 : ".$note2."
-▶ 금액 : ".$note3."
-▶ 차액 금액 : ".$note4."
-▶ 예약 기간 ".$note5."
-
-- 배송 일정은 수선, 감정 혹은 별도 요청사항이 있는 제품이 아닌 경우 주말 제외 “익일 오전” 발송됩니다.
-- 해외 배송은 엘라부티크 체널로 연락 부탁드립니다.
-- 수선 기간은 평균 3~4주 소요, 감정 및 케어 기간은 7-20일 소요 됩니다.
-- 구매당시 미처 안내드리지 못한 부분이 있을 경우 발송 이전에 검수 후 다시 한번 안내 도와드리겠습니다.
-- 구매가 이루어지면 상세컷을 모두 확인 하신 것으로 간주합니다. 상세컷을 반드시 꼼꼼하게 확인해주세요.
-- 제품 하자로 인한 경우가 아닌 단순변심으로 인한 구매취소, 제품 수선,감정 중 중도취소시 취소 수수료 (판매가의 5%) 발생합니다.
-신중한 구매 부탁드립니다.
-- 예약기간내에 환불 및 교환은 불가합니다.
-- 수선 및 감정은 완불 후 진행 됩니다.
-
-▶ 홈페이지 바로가기
-".$homepage;	
-	}else if($kakao_tpl_no=="010"){		#### 	Q&A 답변
-		$msgIdx		= "860525";
-		$message	= "[엘라부티크]
-
-안녕하세요. ".$userName."님
-저희 엘라부티크와 함께 해주셔서 감사합니다.
-
-
-".$userName."님 께서 문의주신 내용의 답변이 등록 되었습니다.
-
-매일 인스타 그램 라이브 방송과 홈페이지에서 다양한 제품들을 만나보실 수 있습니다.
-▶ 홈페이지 바로가기
-".$homepage;	
-	}else if($kakao_tpl_no=="011"){		#### 수선 처리 완료
-		$msgIdx		= "861017";
-		$message	= "	
-[엘라부티크]
-
-안녕하세요 . ".$userName."님
-주문하신 상품의 수선이 완료되었습니다
-
-▶ 날짜:".date("Y-m-d")."
-▶ 상품명:".$note1."
-▶ 수선내용: ".$note2."
-▶ 수선비용 ".$note3."(유상) / 0원(무상)
-수선비용이 있는 경우 마이페이지에서 수선비용을 결제 해주세요
-
-▶ 마이페이지 바로가기
-".$mypage;	
-	}else if($kakao_tpl_no=="012"){		#### 교환 신청
-		$msgIdx		= "861312";
-		$message	= "[엘라부티크]
-안녕하세요 . ".$userName."님
-주문하신 상품의 교환 요청이 정상적으로 접수 되었습니다
-
-▶ 날짜 : ".date("Y-m-d")."
-▶ 구매상품명: ".$note1."
-▶ 교환요청상품명: ".$note2."
-
-자세한 내용은 마이페이지에서 확인가능합니다
-
-▶ 마이페이지 바로가기
-".$mypage."
-
-교환 차액이 있는 경우 엘라부티크 카카오톡 채널로 문의 주세요.
-
-엘라부티크 카카오톡 문의 가기
-https://pf.kakao.com/_nvCts/chat";	
-	}
-	
-	$tmpltCode	= "ella-".$kakao_tpl_no;	
-	$recipient	= $userPNum;
-
-	//수신자 정보
-	$api_server = "https://www.biztalk-api.com";		// 서버
-	$api_url = "/v2/kko/sendAlimTalk";					// url
-
-	$jsonVars  = '"msgIdx":"'.$msgIdx.'"';				// 메시지 일련번호
-	$jsonVars .= ', "countryCode":"82"';				// 국가코드
-	$jsonVars .= ', "resMethod":"PUSH"';				// 전송방식
-	$jsonVars .= ', "senderKey":"'.$senderKey.'"';		// 카카오 발신프로필 키
-	$jsonVars .= ', "tmpltCode":"'.$tmpltCode.'"';		// 템플릿 코드
-	$jsonVars .= ', "message":"'.$message.'"';			// 템플릿 내용
-	$jsonVars .= ', "recipient":"'.$recipient.'"';		// 수신자 전화번호
-	$jsonVars .= ', "attach":{"button":[{"name":"홈페이지 바로가기","type":"WL","url_mobile":"http://www.ellaboutique.com/","url_pc":"http://www.ellaboutique.com/"}]}';		// 버튼처리/웹링크
-
-	$postvars = '{'.$jsonVars.'}';      //JSON 데이터
-
-	//echo $postvars;
-
-	$headers = array("cache-control: no-cache", "content-type: application/json; charset=utf-8", "bt-token:".$btToken);	// header
-
-	// api 호출
-	$ch = curl_init();
-	curl_setopt($ch,CURLOPT_URL, $api_server.$api_url);
-	curl_setopt($ch,CURLOPT_POST, true);
-	curl_setopt($ch,CURLOPT_POSTFIELDS, $postvars);
-	curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,3);
-	curl_setopt($ch,CURLOPT_TIMEOUT, 60);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-	$response = curl_exec($ch);
-
-	//curl 에러 확인
-	if(curl_errno($ch)){
-	//	echo 'Curl error: ' . curl_error($ch);
-	}else{
-	//	print_r($response);
-	}
-	curl_close ($ch);
-********************************************/
-}
-########################################### 카카오 알림톡(directsend) ########################################### ED
-?>
+<?include $_SERVER['DOCUMENT_ROOT'] . "/module/mail/class.http.php";include $_SERVER['DOCUMENT_ROOT'] . "/module/mail/Services_JSON.php";include $_SERVER['DOCUMENT_ROOT'] . "/module/mail/class.EmmaSMS.php";//정보 수정하기function setMailConfig($code){	//메일정보 테이블	$tbl = $GLOBALS["_conf_tbl"]["mail_config"];	if(mysqli_real_escape_string($GLOBALS['dblink'], $_POST['is_use'])=="Y"){		$is_use = "Y";	}else{		$is_use = "N";	}	if(mysqli_real_escape_string($GLOBALS['dblink'], $_POST['is_use_m'])=="Y"){		$is_use_m = "Y";	}else{		$is_use_m = "N";	}	//상품정보 테이블에 입력	$sql = "UPDATE ".$tbl." set 		code_subject='".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['code_subject'])."',		is_use='".$is_use."',		subject='".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['subject'])."',		is_use_m='".$is_use_m."',		m_subject='".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['m_subject'])."',		contents='".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['contents'])."'		WHERE code = '".$code."'	";	$rs = mysqli_query($GLOBALS['dblink'], $sql);	if($rs > 0){		return true;	}else{		return false;	}}//메일등록function insertSend($code){	//메일정보 테이블	$tbl = $GLOBALS["_conf_tbl"]["mail_config"];	if(mysqli_real_escape_string($GLOBALS['dblink'], $_POST['is_use'])=="Y"){		$is_use = "Y";	}else{		$is_use = "N";	}	if(mysqli_real_escape_string($GLOBALS['dblink'], $_POST['is_use_m'])=="Y"){		$is_use_m = "Y";	}else{		$is_use_m = "N";	}	//상품정보 테이블에 입력	$sql = "INSERT INTO ".$tbl." set 		code = '".$code."',		is_use='".$is_use."',		is_use_m='".$is_use_m."'	";	$rs = mysqli_query($GLOBALS['dblink'], $sql);	if($rs > 0){		return true;	}else{		return false;	}}//정보 삭제하기function deleteMail($code){	$tbl = $GLOBALS["_conf_tbl"]["mail_config"];	$sql = "DELETE FROM $tbl WHERE code='$code' ";	$rs = mysqli_query($GLOBALS['dblink'], $sql);	if($rs > 0){		return true;	}else{		return false;	}}//정보 가져오기function getMailConfig($code){	$tbl = $GLOBALS["_conf_tbl"]["mail_config"];    $sql  = "SELECT * ";    $sql .= "FROM " .$tbl." ";    $sql .= "WHERE code = '$code' ";    $rs = mysqli_query($GLOBALS['dblink'], $sql);    $total_rs = mysqli_num_rows($rs);        if($total_rs > 0){        $list['total'] = $total_rs;        for($i=0; $i < $total_rs; $i++){            $list['list'][$i] = mysqli_fetch_assoc($rs);        }    }else{        $list['total'] = 0;    }    return $list;}//메일발송 function sendMailQna($arrInfo){			$mail_body = '';	if (file_exists($_SERVER['DOCUMENT_ROOT']."/_mailform/mailform02.html")) {		$fo = fopen($_SERVER['DOCUMENT_ROOT']."/_mailform/mailform02.html", "r");		while (!feof($fo)) $mail_body .= fgets($fo, 1024);		fclose($fo);	}					$Mail_Subject	= "[".$GLOBALS["_SITE"]["NAME"]."] 문의하신 내용에 답변드립니다.";	$toName			= $arrInfo["list"][0]["name"];	$fromName		= $GLOBALS["_SITE"]["NAME"];	$mailFrom		= "no-reply@".$_SERVER['SERVER_NAME'];	$arrCategory = array(		"1" => "1:1문의",		"2" => "고객Q&A",		"3" => "전화문의",		"4" => "카카오문의",		"5" => "이메일문의"	);	//		$mail_body = str_replace("<!--[@ctx01]-->", $arrInfo["list"][0]["homepage"], $mail_body);								//	$mail_body = str_replace("<!--[category]-->", $arrCategory[$arrInfo["list"][0]["category"]], $mail_body);								//	$mail_body = str_replace("<!--[etc_2]-->", $arrInfo["list"][0]["etc_2"], $mail_body);								//		$mail_body = str_replace("<!--[etc_3]-->", $arrInfo["list"][0]["etc_3"], $mail_body);								//		$mail_body = str_replace("<!--[name]-->", $arrInfo["list"][0]["name"], $mail_body);								//		$mail_body = str_replace("<!--[email]-->", $arrInfo["list"][0]["email"], $mail_body);								//		$mail_body = str_replace("<!--[tel]-->", $arrInfo["list"][0]["tel"], $mail_body);								//		$mail_body = str_replace("<!--[wdate]-->", date("Y-m-d",strtotime($arrInfo["list"][0]["wdate"])), $mail_body);								//		$mail_body = str_replace("<!--[subject]-->", $arrInfo["list"][0]["subject"], $mail_body);								//		$mail_body = str_replace("<!--[contents]-->", $arrInfo["list"][0]["contents"], $mail_body);								//									//		$mail_body = str_replace("<!--[etc_5]-->", $arrInfo["list"][0]["etc_5"], $mail_body);								//		$mail_body = str_replace("kcapg.hk-test.co.kr", $_SERVER['SERVER_NAME'], $mail_body);				//사이트주소변경	$mailTo	= $arrInfo["list"][0]["email"];	//받는분 이메일	sendMail($mailFrom,$fromName, $mailTo, $toName, $Mail_Subject, $mail_body);			return true;}//메일발송 / 회원가입 완료function sendMailJoin($arrInfo){			$mail_body = '';	if (file_exists($_SERVER['DOCUMENT_ROOT']."/_mailform/mailform01.html")) {		$fo = fopen($_SERVER['DOCUMENT_ROOT']."/_mailform/mailform01.html", "r");		while (!feof($fo)) $mail_body .= fgets($fo, 1024);		fclose($fo);	}					$Mail_Subject	= "[".$GLOBALS["_SITE"]["NAME"]."] 회원가입을 축하드립니다.";	$toName			= $arrInfo["list"][0]["user_name"];	$fromName		= $GLOBALS["_SITE"]["NAME"];	$mailFrom		= "no-reply@".$_SERVER['SERVER_NAME'];	$mail_body = str_replace("kcapg.hk-test.co.kr", $_SERVER['SERVER_NAME'], $mail_body);				//사이트주소변경	$mailTo	= $arrInfo["list"][0]["email"];	//받는분 이메일	sendMail($mailFrom,$fromName, $mailTo, $toName, $Mail_Subject, $mail_body);			return true;}//임시비번 메일발송function sendMailPasswdInfo($arrInfo, $arrMailInfo){	if($arrMailInfo["list"][0]["is_use"]=="Y"){		$passwd = generatePasswd();		//변수치환		$Mail_Subject = str_replace("{NAME}", $arrInfo["list"][0]['user_name'], stripslashes($arrMailInfo["list"][0]["subject"]));		$Mail_Contents = stripslashes($arrMailInfo["list"][0]["contents"]);		$Mail_Contents = str_replace("{ID}", $arrInfo["list"][0]["user_id"], $Mail_Contents);		$Mail_Contents = str_replace("{NAME}", $arrInfo["list"][0]["user_name"], $Mail_Contents);		$Mail_Contents = str_replace("{EMAIL}", stripslashes($arrInfo["list"][0]["email"]), $Mail_Contents);		$Mail_Contents = str_replace("{PASS}", $passwd, $Mail_Contents);				//임시비밀번호로 수정		$sql = "update tbl_member set user_pw = password('".$passwd."') where user_id='".$arrInfo["list"][0]["user_id"]."'";		$rs = mysqli_query($GLOBALS['dblink'], $sql);		$mailFrom		= "no-reply@".$_SERVER['SERVER_NAME'];		$fromName		= "ECOTHON";		//echo $GLOBALS["_SITE"]["EMAIL"]."/".$GLOBALS["_SITE"]["NAME"]."/".$arrInfo["list"][0]["user_id"]."/".$arrInfo["list"][0]["user_name"];		sendMail($mailFrom, $fromName, $arrInfo["list"][0]["email"], $arrInfo["list"][0]["user_name"], $Mail_Subject , $Mail_Contents);		return true;	}else{		return false;	}}//임시비번 메일발송function sendMailPasswdRobo($arrInfo, $arrMailInfo){	if($arrMailInfo["list"][0]["is_use"]=="Y"){		$passwd = generatePasswd();		//변수치환		$Mail_Subject = str_replace("{NAME}", $arrInfo["list"][0]['user1_name'], stripslashes($arrMailInfo["list"][0]["subject"]));		$Mail_Contents = stripslashes($arrMailInfo["list"][0]["contents"]);		$Mail_Contents = str_replace("{NAME}", $arrInfo["list"][0]["user1_name"], $Mail_Contents);		$Mail_Contents = str_replace("{EMAIL}", stripslashes($arrInfo['list'][0]['user1_email']), $Mail_Contents);		$Mail_Contents = str_replace("{PASS}", $passwd, $Mail_Contents);				//임시비밀번호로 수정		$sql = "update tbl_board_apply set pass = '".$passwd."' where registration='".$arrInfo["list"][0]["registration"]."'";				$rs = mysqli_query($GLOBALS['dblink'], $sql);		$mailFrom		= "no-reply@".$_SERVER['SERVER_NAME'];		$fromName		= "로보월드";		//echo $GLOBALS["_SITE"]["EMAIL"]."/".$GLOBALS["_SITE"]["NAME"]."/".$arrInfo["list"][0]["user_id"]."/".$arrInfo["list"][0]["user_name"];		sendMail($mailFrom, $fromName, $arrInfo["list"][0]["user1_email"], $arrInfo["list"][0]["user1_name"], $Mail_Subject , $Mail_Contents);		return true;	}else{		return false;	}}//임시비번 메일발송function sendMailPasswdRobo2($arrInfo, $arrMailInfo){	if($arrMailInfo["list"][0]["is_use"]=="Y"){		$passwd = generatePasswd();		//변수치환		$Mail_Subject = str_replace("{NAME}", $arrInfo["list"][0]['user_name'], stripslashes($arrMailInfo["list"][0]["subject"]));		$Mail_Contents = stripslashes($arrMailInfo["list"][0]["contents"]);		$Mail_Contents = str_replace("{NAME}", $arrInfo["list"][0]["user_name"], $Mail_Contents);		$Mail_Contents = str_replace("{EMAIL}", stripslashes($arrInfo['list'][0]['email']), $Mail_Contents);		$Mail_Contents = str_replace("{PASS}", $passwd, $Mail_Contents);				//임시비밀번호로 수정		$sql = "update tbl_board_apply_user set pass = '".$passwd."' where email='".$arrInfo["list"][0]["email"]."'";				$rs = mysqli_query($GLOBALS['dblink'], $sql);		$mailFrom		= "no-reply@".$_SERVER['SERVER_NAME'];		$fromName		= "로보월드";		//echo $GLOBALS["_SITE"]["EMAIL"]."/".$GLOBALS["_SITE"]["NAME"]."/".$arrInfo["list"][0]["user_id"]."/".$arrInfo["list"][0]["user_name"];		sendMail($mailFrom, $fromName, $arrInfo["list"][0]["email"], $arrInfo["list"][0]["user_name"], $Mail_Subject , $Mail_Contents);		return true;	}else{		return false;	}}function generatePasswd($numAlpha=8,$numNonAlpha=2){   $listAlpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';   $listNonAlpha = ',;:!?.$/*-+&@_+;./*&?$-!,';   return str_shuffle(      substr(str_shuffle($listAlpha),0,$numAlpha) .      substr(str_shuffle($listNonAlpha),0,$numNonAlpha)    );}function sendMail($mailFrom,$fromName, $mailTo, $toName, $subject, $message) { 	//echo "mailTo1====>>>>".$mailTo;	$mailTo = "=?utf-8?b?".base64_encode($toName)."?="."<" . $mailTo . ">\n"; 	$mailFrom = "=?utf-8?b?".base64_encode($fromName)."?="."<" . $mailFrom . ">\n"; 	$subject    = "=?utf-8?b?".base64_encode($subject)."?=\n"; 	$mailHeader = "from:{$mailFrom} \n"; 	$mailHeader .= "Return-Path:{$mailFrom} \n"; 	$mailHeader .= "Reply-To:{$mailFrom} \n"; 	$mailHeader .= "MIME-Version:1.0 \n"; 	$mailHeader .= "Content-Type: text/html;\n \tcharset=utf8\n"; 	$flag = mail($mailTo, $subject, $message, $mailHeader);	return $flag; } ########################################### 메일 발송 ST ###################################################function mailSendSemina($mailform, $mailTo, $subject, $arrInfo, $arrGoodInfo){				$mail_body = '';	if (file_exists($_SERVER['DOCUMENT_ROOT']."/_mailform/".$mailform.".html")) {		$fo = fopen($_SERVER['DOCUMENT_ROOT']."/_mailform/".$mailform.".html", "r");		while (!feof($fo)) $mail_body .= fgets($fo, 1024);		fclose($fo);	}					$Mail_Subject	= $subject;	$toName			= $arrInfo['list'][0]['order_name'];	$fromName		= "(주)하이덴탈코리아";	$mailFrom		= "no-reply@".$_SERVER['SERVER_NAME'];	if($subject=="세미나신청완료"){		$arrInfo['list'][0]['title']	= "세 미 나 신 청 완 료";		$arrInfo['list'][0]['subttl']	= "신청이";		$arrInfo['list'][0]['strttl']	= "신청리스트";	}else{		$arrInfo['list'][0]['title']	= "세 미 나 구 매 완 료";		$arrInfo['list'][0]['subttl']	= "구매가";		$arrInfo['list'][0]['strttl']	= "구매내역";		}		$mail_body = str_replace("<!--[@PAGETITLE]-->", $subject, $mail_body);								//타이틀	$mail_body = str_replace("highdentalpg.hk-test.co.kr", $_SERVER['SERVER_NAME'], $mail_body);				//사이트주소변경	$mail_body = str_replace("<!--[@ctx01]-->", $arrInfo['list'][0]['title'], $mail_body);									//	$mail_body = str_replace("<!--[@ctx02]-->", $arrInfo['list'][0]['order_name'], $mail_body);									//	$mail_body = str_replace("<!--[@ctx03]-->", $arrInfo['list'][0]['subttl'], $mail_body);									//		$mail_body = str_replace("<!--[@ctx04]-->", $arrInfo['list'][0]['strttl'], $mail_body);									//		$mail_body = str_replace("<!--[@ctx05]-->", $arrInfo['list'][0]['order_summary'], $mail_body);									//	$mail_body = str_replace("<!--[@ctx06]-->", $arrInfo['list'][0]['pay_amount_txt'], $mail_body);									//	$mail_body = str_replace("<!--[@ctx07]-->", $arrInfo['list'][0]['pay_type_txt'], $mail_body);									//	$mail_body = str_replace("<!--[@ctx08]-->", $arrInfo['list'][0]['order_date'], $mail_body);									//		$mail_body = str_replace("<!--[@ctx09]-->", $arrInfo['list'][0]['send_date_txt'], $mail_body);									//			//	echo $mail_body;	sendMail($mailFrom,$fromName, $mailTo, $toName, $Mail_Subject, $mail_body);		return true;}########################################### 메일 발송 ED ############################################################################################## 인포뱅크 문자 발송 ST ###################################################function smsInfobank($mtype, $toPhone, $toCountry="82", $toName, $toCode, $toDate, $toTime, $toEtc01="", $toEtc02=""){		## type (1:예약완료_K, 2:결과안내_K, 3:파일전송, 4:예약완료_E, 5:결과안내_E)	$message = 'mtype이 없습니다. 설정하세요';	############################################################# 1 국문 > 예약완료 ST #############################################################	if($mtype=="1"){$message = '[이화의원] 코로나19 검사 예약 안내'.$toName.'님, 코로나19 검사가 예약되었습니다.[예약내역]1.	예약번호: '.$toCode.'2.	수검자명: '.$toName.'3.	예약일시: '.substr($toDate,0,4).'년 '.substr($toDate,5,2).'월 '.substr($toDate,8,2).'일 '.str_replace(":","시 ",$toTime).'분검사하러 오실 때는 반드시 여권을 지참하여 주시기 바랍니다.예약 수정 및 취소는 홈페이지 (http://'.$_SERVER['SERVER_NAME'].'/corona/inquiry_result.php)에서 확인 부탁드립니다.이화의원 콜센터: 02)3462-2233문의 가능 시간: 08시~18시(평일, 주말·공휴일 동일)주소: 서울시 강남구 개포동 1228-6 이화의원';	}	############################################################# 1 국문 > 예약완료 ED #############################################################	############################################################# 2 국문 > 결과안내 ST #############################################################	if($mtype=="2"){		if($toTime=="양성(positive)"){$message = '[이화의원] 코로나19 검사 결과 안내'.$toName.'님, 코로나19 '.$toCode.' 결과를 안내해드립니다.[검사내역]1. 검사일시: '.$toDate.'2. 수검자명: '.$toName.'3. 검사방법: 비인두도말 '.$toCode.'4. 검사결과: '.$toTime.'자택 내 가족과 분리된 공간에서 대기하여 주시기 바랍니다.추후 보건소에서 순차적으로 연락드릴 예정입니다.이화의원 콜센터: 02)3462-2233문의가능시간: 08시~18시(평일, 주말·공휴일 동일)';		}else{$message = '[이화의원] 코로나19 검사 결과 안내'.$toName.'님, 코로나19 '.$toCode.' 결과를 안내해드립니다.[검사내역]1. 검사일시: '.$toDate.'2. 수검자명: '.$toName.'3. 검사방법: 비인두도말 '.$toCode.'4. 검사결과: '.$toTime.'홈페이지와 이메일을 통해 결과지를 출력하실 수 있습니다.홈페이지에서 결과를 확인하시려면 예약번호와 생년월일(YYYY-MM-DD)을 입력해주시기 바랍니다.(http://'.$_SERVER['SERVER_NAME'].'/corona/inquiry_result.php)이화의원 콜센터: 02)3462-2233문의가능시간: 08시~18시(평일, 주말·공휴일 동일)';				}	}	############################################################# 2 국문 > 결과안내 ED #############################################################	############################################################# 4 영문 > 예약완료 ST #############################################################	if($mtype=="4"){$message = '[Ewha Medical Center] COVID-19 testing reservation confirmation'.$toEtc01.', Your booking has been confirmed.[Reservation]1. Booking Number: '.$toCode.'2. Examinee’s Name: '.$toName.'3. Date and Time: '.substr($toDate,0,4).'/'.substr($toDate,5,2).'/'.substr($toDate,8,2).'/ '.$toTime.'For COVID-19 Testing, please bring your passport.For changing reservation, please visit the website. (http://'.$_SERVER['SERVER_NAME'].'/corona/testing_result.php)Ewha call center: 02-3462-2233 (Extension: 0)The call center operates from 08:00 to 18:00 every day for 365 days.Address: 1228-6, Gaepo-dong, Gangnam-gu, Seoul, Republic of Korea';	}		############################################################# 4 영문 > 예약완료 ED #############################################################	############################################################# 5 영문 > 결과안내 ST #############################################################	if($mtype=="5"){		if($toTime=="Positive"){$message = '[Ewha Medical Center] COVID-19 testing results'.$toEtc01.', We inform you of the results of the COVID-19 PCR test. 1. Date and Time: '.substr($toDate,0,4).'/'.substr($toDate,5,2).'/'.substr($toDate,8,2).'2. Examinee’s Name: '.$toName.'3. method of test: '.$toCode.'4. Test result: '.$toTime.'Please wait in a space separated from your family in your home.The public health center will contact you in order.Ewha call center: 02-3462-2233 (Extension: 0)The call center operates from 08:00 to 18:00 every day for 365 days.';			}else{$message = '[Ewha Medical Center] COVID-19 testing results'.$toEtc01.', We inform you of the results of the COVID-19 PCR test. 1. Date and Time: '.substr($toDate,0,4).'/'.substr($toDate,5,2).'/'.substr($toDate,8,2).'2. Examinee’s Name: '.$toName.'3. method of test: '.$toCode.'4. Test result: '.$toTime.'Results can be printed on the website or via e-mail.To check the results on the website, please enter your reservation number and date of birth (YYYY-MM-DD).(http://'.$_SERVER['SERVER_NAME'].'/corona/testing_result.php)Ewha call center: 02-3462-2233 (Extension: 0)The call center operates from 08:00 to 18:00 every day for 365 days.';				}	}	############################################################# 5 영문 > 결과안내 ED #############################################################	############################################################# 9 직접입력 ST #############################################################	if($mtype=="9"){		$message = $toTime;			}	############################################################# 9 직접입력 ED #############################################################	if(strlen($toPhone)>8){		$url = 'https://rest.supersms.co/sms/xml?' . http_build_query([			'id' => 'ewhalab_http',			'pwd' => '8Z16319QHLC103BZDHF3',			'from' => '0234624837',			'to_country' => $toCountry,			'to' => $toPhone,			'message' => $message,			'report_req' => '1'		]);				$ch = curl_init($url);		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);		$response = curl_exec($ch);		$xml = simplexml_load_string($response);		if ($xml === false){			echo "Failed loading XML: ";		} else {			//print_r($xml);			//echo($xml->to_country);			//echo($xml->to);			echo("response code : " . $xml->messages->message->err_code);		} 	}}########################################### 인포뱅크 문자 발송 ED ############################################################################################## 문자박사 문자 발송 ST ###################################################function munja_send($mtype, $name, $phone, $msg, $callback="010-9213-0647", $contents="", $reserve="", $reserve_time="", $etc1="", $etc2="") {	$host = "www.munja123.com";	$id = "oneullab"; // 문자박사 아이디 입력	$pass = "dhsmffoq2388!!"; // 문자박사 비밀번호 입력	$param = "remote_id=".$id;	$param .= "&remote_pass=".$pass;	$param .= "&remote_reserve=".$reserve;	$param .= "&remote_reservetime=".$reserve_time;	$param .= "&remote_name=".$name;	$param .= "&remote_phone=".$phone;	$param .= "&remote_callback=".$callback;	$param .= "&remote_msg=".$msg;	$param .= "&remote_contents=".$contents;	$param .= "&remote_etc1=".$etc1;	$param .= "&remote_etc2=".$etc2;		if ($mtype == "lms") {		$path = "/Remote/RemoteMms.html";	} else {		$path = "/Remote/RemoteSms.html";	}	$fp = @fsockopen($host,80,$errno,$errstr,30);	$return = "";	if (!$fp) {		echo $errstr."(".$errno.")";	} else {		fputs($fp, "POST ".$path." HTTP/1.1\r\n");		fputs($fp, "Host: ".$host."\r\n");		fputs($fp, "Content-type: application/x-www-form-urlencoded\r\n");		fputs($fp, "Content-length: ".strlen($param)."\r\n");		fputs($fp, "Connection: close\r\n\r\n");		fputs($fp, $param."\r\n\r\n");		while(!feof($fp)) $return .= fgets($fp,4096);	}	fclose ($fp);	$_temp_array = explode("\r\n\r\n", $return);	$_temp_array2 = explode("\r\n", $_temp_array[1]);	if (sizeof($_temp_array2) > 1) {		$return_string = $_temp_array2[1];	} else {		$return_string = $_temp_array2[0];	}	return $return_string;	}########################################### 문자박사 문자 발송 ED ###################################################function kakaoToken(){	$userid		= "ellaboutique";									// 필수입력	// 홈피pw : Ellaboutique1!	$userpw		= "d8979ea4bbf7d3ded176e9d27b5f1221b9bff754";		// d8979ea4bbf7d3ded176e9d27b5f1221b9bff754	//수신자 정보	$api_server = "https://www.biztalk-api.com";		// 서버	$api_url = "/v2/auth/getToken";						// 토큰	$jsonVars  = '"bsid":"'.$userid.'"';	$jsonVars .= ', "passwd":"'.$userpw.'"';	$postvars = '{'.$jsonVars.'}';      //JSON 데이터	//echo $postvars;	$headers = array("cache-control: no-cache","content-type: application/json; charset=utf-8");	// header	// api 호출	$ch = curl_init();	curl_setopt($ch,CURLOPT_URL, $api_server.$api_url);	curl_setopt($ch,CURLOPT_POST, true);	curl_setopt($ch,CURLOPT_POSTFIELDS, $postvars);	curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);	curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,3);	curl_setopt($ch,CURLOPT_TIMEOUT, 60);	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);	$response = curl_exec($ch);	//curl 에러 확인	if(curl_errno($ch)){	  //  echo 'Curl error: ' . curl_error($ch);	}else{	  //  print_r($response);	}	curl_close ($ch);	$jsonValue = json_decode($response, true);	return $jsonValue['token'];}########################################### 카카오 알림톡(SureBiz) ########################################### STfunction kakaoApiTalk($kakao_tpl_no="kca_01", $arrVarData = array(), $userPNum=""){	$arrJsonData = array();	if($kakao_tpl_no=="kca_01"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_12";		// 템플릿 코드			$text			= "안녕하십니까 주안영상미디어센터입니다.귀하의 후보자 접수가 완료되었습니다.아래의 정보로 최종 평가를 실시하여 #{1순위선정발표일} ~ #{2순위선정발표일}경 평가 결과를 순차적으로 안내드릴 예정입니다.[접수 정보 자동 기록]상호명 : #{상호명}대표자명 : #{대표자명}접수번호 : #{접수번호}평가 산업명 : #{평가 산업명}접수하신 정보에 대해 수정을 원하실 경우, 상담톡 또는 메일(help@kcakca.com)로 문의하여 주시기 바랍니다.감사합니다.";	########################################################################################### 접수 완료 안내 ED	}else if($kakao_tpl_no=="kca_02"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_02";		// 템플릿 코드			$text			= "안녕하십니까 주안영상미디어센터입니다.귀사의 요청에 따라 정상적으로 접수 취소 처리 되었음을 안내드립니다.추가 문의사항이 있으신 경우, 상담톡 또는 유선 번호(02-783-7104)로 문의하여 주시기 바랍니다.감사합니다.		";	########################################################################################### 접수 완료 안내 ED	}else if($kakao_tpl_no=="kca_03"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_03";		// 템플릿 코드			$text			= "안녕하십니까 KCA주안영상미디어센터입니다.귀하께서 접수하신 KCIA 한국소비자산업평가 #{업종}(업종)의 평가 결과 안내가 지연되고 있습니다.현재 접수량이 많아 평가 및 검토에 시간이 다소 소요되어 평가 결과 안내는 #{2순위선정발표일}경 순차적으로 이루어질 예정입니다.이에 후보자분들의 많은 양해 부탁드리며, 문자 또는 카카오톡으로 안내가 이루어질 예정입니다.항상 공정하고 신뢰성 있는 발표를 위해 노력하는 주안영상미디어센터가 되겠습니다.감사합니다.		";	########################################################################################### 접수 완료 안내 ED	}else if($kakao_tpl_no=="kca_04"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_04";		// 템플릿 코드			$text			= "안녕하십니까 KCA주안영상미디어센터입니다.귀사의 접수에 따라 최종 평가를 진행하였으며, 평가 결과 우수 업체로 선정되어 안내드립니다.최종 우수 선정 업체인 귀하께서는 하단 링크를 통해 결과를 확인하시어 등록 마감일(#{등록마감일})까지 등록을 완료하여 주시기 바랍니다.▶ 등록 안내 바로가기 : #{평가안내페이지}해당 링크는 당사 공식 웹사이트로 연결되며, 안전하게 보호됩니다.▶ 링크 접속이 어려우실 경우, 홈페이지 상의 '마이페이지' 에서 등록 관련 안내 사항을 확인하실 수 있습니다.감사합니다.* 상담시간 : 평일 09시~18시(점심시간 : 11시 30분~13시)* 본 메시지는 #{접수일자} 개인정보 수집 및 이용 동의에 근거하여 발송되었습니다.		";		$arrAttechment = array(			"name" => "평가안내페이지",			"type" => "WL",			"url_mobile" => "".$_SITE["DOMAIN"]."",			"url_pc" => "".$_SITE["DOMAIN"].""		);		$arrJsonData["attach"] = array(			"button" => $arrAttechment		);	########################################################################################### 접수 완료 안내 ED	}else if($kakao_tpl_no=="kca_05"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_05";		// 템플릿 코드			$text			= "안녕하십니까 주안영상미디어센터입니다.귀하는 현재 최종 우수 업체 선정 안내 후 등록을 하시지 않아 금일까지 미등록 시 접수 취소 처리됨을 최종 안내드립니다.▶ 등록하기 바로가기 : #{등록하기페이지}해당 링크는 당사 공식 웹사이트로 연결되며, 안전하게 보호됩니다.▶ 링크 접속이 어려우실 경우, 직접 홈페이지로 접속하셔서 [마이페이지] 에서 등록 관련 안내 사항을 확인하실 수 있습니다.감사합니다.* 상담시간 : 평일 09시~18시   점심시간 : 11시 30분~13시		";		$arrAttechment = array(			"name" => "등록하기페이지",			"type" => "WL",			"url_mobile" => "".$arrVarData["#{등록하기페이지}"]."",			"url_pc" => "".$arrVarData["#{등록하기페이지}"].""		);		$arrJsonData["attach"] = array(			"button" => $arrAttechment		);	########################################################################################### 접수 완료 안내 ED	}else if($kakao_tpl_no=="kca_06"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_06";		// 템플릿 코드			$text			= "안녕하십니까 주안영상미디어센터입니다.귀하는 현재 최종 우수 업체 선정 안내 후 등록을 하시지 않아 금일까지 미등록 시 접수 취소 처리됨을 최종 안내드립니다.▶ 등록하기 바로가기 : #{등록하기페이지}해당 링크는 당사 공식 웹사이트로 연결되며, 안전하게 보호됩니다.▶ 링크 접속이 어려우실 경우, 홈페이지의 [마이페이지] 에서 등록 관련 안내 사항을 확인하실 수 있습니다.상담시간 : 평일 09시~18시점심시간 : 11시 30분~13시		";		$arrAttechment = array(			"name" => "등록하기페이지",			"type" => "WL",			"url_mobile" => "".$arrVarData["#{등록하기페이지}"]."",			"url_pc" => "".$arrVarData["#{등록하기페이지}"].""		);		$arrJsonData["attach"] = array(			"button" => $arrAttechment		);	########################################################################################### 접수 완료 안내 ED	}else if($kakao_tpl_no=="kca_07"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_07";		// 템플릿 코드			$text			= "안녕하십니까 주안영상미디어센터입니다.귀사의 우수 업체 등록이 완료되어 안내드립니다.홈페이지 내 '마이페이지'에서 최종 등록 정보를 확인 부탁드리며,해당 정보를 바탕으로 언론보도 발표와 발급품 제작이 진행될 예정이오니수정사항이 있으신 경우 메일(help@kcakca.com) 또는 상담톡을 통해 #{회신가능기한}까지 회신 부탁드립니다.감사합니다.		";	########################################################################################### 접수 완료 안내 ED	}else if($kakao_tpl_no=="kca_08"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_08";		// 템플릿 코드			$text			= "안녕하십니까 주안영상미디어센터입니다.귀사의 등록 포기 요청에 따라 최종 선정 취소 처리 완료되었음을 안내드립니다.추가 문의사항이 있으신 경우, 상담톡 또는 유선 번호(02-783-7104)로 연락 부탁드립니다.감사합니다.		";	########################################################################################### 접수 완료 안내 ED	}else if($kakao_tpl_no=="kca_09"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_09";		// 템플릿 코드			$text			= "안녕하십니까 주안영상미디어센터입니다.귀사의 1회차 발표 보도가 완료되어 안내 문자 발송드립니다.기사링크 : #{기사링크}발급품은 보도일을 기준으로 아래와 같이 제작 기간이 소요됨을 안내드립니다.* 온라인 발급품 : 2~3주 내외* 오프라인 발급품 : 5~6주 내외감사합니다.		";	########################################################################################### 접수 완료 안내 ED	}else if($kakao_tpl_no=="kca_10"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_10";		// 템플릿 코드			$text			= "안녕하십니까 주안영상미디어센터입니다.귀사의 온라인 발급품이 발급 완료되어 안내드립니다.다운로드 기한(#{다운로드기한}) 내에 홈페이지 상의 '마이페이지'에서 다운로드 버튼을 확인 부탁드립니다.추가 문의사항이 있으신 경우, 유선 번호(02-783-7104)로 연락 부탁드립니다.감사합니다.		";	########################################################################################### 접수 완료 안내 ED	}else if($kakao_tpl_no=="kca_11"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_11";		// 템플릿 코드			$text			= "안녕하십니까 주안영상미디어센터입니다.귀사의 오프라인 발급품이 발송 완료되어 안내드립니다.송장번호 : #{송장번호}추가 문의사항이 있으신 경우, 유선 번호(02-783-7104)로 연락 부탁드립니다.감사합니다.		";	########################################################################################### 접수 완료 안내 ED	}else{		return;	}	foreach($arrVarData as $key => $val){		$text = str_replace($key,$val,$text);	}	$usercode		= "kcasms1";		// 슈어엠 아이디					$deptcode		= "47-4Q7-2F";		// 회사코드 // 47-4Q7-2F // 슈어엠 회사코드	$biz_type		= "at";				// 타입 : at/알림톡	$yellowid_key	= "17dd9338a62c696980a827ffac808d575921a597";	// 발신프로필키 : 17dd9338a62c696980a827ffac808d575921a597		//$reqphone		= "15663013";		// 발신번호	$reqphone		= "01021817353";		// 발신번호	$to				= str_replace("010","82-10",str_replace("-","",$userPNum));	// 국가번호 포함 전화번호 82-1066440212	//수신자 정보	$api_server = "https://rest.surem.com";		// 서버		$api_url = "/kakao/v2/alimtalk";					// url	$arrJsonData["usercode"] = $usercode;	$arrJsonData["deptcode"] = $deptcode;	$arrJsonData["biz_type"] = $biz_type;	$arrJsonData["yellowid_key"] = $yellowid_key;	$arrJsonData["template_code"] = $template_code;	$arrJsonData["to"] = $to;	$arrJsonData["reqphone"] = $reqphone;	$arrJsonData["text"] = $text;	$postvars = json_encode($arrJsonData);	$headers = array("content-type: application/json; charset=utf-8");	// header	// api 호출	$ch = curl_init();	curl_setopt($ch,CURLOPT_URL, $api_server.$api_url);	curl_setopt($ch,CURLOPT_POST, true);	curl_setopt($ch,CURLOPT_POSTFIELDS, $postvars);	curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);	curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,3);	curl_setopt($ch,CURLOPT_TIMEOUT, 60);	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);	//curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);	$response = curl_exec($ch);	curl_close($ch);	//	print_r($response);}########################################### SMS/LMS(SureBiz) ########################################### STfunction smsLmsSureApi($kakao_tpl_no, $arrVarData = array() ,$to){	$arrJsonData = array();	if($kakao_tpl_no=="kca_01"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_01";		// 템플릿 코드			$text			= "안녕하십니까 주안영상미디어센터입니다.귀하의 후보자 접수가 완료되었습니다.아래의 정보로 최종 평가를 실시하여 #{1순위선정발표일} ~ #{2순위선정발표일}경 평가 결과를 순차적으로 안내드릴 예정입니다.[접수 정보 자동 기록]접수하신 정보에 대해 수정을 원하실 경우, 상담톡 또는 메일(help@kcakca.com)로 문의하여 주시기 바랍니다.감사합니다.";	########################################################################################### 접수 완료 안내 ED	}else if($kakao_tpl_no=="kca_02"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_02";		// 템플릿 코드			$text			= "안녕하십니까 주안영상미디어센터입니다.귀사의 요청에 따라 정상적으로 접수 취소 처리 되었음을 안내드립니다.추가 문의사항이 있으신 경우, 상담톡 또는 유선 번호(02-783-7104)로 문의하여 주시기 바랍니다.감사합니다.		";	########################################################################################### 접수 완료 안내 ED	}else if($kakao_tpl_no=="kca_03"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_03";		// 템플릿 코드			$text			= "안녕하십니까 KCA주안영상미디어센터입니다.귀하께서 접수하신 KCIA 한국소비자산업평가 #{업종}(업종)의 평가 결과 안내가 지연되고 있습니다.현재 접수량이 많아 평가 및 검토에 시간이 다소 소요되어 평가 결과 안내는 #{2순위선정발표일}경 순차적으로 이루어질 예정입니다.이에 후보자분들의 많은 양해 부탁드리며, 문자 또는 카카오톡으로 안내가 이루어질 예정입니다.항상 공정하고 신뢰성 있는 발표를 위해 노력하는 주안영상미디어센터가 되겠습니다.감사합니다.		";	########################################################################################### 접수 완료 안내 ED	}else if($kakao_tpl_no=="kca_04"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_04";		// 템플릿 코드			$text			= "안녕하십니까 KCA주안영상미디어센터입니다.귀사의 접수에 따라 최종 평가를 진행하였으며, 평가 결과 우수 업체로 선정되어 안내드립니다.최종 우수 선정 업체인 귀하께서는 하단 링크를 통해 결과를 확인하시어 등록 마감일(#{등록마감일})까지 등록을 완료하여 주시기 바랍니다.▶ 등록 안내 바로가기 : #{평가안내페이지}해당 링크는 당사 공식 웹사이트로 연결되며, 안전하게 보호됩니다.▶ 링크 접속이 어려우실 경우, 홈페이지 상의 '마이페이지' 에서 등록 관련 안내 사항을 확인하실 수 있습니다.감사합니다.* 상담시간 : 평일 09시~18시(점심시간 : 11시 30분~13시)* 본 메시지는 #{접수일자} 개인정보 수집 및 이용 동의에 근거하여 발송되었습니다.";		$arrAttechment = array(			"name" => "평가안내페이지",			"type" => "WL",			"url_mobile" => "".$_SITE["DOMAIN"]."",			"url_pc" => "".$_SITE["DOMAIN"].""		);		$arrJsonData["attach"] = array(			"button" => $arrAttechment		);	########################################################################################### 접수 완료 안내 ED	}else if($kakao_tpl_no=="kca_05"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_05";		// 템플릿 코드			$text			= "안녕하십니까 주안영상미디어센터입니다.최종 우수 발표 업체로 선정되신 귀하께 #{최종선정일}경 안내 문자 또는 알림톡을 발송해드렸습니다.안내 사항을 확인하시어 등록을 마감인 오늘 자정까지 완료하여 주시기 바랍니다. ▶ 등록하기 바로가기 : #{등록하기페이지}해당 링크는 당사 공식 웹사이트로 연결되며, 안전하게 보호됩니다.▶ 링크 접속이 어려우실 경우, 직접 홈페이지로 접속하셔서 [마이페이지] 에서 등록 관련 안내 사항을 확인하실 수 있습니다.감사합니다.* 상담시간 : 평일 09시~18시   점심시간 : 11시 30분~13시";		$arrAttechment = array(			"name" => "등록하기페이지",			"type" => "WL",			"url_mobile" => "".$_SITE["DOMAIN"]."",			"url_pc" => "".$_SITE["DOMAIN"].""		);		$arrJsonData["attach"] = array(			"button" => $arrAttechment		);	########################################################################################### 접수 완료 안내 ED	}else if($kakao_tpl_no=="kca_06"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_06";		// 템플릿 코드			$text			= "안녕하십니까 주안영상미디어센터입니다.귀하는 현재 최종 우수 업체 선정 안내 후 등록을 하시지 않아 금일까지 미등록 시 접수 취소 처리됨을 최종 안내드립니다.▶ 등록하기 바로가기 : #{등록하기페이지}해당 링크는 당사 공식 웹사이트로 연결되며, 안전하게 보호됩니다.▶ 링크 접속이 어려우실 경우, 홈페이지의 [마이페이지] 에서 등록 관련 안내 사항을 확인하실 수 있습니다.상담시간 : 평일 09시~18시점심시간 : 11시 30분~13시";		$arrAttechment = array(			"name" => "등록하기페이지",			"type" => "WL",			"url_mobile" => "".$_SITE["DOMAIN"]."",			"url_pc" => "".$_SITE["DOMAIN"].""		);		$arrJsonData["attach"] = array(			"button" => $arrAttechment		);	########################################################################################### 접수 완료 안내 ED	}else if($kakao_tpl_no=="kca_07"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_07";		// 템플릿 코드			$text			= "안녕하십니까 주안영상미디어센터입니다.귀사의 우수 업체 등록이 완료되어 안내드립니다.홈페이지 내 '마이페이지'에서 최종 등록 정보를 확인 부탁드리며,해당 정보를 바탕으로 언론보도 발표와 발급품 제작이 진행될 예정이오니수정사항이 있으신 경우 메일(help@kcakca.com) 또는 상담톡을 통해 #{회신가능기한}까지 회신 부탁드립니다.감사합니다.";	########################################################################################### 접수 완료 안내 ED	}else if($kakao_tpl_no=="kca_08"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_08";		// 템플릿 코드			$text			= "안녕하십니까 주안영상미디어센터입니다.귀사의 등록 포기 요청에 따라 최종 선정 취소 처리 완료되었음을 안내드립니다.추가 문의사항이 있으신 경우, 상담톡 또는 유선 번호(02-783-7104)로 연락 부탁드립니다.감사합니다.";	########################################################################################### 접수 완료 안내 ED	}else if($kakao_tpl_no=="kca_09"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_09";		// 템플릿 코드			$text			= "안녕하십니까 주안영상미디어센터입니다.귀사의 1회차 발표 보도가 완료되어 안내 문자 발송드립니다.기사링크 : #{기사링크}발급품은 보도일을 기준으로 아래와 같이 제작 기간이 소요됨을 안내드립니다.* 온라인 발급품 : 2~3주 내외* 오프라인 발급품 : 5~6주 내외감사합니다.";	########################################################################################### 접수 완료 안내 ED	}else if($kakao_tpl_no=="kca_10"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_10";		// 템플릿 코드			$text			= "안녕하십니까 주안영상미디어센터입니다.귀사의 온라인 발급품이 발급 완료되어 안내드립니다.다운로드 기한(#{다운로드기한}) 내에 홈페이지 상의 '마이페이지'에서 다운로드 버튼을 확인 부탁드립니다.추가 문의사항이 있으신 경우, 유선 번호(02-783-7104)로 연락 부탁드립니다.감사합니다.";	########################################################################################### 접수 완료 안내 ED	}else if($kakao_tpl_no=="kca_11"){		########################################################################################### 접수 완료 안내 ST		$template_code	= "kca_11";		// 템플릿 코드			$text			= "안녕하십니까 주안영상미디어센터입니다.귀사의 오프라인 발급품이 발송 완료되어 안내드립니다.송장번호 : #{송장번호}추가 문의사항이 있으신 경우, 유선 번호(02-783-7104)로 연락 부탁드립니다.감사합니다.";	########################################################################################### 접수 완료 안내 ED	}else{		return;	}			$usercode		= "kcasms1";		// nyfood2012					$deptcode		= "47-4Q7-2F";		// 회사코드	//$reqphone		= "15663013";		// 발신번호	$reqphone		= "16443013";		// 발신번호 // 01021817353	foreach($arrVarData as $key => $val){		$text = str_replace($key,$val,$text);	}	//수신자 정보	$api_server = "https://rest.surem.com";		// 서버		- https://rest.surem.com/messages/v2/sms	if(mb_strlen($text,"utf-8") < 70){ // 70자 이하인경우		$api_url = "/messages/v2/sms";					// SMS url	}else{		$api_url = "/messages/v2/mms";					// MMS/LMS url	}	$arrJsonData["usercode"] = $usercode;	$arrJsonData["deptcode"] = $deptcode;	$arrJsonData["to"] = $to;	$arrJsonData["reqphone"] = $reqphone;	$arrJsonData["text"] = $text;	$postvars = json_encode($arrJsonData);	$headers = array("content-type: application/json; charset=utf-8");	// header	// api 호출	$ch = curl_init();	curl_setopt($ch,CURLOPT_URL, $api_server.$api_url);	curl_setopt($ch,CURLOPT_POST, true);	curl_setopt($ch,CURLOPT_POSTFIELDS, $postvars);	curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);	curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,3);	curl_setopt($ch,CURLOPT_TIMEOUT, 60);	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);	//curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);	$response = curl_exec($ch);	curl_close($ch);	//echo $api_server.$api_url; 	//echo $postvars;	//var_dump($response);	//exit;}########################################### 카카오 알림톡(directsend) ########################################### STfunction kakaoAllim($kakao_tpl_no="001", $userName="", $userPNum="", $userID="", $note1="", $note2="", $note3="", $note4="", $note5=""){	/*	$ch = curl_init();	$username			= "hidk8597";					//필수입력	$key				= "dlkIKsBGqWp4ziX";			//필수입력	$kakao_plus_id		= "하이덴탈코리아";				//필수입력	$user_template_no	= $kakao_tpl_no;				//필수입력 (하단 259 라인 API 이용하여 확인)	#### 템플릿 넘버 13:주문접수 / 16:상품발송 / 19:주문취소 / 22:세미나 신청완료 / 25:세미나 구매완료 / 28:행사상품 오픈알림	$receiver = '{"name":"'.$userName.'","mobile":"'.$userPNum.'","note1":"'.$note1.'","note2":"'.$note2.'","note3":"'.$note3.'","note4":"'.$note4.'","note5":"'.$note5.'"}';	$receiver = '['.$receiver.']';	$postvars = '"username":"'.$username.'"';	$postvars = $postvars.', "key":"'.$key.'"';	$postvars = $postvars.', "kakao_plus_id":"'.$kakao_plus_id.'"';	$postvars = $postvars.', "user_template_no":"'.$user_template_no.'"';	$postvars = $postvars.', "receiver":'.$receiver;	$postvars = '{'.$postvars.'}';      //JSON 데이터	$url = "https://directsend.co.kr/index.php/api_v2/kakao_notice";         //URL	//헤더정보	$headers = array("cache-control: no-cache","content-type: application/json; charset=utf-8");	curl_setopt($ch,CURLOPT_URL, $url);	curl_setopt($ch,CURLOPT_POST, true);	curl_setopt($ch,CURLOPT_POSTFIELDS, $postvars);	curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);	curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,3);	curl_setopt($ch,CURLOPT_TIMEOUT, 60);	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);	$response = curl_exec($ch);	//curl 에러 확인	if(curl_errno($ch)){	//	echo 'Curl error: ' . curl_error($ch);	}else{	//	print_r($response);	}	curl_close ($ch);	*/	/********************************************	$btToken	= kakaoToken();					//필수입력	$senderKey	= "ef98eb58a1638f88ed586fd5e7b3ffd260a63aeb";	$homepage	=  "http://ellapg.hk-test.co.kr/";	$mypage		=  $homepage."member/mypage.php";		if($kakao_tpl_no=="001"){			#### 회원가입완료		$msgIdx		= "860514";			$message	= "[엘라부티크]회원가입이 완료되었습니다.안녕하세요. ".$userName."님저희 엘라부티크와 함께 해주셔서 감사합니다.".$userName."님의 ID : ".$userID."매일 인스타 그램 라이브 방송과 홈페이지에서 다양한 제품들을 만나보실 수 있습니다.▶ 홈페이지 바로가기".$homepage;	}else if($kakao_tpl_no=="002"){		#### 결제완료		$msgIdx		= "860515";			$message	= "[엘라부티크]안녕하세요 .".$userName."님소중한 주문이 접수완료 되었습니다.고객님께서 주문해주신 상품은 빈티지 및 중고 상품입니다.육안으로 도드라지지 않는 미세한 이염, 하자로 인한 교환 및 환불은 불가합니다.▶ 날짜 : ".$note1."▶ 주문번호 : ".$note2."▶ 상품명 : ".$note3."▶ 금액 : ".$note4."- 배송 일정은 수선, 감정 혹은 별도 요청사항이 있는 제품이 아닌 경우 주말 제외 “익일 오전” 발송됩니다.- 해외 배송은 엘라부티크 채널로 연락 부탁드립니다.- 수선 기간은 평균 3~4주 소요, 감정 및 케어 기간은 7-20일 소요 됩니다.- 구매당시 미처 안내드리지 못한 부분이 있을 경우 발송 이전에 검수 후 다시 한번 안내 도와드리겠습니다.- 구매가 이루어지면 상세컷을 모두 확인 하신 것으로 간주합니다. 상세컷을 반드시 꼼꼼하게 확인해주세요.- 제품 하자로 인한 경우가 아닌 단순변심으로 인한 구매취소, 제품 수선,감정 중 중도취소시 취소 수수료 (판매가의 5%) 발생합니다.신중한 구매 부탁드립니다.▶ 홈페이지 바로가기".$homepage;	}else if($kakao_tpl_no=="003"){		#### 개인 결제창 발송		$msgIdx		= "860516";		$message	= "[엘라부티크]안녕하세요. ".$userName."님주문 요청이 성공적으로 처리 되었습니다.아래 링크(마이페이지)를 통해 확인 해주세요.".$mypage."- 빈티지 제품은 기본적으로 사용감이 있는 상품입니다.- 육안으로 도드라지지 않는 미세한 이염, 하자로 인한 교환 및 환불은 불가합니다.- 상세컷을 통해 컨디션을 자세히 확인해 주시고- 구매가 완료되면 모든 내용을 확인하신 것으로 간주합니다.- 또한 빈티지 제품 특성상 저희 측으로 오기 이전에 염색되었을 가능성도 염두해 주시고신중한 구매 부탁드립니다.* 제품이 하나밖에 없기 때문에 단순 변심으로 인한 교환 환불은 불가합니다.";	}else if($kakao_tpl_no=="004"){		#### 배송시작		$msgIdx		= "860518";		$message	= "[엘라부티크]안녕하세요. ".$userName."님주문하신 상품이 발송되었습니다.▶ 날짜 : ".date("Y-m-d")."▶ 상품명 : ".$note2."▶ 택배사 : 로젠택배▶ 운송장번호 : ".$note3."공휴일 제외 1~2일이내에 배송될 예정입니다.(산간지역 3일)주문량이 많을 경우 평소보다 배송이 지연될 수 있는 점 양해 부탁드립니다.▶ 홈페이지 바로가기".$homepage;		}else if($kakao_tpl_no=="005"){		#### 배송완료		$msgIdx		= "860519";		$message	= "[엘라부티크]안녕하세요 . ".$userName."님주문하신 소중한 상품의 배송이 완료 되었습니다.▶ 날짜 : ".date("Y-m-d")."▶ 주문번호 : ".$note1."▶ 상품명 : ".$note2."앞으로도 좋은 제품들 많이 보여드릴 수 있게 노력하는 엘라부티크가 되겟습니다.오늘도 행복한 하루 되세요 :)▶ 홈페이지 바로가기".$homepage;		}else if($kakao_tpl_no=="006"){		#### 환불처리 완료		$msgIdx		= "860520";		$message	= "[엘라부티크]안녕하세요 . ".$userName."님주문해주신 상품의 환불요청이 정상적으로 처리되었습니다.▶ 날짜 : ".date("Y-m-d")."▶ 주문번호 : ".$note1."▶ 상품명 : ".$note2."▶ 금액 : ".$note3."자세한 내용은 마이페이지에서 확인 가능합니다▶ 마이페이지 바로가기".$mypage."(카드 취소의 경우 카드사에 따라 3~5일 정도 소요되실 수 있습니다.)";		}else if($kakao_tpl_no=="007"){		#### 수선 신청 후		$msgIdx		= "860522";		$message	= "[엘라부티크]안녕하세요 . ".$userName."님주문하신 상품의 수선요청이 정상적으로 접수 되었습니다.수선 기간은 평균 3~4주 소요, 감정 및 케어 기간은 7-20일 소요 됩니다.▶ 날짜 : ".date("Y-m-d")."▶ 상품명 : ".$note1."▶ 수선내용: ".$note2."자세한 진행 내용은 마이페이지에서 확인 가능합니다▶ 마이페이지 바로가기".$mypage;		}else if($kakao_tpl_no=="008"){		#### 쿠폰 발송		$msgIdx		= "860523";		$message	= "[엘라부티크]안녕하세요. ".$userName."님저희 엘라부티크와 함께 해주셔서 감사합니다.".$userName."고객님의 동의에 의해 지급된 쿠폰 안내 메시지입니다".$userName."님의 ID : ".$userID."".$userName." 고객님 엘라부티크에서 #{쿠폰 제목}쿠폰 이 발송 되었습니다!사용 기간까지 사용 부탁드립니다 #{쿠폰 사용기간}해당 쿠폰은 쿠폰기간내 미사용시 자동 소멸 됩니다.자세한 진행 내용은 마이페이지에서 확인 가능합니다▶ 마이페이지 바로가기".$mypage."▶ 홈페이지 바로가기".$homepage;		}else if($kakao_tpl_no=="009"){		#### 1차 예약결제 완료 후		$msgIdx		= "860524";		$message	= "[엘라부티크]안녕하세요 .".$userName."님소중한 예약 주문이 접수완료 되었습니다.고객님께서 주문해주신 상품은 빈티지 및 중고 상품입니다.육안으로 도드라지지 않는 미세한 이염, 하자로 인한 교환 및 환불은 불가합니다.▶ 날짜 : ".date("Y-m-d")."▶ 주문번호 : ".$note1."▶ 상품명 : ".$note2."▶ 금액 : ".$note3."▶ 차액 금액 : ".$note4."▶ 예약 기간 ".$note5."- 배송 일정은 수선, 감정 혹은 별도 요청사항이 있는 제품이 아닌 경우 주말 제외 “익일 오전” 발송됩니다.- 해외 배송은 엘라부티크 체널로 연락 부탁드립니다.- 수선 기간은 평균 3~4주 소요, 감정 및 케어 기간은 7-20일 소요 됩니다.- 구매당시 미처 안내드리지 못한 부분이 있을 경우 발송 이전에 검수 후 다시 한번 안내 도와드리겠습니다.- 구매가 이루어지면 상세컷을 모두 확인 하신 것으로 간주합니다. 상세컷을 반드시 꼼꼼하게 확인해주세요.- 제품 하자로 인한 경우가 아닌 단순변심으로 인한 구매취소, 제품 수선,감정 중 중도취소시 취소 수수료 (판매가의 5%) 발생합니다.신중한 구매 부탁드립니다.- 예약기간내에 환불 및 교환은 불가합니다.- 수선 및 감정은 완불 후 진행 됩니다.▶ 홈페이지 바로가기".$homepage;		}else if($kakao_tpl_no=="010"){		#### 	Q&A 답변		$msgIdx		= "860525";		$message	= "[엘라부티크]안녕하세요. ".$userName."님저희 엘라부티크와 함께 해주셔서 감사합니다.".$userName."님 께서 문의주신 내용의 답변이 등록 되었습니다.매일 인스타 그램 라이브 방송과 홈페이지에서 다양한 제품들을 만나보실 수 있습니다.▶ 홈페이지 바로가기".$homepage;		}else if($kakao_tpl_no=="011"){		#### 수선 처리 완료		$msgIdx		= "861017";		$message	= "	[엘라부티크]안녕하세요 . ".$userName."님주문하신 상품의 수선이 완료되었습니다▶ 날짜:".date("Y-m-d")."▶ 상품명:".$note1."▶ 수선내용: ".$note2."▶ 수선비용 ".$note3."(유상) / 0원(무상)수선비용이 있는 경우 마이페이지에서 수선비용을 결제 해주세요▶ 마이페이지 바로가기".$mypage;		}else if($kakao_tpl_no=="012"){		#### 교환 신청		$msgIdx		= "861312";		$message	= "[엘라부티크]안녕하세요 . ".$userName."님주문하신 상품의 교환 요청이 정상적으로 접수 되었습니다▶ 날짜 : ".date("Y-m-d")."▶ 구매상품명: ".$note1."▶ 교환요청상품명: ".$note2."자세한 내용은 마이페이지에서 확인가능합니다▶ 마이페이지 바로가기".$mypage."교환 차액이 있는 경우 엘라부티크 카카오톡 채널로 문의 주세요.엘라부티크 카카오톡 문의 가기https://pf.kakao.com/_nvCts/chat";		}		$tmpltCode	= "ella-".$kakao_tpl_no;		$recipient	= $userPNum;	//수신자 정보	$api_server = "https://www.biztalk-api.com";		// 서버	$api_url = "/v2/kko/sendAlimTalk";					// url	$jsonVars  = '"msgIdx":"'.$msgIdx.'"';				// 메시지 일련번호	$jsonVars .= ', "countryCode":"82"';				// 국가코드	$jsonVars .= ', "resMethod":"PUSH"';				// 전송방식	$jsonVars .= ', "senderKey":"'.$senderKey.'"';		// 카카오 발신프로필 키	$jsonVars .= ', "tmpltCode":"'.$tmpltCode.'"';		// 템플릿 코드	$jsonVars .= ', "message":"'.$message.'"';			// 템플릿 내용	$jsonVars .= ', "recipient":"'.$recipient.'"';		// 수신자 전화번호	$jsonVars .= ', "attach":{"button":[{"name":"홈페이지 바로가기","type":"WL","url_mobile":"http://www.ellaboutique.com/","url_pc":"http://www.ellaboutique.com/"}]}';		// 버튼처리/웹링크	$postvars = '{'.$jsonVars.'}';      //JSON 데이터	//echo $postvars;	$headers = array("cache-control: no-cache", "content-type: application/json; charset=utf-8", "bt-token:".$btToken);	// header	// api 호출	$ch = curl_init();	curl_setopt($ch,CURLOPT_URL, $api_server.$api_url);	curl_setopt($ch,CURLOPT_POST, true);	curl_setopt($ch,CURLOPT_POSTFIELDS, $postvars);	curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);	curl_setopt($ch,CURLOPT_CONNECTTIMEOUT ,3);	curl_setopt($ch,CURLOPT_TIMEOUT, 60);	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);	$response = curl_exec($ch);	//curl 에러 확인	if(curl_errno($ch)){	//	echo 'Curl error: ' . curl_error($ch);	}else{	//	print_r($response);	}	curl_close ($ch);********************************************/}########################################### 카카오 알림톡(directsend) ########################################### ED?>

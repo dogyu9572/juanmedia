@@ -329,7 +329,6 @@ function fnCopyEst(eidx){
                         <col class="w15p">
                         <col class="w15p">
                         <col class="w15p">
-                        <col class="w15p">
                         <col class="w10p">
                         <col class="w20p">
                     </colgroup>
@@ -337,8 +336,7 @@ function fnCopyEst(eidx){
 						<tr>	
 							<th><label class="check notxt"><input type="checkbox" name="" id="allCheck"><i></i></label></th>
                             <th class="pc_vw">No.</th>
-                            <th class="pc_vw">구분1</th>
-                            <th class="pc_vw">구분2</th>
+                            <th class="pc_vw">구분</th>
                             <th class="pc_vw">장비번호</th>
                             <th class="pc_vw">장비명</th>
                             <th class="pc_vw">대여료</th>
@@ -412,14 +410,6 @@ function fnCopyEst(eidx){
                                         <?php
                                         $category1_name = getCategoryName($arrBoardList["list"][$i]['category1']);
                                         echo $category1_name ? $category1_name : '';
-                                        ?>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div title="<?=$category2_title?>">
-                                        <?php
-                                        $category2_name = getCategoryName($arrBoardList["list"][$i]['category2']);
-                                        echo $category2_name ? $category2_name : '';
                                         ?>
                                     </div>
                                 </td>
