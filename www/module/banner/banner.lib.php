@@ -160,7 +160,7 @@ function getMainBannerList($type){
     return $list;
 }
 
-function getKcaBannerList($type,$device){
+function getDeviceBannerList($type,$device){
 	$tbl = $GLOBALS["_conf_tbl"]["banner"];
 
     $sql = "SELECT * FROM ".$tbl." WHERE b_show='Y' AND b_type='$type' and b_device = '$device' order by b_sort desc ";

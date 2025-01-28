@@ -26,9 +26,9 @@ $mAgent = array("iPhone","iPod","Android","Blackberry", "Opera Mini", "Windows c
 $chkMobile = false;
 $device = "pc";
 
-if(!isset($popup_category)){
+/*if(!isset($popup_category)){
 	$popup_category = "1";
-}
+}*/
 
 for($i=0; $i<sizeof($mAgent); $i++){
     if(stripos( $_SERVER['HTTP_USER_AGENT'], $mAgent[$i] )){

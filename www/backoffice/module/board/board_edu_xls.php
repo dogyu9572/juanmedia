@@ -33,8 +33,8 @@ $EXCEL_TXT = "
 <tr>
     <td>No</td>
     <td>상태</td>
-    <td>교육구분1</td>
-    <td>교육구분2</td>
+    <td>카테고리1</td>
+    <td>카테고리2</td>
     <td>교육명</td>
     <td>교육기간</td>
     <td>요일</td>

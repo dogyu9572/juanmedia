@@ -126,21 +126,18 @@ $(function(){
 			<dt>등록일</dt>
 			<dd><input class="datepicker" type="text" name="sdate" value="<?=$_GET["sdate"]?>" autocomplete="off" /><em>~</em><input class="datepicker" type="text" name="edate" value="<?=$_GET["edate"]?>"  autocomplete="off" /></dd>
 		</dl>
-		<dl>
-			<dt>사용여부</dt>
-			<dd>
-				<label class="radio"><input type="radio" name="is_show" value="" <?=$_GET["is_show"] == ""?"checked":""?>><i></i>전체</label>
-				<label class="radio"><input type="radio" name="is_show" value="Y" <?=$_GET["is_show"] == "Y"?"checked":""?>><i></i>Y</label>
-				<label class="radio"><input type="radio" name="is_show" value="N" <?=$_GET["is_show"] == "N"?"checked":""?>><i></i>N</label>
-			</dd>
-		</dl>
-		<dl class="search_wrap">
-			<dt>제목</dt>
-			<dd>	
-				<input type="text" name="sk" value="<?=$_GET['sk']?>" />
-				<button type="button" class="search" onclick="document.form1.submit()">검색</button>
-			</dd>
-		</dl>
+        <dl class="search_wrap">
+            <dt>검색어</dt>
+            <dd>
+                <select name="sw" style="width:120px;">
+                    <option value='all'<?=$_GET['sw']=="all"?" selected='selected'":""?>>전체</option>
+                    <option value='s'<?=$_GET['sw']=="s"?" selected='selected'":""?>>제목</option>
+                    <option value='c'<?=$_GET['sw']=="c"?" selected='selected'":""?>>내용</option>
+                </select>
+                &nbsp;&nbsp;<input type="text" name="sk" value="<?=$_GET['sk']?>" onkeypress="if( event.keyCode == 13 ){document.form1.submit()}" />
+                <button type="button" class="search" onclick="document.form1.submit()">검색</button>
+            </dd>
+        </dl>
 	</div>
 
 	<div class="inbox">
@@ -178,6 +175,7 @@ $(function(){
 						<col class="*">
 						<col class="w10p">
 						<col class="w10p">
+                        <col class="w10p">
 						<col class="w10p">
 					</colgroup>
 					<thead>
@@ -185,8 +183,9 @@ $(function(){
 							<th><label class="check notxt"><input type="checkbox" name="" id="allCheck"><i></i></label></th>
 							<th class="pc_vw">No.</th>
 							<th class="pc_vw">제목</th>
-							<th class="pc_vw">사용여부</th>
+							<th class="pc_vw">작성자</th>
 							<th class="pc_vw">등록일</th>
+                            <th class="pc_vw">조회수</th>
 							<th class="pc_vw">관리</th>
 						</tr>
 					</thead>
@@ -231,8 +230,9 @@ $(function(){
 							<td class="chkbox"><label class="check notxt"><input type="checkbox" value="<?=$arrBoardList["list"][$i]['idx']?>" name="chk_list"><i></i></label></td>
 							<td><i class="mo_vw">No.</i><?=$arrBoardList["list"][$i]['no']=="0"?"공지":$categoryTitle?></td>
 							<td><i class="mo_vw">제목</i><?=$arrBoardList["list"][$i]['subject']?></td>
-							<td><i class="mo_vw">사용여부</i><?=$arrBoardList["list"][$i]['is_show']?></td>
-							<td><i class="mo_vw">작성일</i><?=$arrBoardList["list"][$i]['wdate']?></td>						
+							<td><i class="mo_vw">작성자</i><?=$arrBoardList["list"][$i]['name']?></td>
+							<td><i class="mo_vw">작성일</i><?=$arrBoardList["list"][$i]['wdate']?></td>
+                            <td><i class="mo_vw">조회수</i><?=$arrBoardList["list"][$i]['hit']?></td>
 							<td class="mono_btm"><i class="mo_vw">관리</i>
 								<div class="btns">
 									<a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=modify&idx=<?=$arrBoardList["list"][$i]['idx']?>&category=<?=$_GET['category']?>" class="btn modi">수정</a>
@@ -305,57 +305,138 @@ if(isset($_GET["offset"])){
 	$offset = (int)$_GET["offset"];
 }
 ?>
-<div class="tit-box">
-	<h3 class="tit-bullet heading1">공지사항</h3>
-	<p class="sub">고신대학교복음병원의 다양한 소식을 확인하세요</p>
-</div>
-<div class="section board-wrap">
-	<form name="searchfrm" method="get" action="<?=$_SERVER["PHP_SELF"]?>">
-		<input type="hidden" name="boardid" value="<?=$arrBoardInfo["list"][0]["boardid"]?>">
-		<input type="hidden" name="sw" value="s">
-		<div class="brd-sch">	
-			<input type="text" id="sk" name="sk" value="<?=$_GET["sk"]?>" placeholder="검색어를 입력해주세요">
-			<button type="submit" title="검색"></button>
-		</div>
-	</form>
-	<div class="brd-list">
-		<div class="head">
-			<div class="row">
-				<div class="no">NO</div>
-				<div class="tit">제목</div>
-			</div>
-		</div>
-		<div class="body">
-			<?
-			if($arrBoardList["list"]["total"] > 0){
-				for($i=0; $i < $arrBoardList["list"]["total"]; $i++){
-					//순번 & 공지 & 신규표시
-					$listNum = $arrBoardList["total"]-$i-$offset;
-					//공지
-					if($arrBoardList["list"][$i]['no']=="0"){
-						$categoryTitle = 'class="notice"';
-						$listNum = '<span class="tag secondary">공지</span>';
-					}					
+    <script language="javascript">
+        function fileDownload(boardid,b_idx,idx){
+            obj = window.open("/module/board/download.php?boardid="+boardid+"&b_idx="+b_idx+"&idx="+idx,"download","width=100,height=100,menubars=0, toolbars=0");
+        }
+    </script>
 
-					$arrBoardArticle = getBoardArticleView($arrBoardInfo["list"][0]["boardid"], "", $arrBoardList["list"][$i]['idx'], "list");
-					
-					$addClass = "";
-					if($arrBoardArticle["total_files"] > 0){
-						$addClass = "file";
-					}
-			?>
-				<a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=view&idx=<?=$arrBoardList["list"][$i]['idx']?>" class="row <?=$addClass?>">
-					<p class="no"><?=$listNum?></p>
-					<p class="tit"><?=$arrBoardList["list"][$i]['subject']?></p>
-				</a>
-			<?
-				}
-			}
-			?>
-		</div>
-	</div>
-	<div class="pagination">
-		<?=pageNavigationUser($arrBoardList["total"],$arrBoardInfo["list"][0]["scale"],$arrBoardInfo["list"][0]["pagescale"],$_GET['offset'],"boardid=".$arrBoardInfo["list"][0]["boardid"]."&sk=".$_GET['sk']."&sw=".$_GET['sw']."&category=".$_GET['category'])?>
-	</div>
-</div>
+    <!-- pageTitle -->
+    <div class="pageTitle inner">공지 & 뉴스</div>
+    <!-- //pageTitle -->
+
+    <!-- subSec -->
+    <div class="subSec pt0 last">
+        <div class="inner">
+            <form name="form1" method="get" action="<?=$_SERVER["PHP_SELF"]?>">
+                <input type="hidden" name="boardid" value="<?=$arrBoardInfo["list"][0]["boardid"]?>">
+                <input type="hidden" name="category" value="<?=$_GET["category"]?>">
+            <!-- searchForm -->
+            <div class="searchForm">
+                <div class="count">
+                    전체 <span><?=number_format($arrBoardList["total"])?>건</span>
+                </div>
+                <div class="rightForm">
+                    <div class="baseSel">
+                        <select name="sw">
+                            <option value='all'<?=$_GET['sw']=="all"?" selected='selected'":""?>>전체</option>
+                            <option value='s'<?=$_GET['sw']=="s"?" selected='selected'":""?>>제목</option>
+                            <option value='c'<?=$_GET['sw']=="c"?" selected='selected'":""?>>내용</option>
+                        </select>
+                    </div>
+                    <div class="search">
+                        <div class="baseInput">
+                            <input type="text" name="sk" value="<?=$_GET['sk']?>" onkeypress="if( event.keyCode == 13 ){document.form1.submit()}" />
+                        </div>
+                        <a href="#;"><img src="/images/ico_search.svg" onclick="document.form1.submit()" alt="검색"></a>
+                    </div>
+                </div>
+            </div>
+            <!-- //searchForm -->
+            </form>
+
+            <!-- noticeTable -->
+            <div class="noticeTable">
+                <ul class="thead">
+                    <li class="no1">NO</li>
+                    <li class="no2">제목</li>
+                    <li class="no3">첨부파일</li>
+                    <li class="no4">작성자</li>
+                    <li class="no5">조회수</li>
+                    <li class="no6">등록일</li>
+                </ul>
+                <div class="tbody">
+                <?
+                if($arrBoardList["list"]["total"] > 0){
+                    for($i=0; $i < $arrBoardList["list"]["total"]; $i++){
+                        //순번 & 공지 & 신규표시
+                        $listNum = $arrBoardList["total"]-$i-$offset;
+                        //공지
+                        if($arrBoardList["list"][$i]['no']=="0"){
+                            $categoryTitle = 'class="notice"';
+                            $listNum = '<span class="tag noti">공지</span>';
+                        }
+
+                        $arrBoardArticle = getBoardArticleView($arrBoardInfo["list"][0]["boardid"], "", $arrBoardList["list"][$i]['idx'], "list");
+
+                        $fileLinks = '';
+                        if ($arrBoardArticle["files"][$i]['re_name'] && substr($arrBoardArticle["files"][$i]['re_name'], 0, 2) != "l_" && substr($arrBoardArticle["files"][$i]['re_name'], 0, 2) != "v_") {
+                            $fileLinks = '<a href="javascript:void(0);" class="ico_file" onclick="fileDownload(\'' . $arrBoardArticle["files"][$i]['boardid'] . '\', \'' . $arrBoardArticle["files"][$i]['b_idx'] . '\', \'' . $arrBoardArticle["files"][$i]['idx'] . '\');">' . $arrBoardArticle["files"][$i]['ori_name'] . '</a>';
+                        }
+                        ?>
+                    <ul>
+                        <li class="no1">
+                            <?=$listNum?>
+                        </li>
+                        <li class="no2">
+                            <div class="titleFile">
+                                <div class="title"><a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=view&idx=<?=$arrBoardList["list"][$i]['idx']?>" class="row <?=$addClass?>"><?=$arrBoardList["list"][$i]['subject']?></a></div>
+                                <div class="mob">
+                                    <?=$fileLinks?>
+                                </div>
+                            </div>
+                            <div class="info mob">
+                                <div class="box">
+                                    <div class="tit">작성자</div>
+                                    <div class="text"><?=$arrBoardList["list"][$i]['name']?></div>
+                                </div>
+                                <div class="box">
+                                    <div class="tit">등록일</div>
+                                    <div class="text"><?=$arrBoardList["list"][$i]['subject']?></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="no3">
+                            <?=$fileLinks?>
+                        </li>
+                        <li class="no4">
+                            <?=$arrBoardList["list"][$i]['name']?>
+                        </li>
+                        <li class="no5">
+                            <?=$arrBoardList["list"][$i]['hit']?>
+                        </li>
+                        <li class="no6">
+                            <?=date('Y.m.d', strtotime($arrBoardList["list"][$i]['wdate']))?>
+                        </li>
+                    </ul>
+                        <?
+                    }
+                }
+                ?>
+                </div>
+            </div>
+            <!-- //noticeTable -->
+
+            <!-- pagingWrap -->
+            <div class="pagingWrap">
+                <?
+                ############### paging ############### ST
+                $queryString = explode("&",$_SERVER['QUERY_STRING']);
+                $reQueryString = "";
+                $comma = "";
+                for($i=0;$i<count($queryString);$i++){
+                    if(strpos($queryString[$i],"offset=")===false){
+                        $reQueryString .= $comma.$queryString[$i];
+                        $comma = "&";
+                    }
+                }
+                echo pageNavigationUser($arrBoardList["total"],$arrBoardInfo["list"][0]["scale"],$arrBoardInfo["list"][0]["pagescale"],$_GET['offset'],$reQueryString);
+                ############### paging ############### ED
+                ?>
+            </div>
+            <!-- //pagingWrap -->
+
+        </div>
+    </div>
+    <!-- //subSec -->
 <?}?>

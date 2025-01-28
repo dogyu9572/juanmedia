@@ -234,8 +234,8 @@ function getActivePopupList($category,$device = 'pc'){
 	$sql .= "FROM ".$tbl." ";
 	$sql .= "WHERE s_date <= curdate() ";
 	$sql .= "AND e_date >= curdate() ";
-	$sql .= "AND category = '$category' ";
-	$sql .= "AND device = '$device' ";
+	//$sql .= "AND category = '$category' ";
+	//$sql .= "AND device = '$device' ";
 	$rs = mysqli_query($GLOBALS['dblink'], $sql);
 	$total_rs = mysqli_num_rows($rs);
 	

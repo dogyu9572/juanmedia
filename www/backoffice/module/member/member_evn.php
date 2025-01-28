@@ -42,7 +42,7 @@ if($_POST['evnMode']=="insert"){
 	SetDisConn($dblink);
 
 	if($RS==true){
-		jsGo($_REQUEST['rt_url'],"","");
+		jsGo($_REQUEST['rt_url'],"",  "수정되었습니다.");
 	}else{
 		jsMsg("정보 수정에 실패 하였습니다.");
 		jsHistory("-1") ;

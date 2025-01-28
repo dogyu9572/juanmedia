@@ -240,7 +240,7 @@ function fnCopyEst(eidx){
 
 	<div class="inbox top_search">
         <dl>
-            <dt>장비구분</dt>
+            <dt>카테고리</dt>
             <dd id="cat_01">
                 <select name="cat1" id="cat1" class="text" onchange="fnCat1(this.value);" style="width:120px;">
                     <option value="">전체</option>
@@ -336,7 +336,7 @@ function fnCopyEst(eidx){
 						<tr>	
 							<th><label class="check notxt"><input type="checkbox" name="" id="allCheck"><i></i></label></th>
                             <th class="pc_vw">No.</th>
-                            <th class="pc_vw">구분</th>
+                            <th class="pc_vw">카테고리</th>
                             <th class="pc_vw">장비번호</th>
                             <th class="pc_vw">장비명</th>
                             <th class="pc_vw">대여료</th>

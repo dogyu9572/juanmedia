@@ -3,7 +3,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/backoffice/pub/inc/admin_top.php";
 include "./menu.php";
 
 include $_SERVER['DOCUMENT_ROOT'] . "/module/banner/banner.lib.php";
-if(!in_array("board_manage",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTH"]) && $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]!="ROOT"):
+if(!in_array("banner_manage",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTH"]) && $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]!="ROOT"):
 	jsMsg("권한이 없습니다.");
 	jsHistory("-1");
 endif;
@@ -19,51 +19,15 @@ SetDisConn($dblink);
 <script language="javascript">
 function CheckForm(frm){
 	if (frm.b_subject.value==""){
-		alert("이미지명을 입력해 주세요.");
+		alert("배너명을 입력해 주세요.");
 		frm.b_subject.focus();
 		return false;
 	}
 }
-function fnGateTxt(sval){
-	if(sval>18 && sval<27){
-		$("#gateAtext").show();
-	}else{
-		$("#gateAtext").hide();
-	}
-}
 </script>
-<?######################################### color picker######################################### ST?>
-<script src="/_api/_minicolors/js/jquery.minicolors.js"></script>
-<link rel="stylesheet" href="/_api/_minicolors/js/jquery.minicolors.css">
-<script>
-$(document).ready( function() {
-	$('.picker').each( function() {
-		$(this).minicolors({
-			control: $(this).attr('data-control') || 'hue',
-			defaultValue: $(this).attr('data-defaultValue') || '',
-			format: $(this).attr('data-format') || 'hex',
-			keywords: $(this).attr('data-keywords') || '',
-			inline: $(this).attr('data-inline') === 'true',
-			letterCase: $(this).attr('data-letterCase') || 'lowercase',
-			opacity: $(this).attr('data-opacity'),
-			position: $(this).attr('data-position') || 'bottom',
-			swatches: $(this).attr('data-swatches') ? $(this).attr('data-swatches').split('|') : [],
-			change: function(value, opacity) {
-				if( !value ) return;
-				if( opacity ) value += ', ' + opacity;
-				if( typeof console === 'object' ) {
-					console.log(value);
-				}
-			},
-			theme: 'bootstrap'
-		});
-	});
-});
-</script>
-<?######################################### color picker######################################### ED?>
 <div class="container">
 
-	<div class="title">이미지 수정</div>
+	<div class="title">배너 수정</div>
 	
 	<div class="inbox write_tbl mo_break_write">
 		
@@ -71,76 +35,31 @@ $(document).ready( function() {
 		<input type="hidden" name="evnMode" value="update">
 		<input type="hidden" name="idx" value="<?=$arrInfo["list"][0]['idx']?>">
 
-		<div class="tit">이미지정보 <i>*</i></div>
+		<div class="tit">배너정보 <i>*</i></div>
 		<table>
-			<tr>
-				<th>구분</th>
-				<td><div class="inputs">
-					<select name="b_type" style="width:250px;">
-						<option value="1"<?=$arrInfo["list"][0]['b_type']=="1"?" selected":""?>>KCA메인비주얼</option>
-						<option value="2"<?=$arrInfo["list"][0]['b_type']=="2"?" selected":""?>>KCA메인배너</option>
-						<option value="3"<?=$arrInfo["list"][0]['b_type']=="3"?" selected":""?>>KCIA</option>
-					</select>
-				</div></td>
-			</tr>
 			<tr>
 				<th>배너 타입</th>
 				<td><div class="inputs">
-					<select name="b_device" style="width:250px;">
-						<option value="1"<?=$arrInfo["list"][0]['b_device']=="1"?" selected":""?>>PC</option>
-						<option value="2"<?=$arrInfo["list"][0]['b_device']=="2"?" selected":""?>>MO</option>
+					<select name="b_device">
+                        <option value="1" <?php if ($arrInfo["list"][0]['b_device'] == 1) echo "selected"; ?>>1. PC 슬라이드 배너 (1920px * 420px)</option>
+                        <option value="2" <?php if ($arrInfo["list"][0]['b_device'] == 2) echo "selected"; ?>>2. 모바일 슬라이드 배너 (750px * 1332px)</option>
 					</select>
 				</div></td>
 			</tr>
+            <tr>
+                <th>구분</th>
+                <td>
+                    <div class="inputs">
+                        <label class="radio"><input type="radio" name="b_type" value="1"<?=$arrInfo["list"][0]['b_type']=="1"?" checked":""?>><i></i>메인 배너</label>
+                        <label class="radio"><input type="radio" name="b_type" value="2"<?=$arrInfo["list"][0]['b_type']=="2"?" checked":""?>><i></i>브런치 무비톡</label>
+                        <label class="radio"><input type="radio" name="b_type" value="3"<?=$arrInfo["list"][0]['b_type']=="3"?" checked":""?>><i></i>미디어 체험 배너</label>
+                        <label class="radio"><input type="radio" name="b_type" value="4"<?=$arrInfo["list"][0]['b_type']=="4"?" checked":""?>><i></i>유튜브</label>
+                    </div>
+                </td>
+            </tr>
 			<tr>
 				<th>제목</th>
-				<td><div class="inputs"><input type="text" class="w4" name="b_subject" maxlength="100" value="<?=stripslashes($arrInfo["list"][0]['b_subject'])?>">
-				<!-- &nbsp;<input type="text" class="w2 picker" name="b_color_1" maxlength="10" value="<?=$arrInfo["list"][0]['b_color_1']?>"> -->
-				</div></td>
-			</tr>			
-			<tr style="display:none;">
-				<th>텍스트1</th>
-				<td><div class="inputs"><input type="text" class="w4" name="b_contents" maxlength="100" value="<?=stripslashes($arrInfo["list"][0]['b_contents'])?>">
-				&nbsp;<input type="text" class="w2 picker" name="b_color_2" maxlength="10" value="<?=$arrInfo["list"][0]['b_color_2']?>">
-				</div></td>
-			</tr>
-			<tr style="display:none;">
-				<th>텍스트2</th>
-				<td><div class="inputs"><input type="text" class="w4" name="b_etc_1" maxlength="100" value="<?=stripslashes($arrInfo["list"][0]['b_etc_1'])?>">
-				&nbsp;<input type="text" class="w2 picker" name="b_color_3" maxlength="10" value="<?=$arrInfo["list"][0]['b_color_3']?>">
-				</div></td>
-			</tr>
-			<tr style="display:none;">
-				<th>텍스트3</th>
-				<td><div class="inputs"><input type="text" class="w4" name="b_etc_2" maxlength="100" value="<?=stripslashes($arrInfo["list"][0]['b_etc_2'])?>">
-				&nbsp;<input type="text" class="w2 picker" name="b_color_4" maxlength="10" value="<?=$arrInfo["list"][0]['b_color_4']?>">
-				</div></td>
-			</tr>	
-			<tr style="display:none;">
-				<th>텍스트 배치</th>
-				<td><div class="inputs">
-					<label class="radio"><input type="radio" name="b_brand" value="1" <?=$arrInfo["list"][0]['b_brand']=="1"?"checked":""?> <?=$arrInfo["list"][0]['b_brand']?"":"checked"?>><i></i>상</label>
-					<label class="radio"><input type="radio" name="b_brand" value="2" <?=$arrInfo["list"][0]['b_brand']=="2"?"checked":""?>><i></i>중</label> 
-					<label class="radio"><input type="radio" name="b_brand" value="3" <?=$arrInfo["list"][0]['b_brand']=="3"?"checked":""?>><i></i>하</label> 
-					<label class="radio"><input type="radio" name="b_brand" value="4" <?=$arrInfo["list"][0]['b_brand']=="4"?"checked":""?>><i></i>사용안함</label> 
-					<em></em>
-				</div></td>
-			</tr>			
-			<tr>
-				<th>등록된이미지</th>
-				<td><img src="/uploaded/banner/<?=$arrInfo['list'][0]['b_image']?>" style="max-height:300px;max-width:300px;"></td>
-			</tr>
-			<tr>
-				<th>이미지</th>
-				<td>
-					<div class="inputs">
-						<div class="filebutton">
-							<span>파일 선택</span>
-							<input type="file" name="image_file" class="searchfile" title="파일 찾기">
-						</div>
-						<div class="filebox">선택된 파일 없음</div>
-					</div>
-				</td>
+				<td><div class="inputs"><input type="text" class="w4" name="b_subject" maxlength="100" value="<?=stripslashes($arrInfo["list"][0]['b_subject'])?>"></div></td>
 			</tr>
 			<tr>
 				<th>링크</th>
@@ -155,18 +74,67 @@ $(document).ready( function() {
 				</div></td>
 			</tr>
 			<tr>
-				<th>정렬순서</th>
-				<td><div class="inputs"><input type="text" class="w1" name="b_sort" maxlength="10" value="<?=$arrInfo["list"][0]['b_sort']?>"><em>&nbsp;(숫자가 높을수록 위쪽에 나타남)</em></div>
-				</td>
-			</tr>
-			<tr>
-				<th>표시 여부</th>
+				<th>보이기</th>
 				<td><div class="inputs">
 					<label class="radio"><input type="radio" name="b_show" value="Y" <?=$arrInfo["list"][0]['b_show']=="Y"?" checked":""?>><i></i>표시</label>
 					<label class="radio"><input type="radio" name="b_show" value="N" <?=$arrInfo["list"][0]['b_show']=="N"?" checked":""?>><i></i>숨김</label> 
 				</div></td>
 			</tr>
-
+			<tr style="display:none;">
+				<th>텍스트1</th>
+				<td><div class="inputs"><input type="text" class="w4" name="b_text1" maxlength="250" value="<?=stripslashes($arrInfo["list"][0]['b_text1'])?>"></div></td>
+			</tr>
+			<tr style="display:none;">
+				<th>텍스트2</th>
+				<td><div class="inputs"><input type="text" class="w4" name="b_text2" maxlength="250" value="<?=stripslashes($arrInfo["list"][0]['b_text2'])?>"></div></td>
+			</tr>
+			<tr>
+				<th>정렬순서</th>
+				<td><div class="inputs"><input type="text" class="w1" name="b_sort" maxlength="10" value="<?=$arrInfo["list"][0]['b_sort']?>"><em>&nbsp;(숫자가 높을수록 위쪽에 나타남)</em></div>
+				</td>
+			</tr>
+			<tr style="display:none;">
+				<th>사용타입</th>
+				<td><div class="inputs">
+					<label class="radio"><input type="radio" name="b_showtype" value="f" <?=$arrInfo["list"][0]['b_showtype'] == "f"?"checked":""?>><i></i>파일사용</label>
+					<label class="radio"><input type="radio" name="b_showtype" value="y" <?=$arrInfo["list"][0]['b_showtype'] == "y"?"checked":""?>><i></i>유튜브사용</label> 
+				</div></td>
+			</tr>
+			<tr>
+				<th>썸네일</th>
+				<td>
+					<div class="inputs">
+						<div class="filebutton">
+							<span>파일 선택</span>
+							<input type="file" name="image_file" class="searchfile" title="파일 찾기" accept="image/*,video/*">
+						</div>
+						<div class="filebox">선택된 파일 없음</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>등록된 썸네일</th>
+				<td>
+					<?php
+						$arrExt = explode("/",$arrInfo['list'][0]['b_ext']); 
+						if($arrExt[0] == "video"){
+					?>
+					<video autoplay loop muted playsinline class="video" id="mainvideo" style="max-height:300px;max-width:300px;">
+						 <source src="/uploaded/banner/<?=$arrInfo['list'][0]['b_image']?>" type="<?=$arrInfo['list'][0]['b_ext']?>">
+					</video>
+					<?php
+						}else{
+					?>
+					<img src="/uploaded/banner/<?=$arrInfo['list'][0]['b_image']?>" style="max-height:300px;max-width:300px;">
+					<?php 
+						}
+					?>
+				</td>
+			</tr>
+			<tr style="display:none;">
+				<th>유튜브링크</th>
+				<td><div class="inputs"><input type="text" class="w4" name="b_youbube" maxlength="250" value="https://"></div></td>
+			</tr>
 		</table>		
 
 		<div class="btns">

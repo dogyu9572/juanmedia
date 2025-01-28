@@ -137,7 +137,7 @@ $arrBoardList	= getBoardListBaseNFile($arrBoardInfo["list"][0]["boardid"], "", $
 											<tr>
 												<th>NO.</th>
 												<th>접수번호</th>
-												<th>교육구분</th>
+												<th>카테고리</th>
 												<th>교육분류</th>
 												<th>교육명</th>
 												<th>교육기간</th>

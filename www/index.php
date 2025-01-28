@@ -11,6 +11,10 @@ $arrEduList3 = getBoardListBaseNFile("edu", "", "", "", 4, 0,'and reception_stat
 $arrEduList4 = getBoardListBaseNFile("edu", "", "", "", 4, 0,'and reception_status="종료"', "user");
 $arrEquList = getBoardListBaseNFile("equ", "", "", "", 3, 0,'', "user");
 $arrPlaceList = getBoardListBaseNFile("place", "", "", "", 3, 0,'', "user");
+$arrNoticeList = getBoardListBaseNFile("notice", "", "", "", 4, 0,'', "user");
+$arrYoutubeList = getBoardListBaseNFile("youtube", "", "", "", 2, 0,'', "user");
+$arrPCBannerList = getDeviceBannerList(1,"1");
+$arrMOBannerList = getDeviceBannerList(1,"2");
 
 //DB해제
 SetDisConn($dblink);
@@ -22,20 +26,47 @@ SetDisConn($dblink);
         <!-- mainSlide -->
         <div class="mainSlide ">
             <div class="swiper-wrapper">
-                <div class="swiper-slide">
-					<img src="/images/mainSlide1.png" class="pc" alt="슬라이드">
-					<img src="/images/mainSlide1_mob.jpg" class="mob" alt="슬라이드">
-				</div>
-                <div class="swiper-slide">
-					<a href="/media/order.php">
-						<img src="/images/mainSlide2.png" class="pc" alt="슬라이드">
-						<img src="/images/mainSlide2_mob.jpg" class="mob" alt="슬라이드">
-					</a>
-				</div>
-                <div class="swiper-slide">
-					<img src="/images/mainSlide3.png" class="pc" alt="슬라이드">
-					<img src="/images/mainSlide3_mob.jpg" class="mob" alt="슬라이드">
-				</div>
+                <?php
+                if (!empty($arrPCBannerList["list"]) || !empty($arrMOBannerList["list"])) {
+                    $total = max($arrPCBannerList["list"]["total"], $arrMOBannerList["list"]["total"]);
+                    for ($i = 0; $i < $total; $i++) {
+                        $pc_image = "/pub/images/mvisual01.png";
+                        $mo_image = "/pub/images/mvisual01.png";
+                        $url = "#this";
+                        $target = "";
+
+                        if (!empty($arrPCBannerList["list"][$i]["b_image"])) {
+                            $pc_image = "/uploaded/banner/" . $arrPCBannerList["list"][$i]["b_image"];
+                        }
+                        if (!empty($arrMOBannerList["list"][$i]["b_image"])) {
+                            $mo_image = "/uploaded/banner/" . $arrMOBannerList["list"][$i]["b_image"];
+                        }
+
+                        if (!empty($arrPCBannerList["list"][$i]["b_url"])) {
+                            $url = $arrPCBannerList["list"][$i]["b_url"];
+                            $target = " target='" . $arrPCBannerList["list"][$i]["b_target"] . "' ";
+                        } elseif (!empty($arrMOBannerList["list"][$i]["b_url"])) {
+                            $url = $arrMOBannerList["list"][$i]["b_url"];
+                            $target = " target='" . $arrMOBannerList["list"][$i]["b_target"] . "' ";
+                        }
+                        ?>
+                        <div class="swiper-slide">
+                            <a href="<?=$url?>" <?=$target?>>
+                                <img src="<?=$pc_image?>" class="pc" alt="슬라이드">
+                                <img src="<?=$mo_image?>" class="mob" alt="슬라이드">
+                            </a>
+                        </div>
+                        <?php
+                    }
+                } else {
+                    ?>
+                    <div class="swiper-slide">
+                        <img src="/images/mainSlide1.png" class="pc" alt="슬라이드">
+                        <img src="/images/mainSlide1_mob.jpg" class="mob" alt="슬라이드">
+                    </div>
+                    <?php
+                }
+                ?>
             </div>
             <div class="controler">
                 <div class="count"><span class="state">01</span> <span class="bar">/</span> <span class="total"></span>
@@ -76,38 +107,38 @@ SetDisConn($dblink);
             <div class="tabCont">
                 <div id="cont" class="ing">
                     <ul class="swiper-wrapper">
-						<?php for($i=0;$i<$arrEduList1["list"]["total"];$i++){?>
+                        <?php for($i=0;$i<$arrEduList1["list"]["total"];$i++){?>
                             <li class="ing">
                                 <a href="/edu/list.php?boardid=edu&mode=view&idx=<?=$arrEduList1["list"][$i]["idx"]?>">
                                     <span class="img"><img src="/uploaded/board/edu/<?=$arrEduList1["list"][$i]["re_name"]?>" alt="썸네일"></span>
                                     <div class="stateBox ing"><span>접수중</span></div>
                                 </a>
                             </li>
-						<?php } ?>
-						<?php for($i=0;$i<$arrEduList2["list"]["total"];$i++){?>
+                        <?php } ?>
+                        <?php for($i=0;$i<$arrEduList2["list"]["total"];$i++){?>
                             <li class="etc">
                                 <a href="/edu/list.php?boardid=edu&mode=view&idx=<?=$arrEduList2["list"][$i]["idx"]?>">
                                     <span class="img"><img src="/uploaded/board/edu/<?=$arrEduList2["list"][$i]["re_name"]?>" alt="썸네일"></span>
                                     <div class="stateBox etc"><span><span>대기<br />접수</span</span></div>
                                 </a>
                             </li>
-						<?php } ?>
-						<?php for($i=0;$i<$arrEduList3["list"]["total"];$i++){?>
+                        <?php } ?>
+                        <?php for($i=0;$i<$arrEduList3["list"]["total"];$i++){?>
                             <li class="ready">
                                 <a href="/edu/list.php?boardid=edu&mode=view&idx=<?=$arrEduList3["list"][$i]["idx"]?>">
                                     <span class="img"><img src="/uploaded/board/edu/<?=$arrEduList3["list"][$i]["re_name"]?>" alt="썸네일"></span>
                                     <div class="stateBox ready"><span><span>교육중</span></span></div>
                                 </a>
                             </li>
-						<?php } ?>
-						<?php for($i=0;$i<$arrEduList4["list"]["total"];$i++){?>
+                        <?php } ?>
+                        <?php for($i=0;$i<$arrEduList4["list"]["total"];$i++){?>
                             <li class="end">
                                 <a href="/edu/list.php?boardid=edu&mode=view&idx=<?=$arrEduList4["list"][$i]["idx"]?>">
                                     <span class="img"><img src="/uploaded/board/edu/<?=$arrEduList4["list"][$i]["re_name"]?>" alt="썸네일"></span>
                                     <div class="stateBox end"><span>종료</span></div>
                                 </a>
                             </li>
-						<?php } ?>
+                        <?php } ?>
                     </ul>
                 </div>
             </div>
@@ -125,7 +156,7 @@ SetDisConn($dblink);
                 <div class="tabCont">
                     <div id="contEq" class="eq">
                         <ul class="swiper-wrapper">
-				            <?php for($i=0;$i<$arrEquList["list"]["total"];$i++){ ?>
+                            <?php for($i=0;$i<$arrEquList["list"]["total"];$i++){ ?>
                                 <li class="eq">
                                     <a href="/equ/list.php?boardid=edu&mode=view&idx=<?=$arrEquList["list"][$i]["idx"]?>">
                                         <div class="img">
@@ -140,8 +171,8 @@ SetDisConn($dblink);
                                         </div>
                                     </a>
                                 </li>
-				            <?php } ?>
-				            <?php for($i=0;$i<$arrPlaceList["list"]["total"];$i++){ ?>
+                            <?php } ?>
+                            <?php for($i=0;$i<$arrPlaceList["list"]["total"];$i++){ ?>
                                 <li class="place">
                                     <a href="/place/list.php?boardid=place&mode=view&idx=<?=$arrPlaceList["list"][$i]["idx"]?>">
                                         <div class="img">
@@ -156,7 +187,7 @@ SetDisConn($dblink);
                                         </div>
                                     </a>
                                 </li>
-				            <?php } ?>
+                            <?php } ?>
                         </ul>
                     </div>
                 </div>
@@ -248,14 +279,10 @@ SetDisConn($dblink);
                 </div>
                 <div class="noticeList">
                     <ul>
-                        <li><a href="/cm/detail.php"> <span class="tit">2024 시니어 미디어 특강</span> <span
-                                        class="date">2024.09.27</span> </a></li>
-                        <li><a href="/cm/detail.php"> <span class="tit">2024 시니어 미디어 특강2024 시니어 미디어 특강2024 시니어 미디어
-                                    특강</span> <span class="date">2024.09.27</span> </a></li>
-                        <li><a href="/cm/detail.php"> <span class="tit">2024 시니어 미디어 특강</span> <span
-                                        class="date">2024.09.27</span> </a></li>
-                        <li><a href="/cm/detail.php"> <span class="tit">2024 시니어 미디어 특강</span> <span
-                                        class="date">2024.09.27</span> </a></li>
+                        <?php for($i=0;$i<$arrNoticeList["list"]["total"];$i++){?>
+                            <li><a href="/cm/notice.php?boardid=notice&mode=view&idx=<?=$arrNoticeList["list"][$i]["idx"]?>"> <span class="tit"><?=$arrNoticeList["list"][$i]["subject"]?></span> <span
+                                            class="date"><?=date('Y.m.d', strtotime($arrNoticeList["list"][$i]['wdate']))?></span> </a></li>
+                        <?php } ?>
                     </ul>
                 </div>
             </div> <!-- //mainNotice -->
@@ -267,14 +294,13 @@ SetDisConn($dblink);
                 </div>
                 <div class="youtubeList">
                     <ul>
-                        <li><a href="#;"> <span class="img"><img src="/images/thumb3.png" alt="썸네일"></span>
-                                <div class="text"><span class="tit">2024 시니어 미디어 특강</span> <span class="txt">오늘의 보따리
-                                        이야기오늘의 보따리 이야기</span></div>
-                            </a></li>
-                        <li><a href="#;"> <span class="img"><img src="/images/thumb3.png" alt="썸네일"></span>
-                                <div class="text"> <span class="tit">2024 시니어 미디어 특강2024 시니어 미디어 특강2024 시니어 미디어
-                                        특강</span> <span class="txt">오늘의 보따리 이야기오늘의 보따리 이야기오늘의 보따리 이야기</span></div>
-                            </a></li>
+                        <?php for($i=0;$i<$arrYoutubeList["list"]["total"];$i++){?>
+                            <li><a href="<?=$arrYoutubeList["list"][$i]["homepage"]?>"><span class="img"><img src="/uploaded/board/youtube/<?=$arrYoutubeList["list"][$i]["re_name"]?>" alt="썸네일"></span>
+                                    <div class="text"><span class="tit"><?=$arrYoutubeList["list"][$i]["subject"]?></span>
+                                        <span class="txt"><?=$arrYoutubeList["list"][$i]["contents"]?></span>
+                                    </div>
+                                </a></li>
+                        <?php } ?>
                     </ul>
                 </div>
             </div> <!-- //mainYoutube -->
@@ -330,64 +356,12 @@ SetDisConn($dblink);
         </div> <!-- //snsIntro --->
     </div> <!-- //mainSec -->
 </div> <!-- //Container -->
-<div id="layerPopup" class="layer-popup">
-    <div class="popup-content"><img src="/images/popup_250102.jpg" alt="Popup Image">
-        <div class="popup-buttons">
-            <button id="doNotOpenToday">오늘 하루 열지 않음</button>
-            <button id="closePopup">닫기</button>
-        </div>
-    </div>
-</div>
-<style>
-    .layer-popup {
-        display: none;
-        position: fixed;
-        top: 300px;
-        left: 100px;
-        width: 35%;
-        height: 35%;
-        background: rgba(0, 0, 0, 0.5);
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-    }
-
-    .popup-content {
-        background: #d3d3d3;
-        /* Changed background color to a darker gray */
-        text-align: center;
-        border-radius: 10px;
-    }
-
-    .popup-buttons {
-        margin-top: 5px;
-        margin-bottom: 5px;
-        text-align: right;
-        /* Align buttons to the right */
-    }
-
-    .popup-buttons button {
-        margin: 5px;
-        padding: 10px 20px;
-        border: none;
-        background: #007bff;
-        color: #fff;
-        cursor: pointer;
-        border-radius: 5px;
-    }
-
-    .popup-buttons button:hover {
-        background: #0056b3;
-    }
-</style>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var layerPopup = document.getElementById('layerPopup');
-        var doNotOpenToday = document.getElementById('doNotOpenToday');
-        var closePopup = document.getElementById(
-            'closePopup'
-        ); // Check if the popup should be shown        if (!localStorage.getItem('doNotOpenToday')) {            layerPopup.style.display = 'flex';        }        // Handle "Do not open today" button click        doNotOpenToday.addEventListener('click', function() {            localStorage.setItem('doNotOpenToday', true);            layerPopup.style.display = 'none';        });        // Handle "Close" button click        closePopup.addEventListener('click', function() {            layerPopup.style.display = 'none';        });    });
-</script><?php include("./inc/quick.php"); ?><?php include("./inc/footer.php"); ?> </div> <!-- //Wrap -->
+<?php
+include_once $_SERVER["DOCUMENT_ROOT"]."/module/popup/popup.inc.php";
+?>
+<?php include("./inc/quick.php"); ?>
+<?php include("./inc/footer.php"); ?>
+</div> <!-- //Wrap -->
 </body>
 
 </html>
