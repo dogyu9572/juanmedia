@@ -1,7 +1,6 @@
 
-
 <!--footer-->
-<div class="footer">
+<div class="footer">`
 	<div class="info">
 		<div class="inner">
 			<div class="left">
@@ -16,11 +15,12 @@
 					<div class="tit">패밀리 사이트</div>
 					<div class="scroll">
 						<ul>
-							<li><a href="http://www.juanmtv.or.kr/main.do" target="_blank">주안미디어TV</a></li>
-							<li><a href="http://www.haksanculture.or.kr/" target="_blank">미추홀학산문화원</a></li>
-							<li><a href="http://www.cinespacejuan.com/" target="_blank">영화공간주안</a></li>
-							<li><a href="http://namgu.incheon.kr/home/index.asp" target="_blank">인천광역시 미추홀구</a></li>
-							<li><a href="http://www.imediaschool.kr" target="_blank">아이미디어스쿨</a></li>
+                            <?php
+                            $footertCategory = getCategoryList(5);
+                            for ($i = 0; $i < count($footertCategory["list"]); $i++) {
+                                echo '<li><a href="' . $footertCategory["list"][$i]['cat_engname'] . '" target="_blank">' . $footertCategory["list"][$i]['cat_name'] . '</a></li>';
+                            }
+                            ?>
 						</ul>
 					</div>
 				</div>

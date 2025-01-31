@@ -19,8 +19,8 @@ switch($thisPHPname){
                     <a class="<?=$leftMenuClass[2]?>" href="/backoffice/module/banner/banner.php">· 배너 관리</a>
                     <a class="<?=$leftMenuClass[3]?>" href="/backoffice/module/popup/popup_list.php">· 팝업 관리</a>
                     <a class="<?=$leftMenuClass[4]?>" href="/backoffice/module/category/category.php?cat_no=5">· 패밀리사이트 관리</a>
-                    <a class="<?=$leftMenuClass[5]?>" href="/backoffice/module/board/board_view.php?boardid=clogo">· 매출 관리</a>
-                    <a class="<?=$leftMenuClass[6]?>" href="/backoffice/module/board/board_view.php?boardid=support">· 세부실적 내역</a>
+                    <a class="<?=$leftMenuClass[5]?>" href="/backoffice/module/board/board_view.php?boardid=payment_summary">· 매출내역 관리</a>
+                    <a class="<?=$leftMenuClass[6]?>" href="/backoffice/module/board/board_view.php?boardid=payment_details">· 세부실적 내역</a>
                 </dd>
 			</dl>			
 		</div>

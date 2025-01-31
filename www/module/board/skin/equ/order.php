@@ -117,6 +117,14 @@
         'biweekly' => '격주',
         'other' => '기타'
     ];
+    $subQuery = "AND equ_idx={$_GET["idx"]} AND (rental_start_date <= '{$_POST["rental_end_date"]}' AND rental_end_date >= '{$_POST["rental_start_date"]}')";
+    $arrBoardList = getBoardListBase("equ_applicants", "", "", "", 100, 0, $subQuery, "", "");
+
+    if($arrBoardList["total"] >= $arrSetInfo["list"][0]["equ_max_rental_count"]){
+        jsMsg("대여 가능한 장비의 수량을 초과하였습니다.");
+        jsHistory("-1");
+    }
+
 
     $imgsrc = "/uploaded/board/".$arrBoardInfo["list"][0]["boardid"]."/".$arrBoardArticle["files"][0]['re_name'];
 
@@ -231,7 +239,7 @@
                             <input type="hidden" id="finalamountInput" name="finalamount" value="<?=$_POST["totalamount"]?>">
                             <input type="hidden" id="discountamountInput" name="discountamount" value="0">
                             <input type="hidden" id="usage_day" name="usage_day" value="<?=$_POST["usage_day"]?>">
-                            <input type="hidden" id="equ_idx" name="equ_idx" value="<?=$arrBoardArticle["list"][0]['idx']?>">
+                            <input type="hidden" id="equ_idx" name="equ_idx" value="<?=$_GET["idx"]?>">
 
                             <!-- 기타 필요한 제품 정보들 -->
 		                <?php else: ?>

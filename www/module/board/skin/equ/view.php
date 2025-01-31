@@ -116,7 +116,7 @@ function doLoad(){
         'other' => '기타'
     ];
 
-    $arrEduUser = getBoardArticleView("equ_applicants", "", "", "", "  equ_idx = " . $arrBoardArticle["list"][0]['idx']);
+    $arrEquUser = getBoardArticleView("equ_applicants", "", "", "", "  equ_idx = " . $arrBoardArticle["list"][0]['idx']);
 
     $imgsrc = "/uploaded/board/".$arrBoardInfo["list"][0]["boardid"]."/".$arrBoardArticle["files"][0]['re_name'];
 
@@ -414,10 +414,10 @@ function doLoad(){
 
             // 폼 제출 관련 함수
             window.submitRentalForm = function(mode) {
-                if (<?= $arrEduUser["total"] ?> >= <?= $arrSetInfo["list"][0]["equ_max_rental_count"] ?>) {
+               /* if (<?= $arrEduUser["total"] ?> >= <?= $arrSetInfo["list"][0]["equ_max_rental_count"] ?>) {
                     alert("최대 대여 개수를 초과 하였습니다.");
                     return;
-                }
+                }*/
 
                 if (!document.getElementById('st1').value) {
                     alert('대여일을 선택해 주세요.');
