@@ -169,6 +169,7 @@
                         <input type="hidden" id="category1" name="category1" value="<?=$arrBoardArticle["list"][0]['category1']?>">
                         <input type="hidden" id="category2" name="category2" value="<?=$arrBoardArticle["list"][0]['category2']?>">
                         <input type="hidden" id="w_user" name="w_user" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]?>">
+                        <input type="hidden" id="gender" name="gender" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["GENDER"]?>">
                         <input type="hidden" name="usehtml" value="Y">
                         <?php if($_REQUEST['mode']=="reply"):?>
                             <input type="hidden" name="evnMode" value="reply">

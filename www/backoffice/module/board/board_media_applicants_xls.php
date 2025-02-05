@@ -14,7 +14,7 @@ endif;
 $dblink = SetConn($_conf_db["main_db"]);
 
 $scale=0;
-$arrList = getXlsList($_GET['boardid'], "", 0, 0);
+$arrList = getXlsList($_GET['boardid'],  $_GET['sw'], $_GET['sk'], "", 0);
 
 $arrAllCategory = getCategoryAll();
 

@@ -1,6 +1,6 @@
 <?php
 // 데이터베이스 연결 정보
-$host = '10.14.32.4';
+$host = '10.14.33.3';
 $dbname = 'juanmedia';
 $username = 'root';
 $password = '2025Gabia@)@%';

@@ -295,7 +295,7 @@ function fnCopyEst(eidx){
 			</div>
 			<div class="bdr_right">
                 <div class="btns">
-                    <a href="./board_<?=$arrBoardInfo["list"][0]["boardid"]?>_xls.php?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>" class="excel" download>엑셀파일로 저장<span class="pc_vw"></span></a>
+                    <a href="./board_<?=$arrBoardInfo["list"][0]["boardid"]?>_xls.php?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&sw=<?=$_REQUEST['sw']?>&sk=<?=$_REQUEST['sk']?>&user_level=<?=$_REQUEST['user_level']?>&s_date=<?=$_REQUEST['s_date']?>&e_date=<?=$_REQUEST['e_date']?>&status=<?=$_REQUEST['status']?>" class="excel" download>엑셀파일로 저장<span class="pc_vw"></span></a>
                 </div>
 				<div class="count">
 					<select name="page_size" onchange="document.form1.submit()"  style="width:60px;">
@@ -663,8 +663,12 @@ $(document).ready(function(){
                             </div>
                             <div class="box">
                                 <div class="pointBox">
-                                    <div class="tit"><?=getCategoryName($arrBoardList["list"][$i]['category1'])?></div>
-                                    <div class="tit sky"><?=getCategoryName($arrBoardList["list"][$i]['category2'])?></div>
+	                                <?php if (!empty(getCategoryName($arrBoardArticle["list"][0]['category1']))): ?>
+                                        <div class="tit"><?=getCategoryName($arrBoardArticle["list"][0]['category1'])?></div>
+	                                <?php endif; ?>
+	                                <?php if (!empty(getCategoryName($arrBoardArticle["list"][0]['category2']))): ?>
+                                        <div class="tit sky"><?=getCategoryName($arrBoardArticle["list"][0]['category2'])?></div>
+	                                <?php endif; ?>
                                 </div>
                                 <span class="name"><?=$arrBoardList["list"][$i]['subject']?></span>
 								<span class="item_num"><span>장비번호</span><em><?=$arrBoardList["list"][$i]['equ_number']?></em></span>

@@ -1,0 +1,516 @@
+<?
+################################################### PHP 7 Set ST
+if(!isset($_GET["category"])){	$_GET["category"]=""; }
+if(!isset($_GET["sw"])){		$_GET['sw']="";	}
+if(!isset($_GET["sk"])){		$_GET['sk']="";	}
+if(!isset($_GET["offset"])){	$_GET['offset']=0;	}
+if(!isset($_GET["page_size"])){	$_GET['page_size']=""; }
+if(!isset($arrBoardList["list"]["total"])){			$arrBoardList["list"]["total"]=0; }
+if(!isset($arrBoardList["total"])){					$arrBoardList["total"]=0; }
+if(!isset($arrBoardInfo["list"][0]["scale"])){		$arrBoardInfo["list"][0]["scale"]=0; }
+if(!isset($arrBoardInfo["list"][0]["pagescale"])){	$arrBoardInfo["list"][0]["pagescale"]=0; }
+if(!isset($arrBoardInfo["list"][0]["boardid"])){	$arrBoardInfo["list"][0]["boardid"]=""; }
+################################################### PHP 7 Set ED
+
+$arrCategoryInfo = getCategoryInfo(mysqli_real_escape_string($GLOBALS['dblink'], $_REQUEST['cat_no']));
+
+//카테고리 정보
+$arrCatCode = explode("/", $arrCategoryInfo["list"][0]['cat_code']);
+
+//분류 리스트
+$arrCategory1 = getCategoryList(62);
+
+if($arrCatCode[2]){	$arrCategory2 = getCategoryList($arrCatCode[2]); }
+if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoffice/module/board/pop_board_view.php"){
+    if(!in_array("board_manage",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTH"]) && $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]!="ROOT"):
+        jsMsg("권한이 없습니다.");
+        jsHistory("-1");
+    endif;
+###################################################### 관리자 페이지 ######################################################?>
+    <script type="text/javascript">
+        <!--
+        $(document).ready(function() {
+            $.each($('input.calendar'), function() {
+                set_datepicker($(this));
+            });
+        });
+        function set_datepicker($cont) {
+            $cont.prop('readonly', true).datepicker({
+                closeText: '닫기',
+                prevText: '',
+                nextText: '',
+                currentText: '오늘',
+                monthNames: ['1월(JAN)','2월(FEB)','3월(MAR)','4월(APR)','5월(MAY)','6월(JUN)','7월(JUL)','8월(AUG)','9월(SEP)','10월(OCT)','11월(NOV)','12월(DEC)'],
+                monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+                dayNames: ['일','월','화','수','목','금','토'],
+                dayNamesShort: ['일','월','화','수','목','금','토'],
+                dayNamesMin: ['일','월','화','수','목','금','토'],
+                weekHeader: 'Wk',
+                dateFormat: 'yy-mm-dd',
+                defaultDate: '+1w',
+                firstDay: 0,
+                isRTL: false,
+                showMonthAfterYear: true,
+                yearSuffix: '년 ',
+                changeMonth: true,
+                changeYear: true,
+                yearRange: '1921:c+5'
+            });
+        }
+
+        function boardDel(val){
+            if(confirm("삭제 하시겠습니까?")) {
+                $.post("/module/board/ajax_board_del.php", { evnMode: "delete", g_idx: val, boardid: "<?=$arrBoardInfo["list"][0]["boardid"]?>" },
+                    function(data){
+                        //alert(data);
+                        doLoad();
+                    });
+            }
+        }
+        function doLoad(){
+            location.reload();
+        }
+        // 선택 삭제시 singleSelect=true 값 변경 false
+        function getSelections(){
+            var ss = "0";
+
+            var rows = $('input:checkbox[name=chk_list]:checked');
+
+            for(var i=0; i<rows.length; i++){
+                var row = rows[i];
+                //ss.push(row.idx);
+                ss += ","+row.value;
+            }
+            if(rows.length>0){
+                //alert(ss);
+                boardDel(ss);
+            }else{
+                alert('선택된 항목이 없습니다.');
+            }
+        }
+        function fnAddMsds(ss){
+            parent.fnGoodSelect(ss,'<?=$_GET['fname']?>');
+        }
+
+        $(function(){
+            $(".check_all").click(function(){
+                var chk = $(this).is(":checked");//.attr('checked');
+                if(chk) $(".chk_list").prop('checked', true);
+                else  $(".chk_list").prop('checked', false);
+            });
+        });
+
+        // 순서 변경
+        $(function() {
+            /*
+            $("#sortWrap").sortable({
+                axis: "y",
+                containment: "parent",
+                update: function (event, ui) {
+                    var order = $(this).sortable('toArray', {
+                        attribute: 'data-order'
+                    });
+                    console.log(order);
+                    fnOrderSave(order);
+                }
+            });
+            */
+        });
+        var arrIdx=[];
+        function fnOrderSave(order){
+            arrIdx = order;
+            fnGoodOrderby();
+        }
+        function fnGoodOrderby(){
+            var idxs = "";
+            var comma = "";
+            for(var i=0;i<arrIdx.length;i++){
+                idxs += comma+arrIdx[i];
+                comma = "|";
+            }
+            //alert(idxs)
+            if(idxs){
+
+                $.post("/module/board/ajax_orderby_board.php", { "gidx": idxs, "tn":"tbl_board_<?=$arrBoardInfo["list"][0]["boardid"]?>" },
+                    function(data){
+                        if(data){
+                            //	alert(data);
+                            location.reload();
+                        }
+                    }
+                );
+            }else{
+                alert('변경된 순서가 없습니다.');
+            }
+        }
+        // 메인노출
+        function fnAjaxYN(objt, sf){
+            var apiUrl = "/module/shop/ajax_edit_def_yn.php";
+            var gidx = $(objt).val();
+            var chk = $(objt).is(":checked");//.attr('checked');
+            var yn = "";
+            if(chk){
+                yn = "Y";
+            }else{
+                yn = "N";
+            }
+            //	alert(yn)
+
+            $.post(apiUrl, {
+                "gidx":gidx,"yn":yn,"sf":sf,"tn":"tbl_board_ourstory"
+            }, function(data){
+                //	alert(data);
+                if(data=="true"){
+                    location.reload();
+                }else{
+                    alert(data);
+                }
+            });
+        }
+        function fnOrderby(rdnm, rdsc){
+            var frm = document.form1;
+            frm.rdnm.value = rdnm;
+            frm.rdsc.value = rdsc;
+            frm.submit();
+        }
+        //-->
+    </script>
+    <div class="container">
+
+        <div class="title"><?=$arrBoardInfo["list"][0]["boardname"]?></div>
+
+        <form name="form1" method="get" action="<?=$_SERVER["PHP_SELF"]?>">
+            <input type="hidden" name="boardid" value="<?=$arrBoardInfo["list"][0]["boardid"]?>">
+            <input type="hidden" id="cat_no" name="cat_no" value="<?=$_GET['cat_no']?>">
+            <input type="hidden" name="rdnm" value="<?=$_GET['rdnm']?>">
+            <input type="hidden" name="rdsc" value="<?=$_GET['rdsc']?>">
+            <input type="hidden" name="fname" value="<?=$_GET['fname']?>">
+
+
+            <div class="inbox">
+        </form>
+        <!-- over_tbl : 테이블을 좌우로 스크롤 할 때 사용합니다. -->
+        <!-- mo_break_tbl : 767px 이하에서 테이블 구조를 깰 때 사용합니다. -->
+        <div class="over_tbl mo_break_tbl">
+            <div class="bdr_list tac">
+                <table>
+                    <colgroup class="pc_vw">
+                        <col class="w4p">
+                        <col class="w20p">
+                        <col class="w20p">
+                        <col class="w15p">
+                        <col class="w15p">
+                        <col class="w17p">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="pc_vw">No.</th>
+                        <th class="pc_vw">제목</th>
+                        <th class="pc_vw">휴관일</th>
+                        <th class="pc_vw">등록일</th>
+                        <th class="pc_vw">비고</th>
+                        <th class="pc_vw">관리</th>
+                    </tr>
+                    </thead>
+                    <tbody id="sortWrap">
+                    <?
+                    if($arrBoardList["list"]["total"] > 0){
+                        for($i=0; $i < $arrBoardList["list"]["total"]; $i++){
+                            //신규글 표시
+                            if(strtotime($arrBoardList["list"][$i]['wdate'])+($arrBoardInfo["list"][0]["newmark"]*86400) > mktime()){
+                                $newImage ='<span class="icoNew">new</span>';	// new 이미지
+                            }else{
+                                $newImage ='';
+                            }
+                            //글잠금 표시
+                            if($arrBoardList["list"][$i]['uselock'] == "Y"){
+                                $lockImage ="";	// 글잠금표시
+                            }else{
+                                $lockImage ="";
+                            }
+                            //댓글수 표시
+                            if(isset($arrBoardList["list"][$i]['cmt_count']) > 0){
+                                $cmt_count = "[".number_format($arrBoardList["list"][$i]['cmt_count'])."]";
+                            }else{
+                                $cmt_count = "";
+                            }
+                            //공지
+                            $categoryTitle = $arrBoardList["total"]-$i-(int)$_GET['offset'];
+                            $TrClass="";
+                            $noticeMo="";
+                            if($arrBoardList["list"][$i]['no']=="0"){
+                                $TrClass="class=\"notice\"";	// 공지글 표시
+                                $categoryTitle = '<span class="notiTit">공지</span>';
+                                $noticeMo = '<span class="notiTit">공지</span>';
+                            }
+
+                            $imgsrc[$i] = "/uploaded/board/".$arrBoardInfo["list"][0]["boardid"]."/".$arrBoardList["list"][$i]['re_name'];
+                            ############################ 파일 확인 #############################
+                            $arrBoardArticle = getBoardArticleView($arrBoardInfo["list"][0]["boardid"], "", $arrBoardList["list"][$i]['idx'],"list");
+                            for($j=0;$j<$arrBoardArticle["total_files"];$j++){
+                                if(substr($arrBoardArticle["files"][$j]['re_name'],0,2) != "l_"){
+                                    $fileImg[$i] = '<img src="/backoffice/pub_old/images/file.png">';
+                                }
+                            }
+                            $categories = explode('|', $arrBoardList["list"][$i]['category']);
+                            $categoryNames = [];
+                            foreach ($categories as $category) {
+                                $categoryNames[] = $arrAllCategory[$category];
+                            }
+                            $categoryString = implode(', ', $categoryNames);
+
+                            if ($arrBoardList["list"][$i]['weekdays'])$weekdays = "매주 ";
+	                        $weekdays .= str_replace('|', '/', $arrBoardList["list"][$i]['weekdays']);
+
+                            ?>
+                            <tr data-order="<?=$arrBoardList['list'][$i]['idx']?>">
+                                <td style="width:5%;"><?=$arrBoardList["list"][$i]['no']=="0"?"공지":$categoryTitle?></td>
+                                <td style="width:5%;"><?=$arrBoardList["list"][$i]['subject']?></td>
+                                <td><?=$arrBoardList["list"][$i]['holly_start_date']?> ~ <?=$arrBoardList["list"][$i]['holly_end_date']?><br/><?=$weekdays?></td>
+                                <td style="width:40%;"><?=date("Y-m-d",strtotime($arrBoardList["list"][$i]['wdate']))?></td>
+                                <td>
+                                    <div title="<?=$arrBoardList["list"][$i]['contents']?>">
+                                        <?=mb_strimwidth($arrBoardList["list"][$i]['contents'], 0, 20, '...')?>
+                                    </div>
+                                </td>
+                                <td style="width:10%;">
+                                    <div class="btns">
+                                        <a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=modify&idx=<?=$arrBoardList["list"][$i]['idx']?>" class="btn modi">수정</a>
+                                        <button type="button" class="btn del" onclick="boardDel(<?=$arrBoardList["list"][$i]['idx']?>)">삭제</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <?
+                        }
+                    }else{
+                        ?>
+                        <tr height="100">
+                            <td colspan="8">등록된 데이터가 없습니다.</td>
+                        </tr>
+                    <?}?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bdr_btm">
+            <div class="paging">
+                <?
+                ############### paging ############### ST
+                $queryString = explode("&",$_SERVER['QUERY_STRING']);
+                $reQueryString = "";
+                $comma = "";
+                for($i=0;$i<count($queryString);$i++){
+                    if(strpos($queryString[$i],"offset=")===false){
+                        $reQueryString .= $comma.$queryString[$i];
+                        $comma = "&";
+                    }
+                }
+                echo pageNavigationBackoffice($arrBoardList["total"],$arrBoardInfo["list"][0]["scale"],$arrBoardInfo["list"][0]["pagescale"],$_GET['offset'],$reQueryString);
+                ############### paging ############### ED
+                ?>
+            </div>
+            <!-- 			<div class="btns">
+				<a href="javascript:void(0);" onclick="getSelections()" class="btn btn_del">선택삭제</a>
+				<a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=write&category=<?=$_GET['category']?>" class="btn">신규등록</a>
+			</div> -->
+        </div>
+    </div>
+    </div>
+    <script type="text/javascript">
+        function fnCat1(tval){
+            $.post("/module/shop/ajax_selectbox_category.php", { snum : '2',cat_no: tval, eventMd : '<?=$_GET['eventMd']?>'},
+                function(data){
+                    if(data){
+                        $("#cat_02").html(data);
+                    }else{
+                        alert("실패.");
+                    }
+                }
+            );
+            fnCatNo();
+        }
+        function fnCat2(tval){
+            $.post("/module/shop/ajax_selectbox_category.php", { snum : '3',cat_no: tval },
+                function(data){
+                    if(data){
+                        $("#cat_03").html(data);
+                    }else{
+                        alert("실패.");
+                    }
+                }
+            );
+            fnCatNo();
+        }
+        function fnCat3(tval){
+            fnCatNo();
+        }
+        function fnCatNo(){
+            var cat_no1 = $("#cat1 option:selected").val();
+            var cat_no2 = $("#cat2 option:selected").val();
+            var cat_no3 = $("#cat3 option:selected").val();
+            var cat_no = "";
+            if(cat_no3 && cat_no2 && cat_no1){
+                cat_no = cat_no3;
+            }else if(cat_no2 && cat_no1){
+                cat_no = cat_no2;
+            }else{
+                cat_no = cat_no1;
+            }
+            $("#cat_no").val(cat_no);
+        }
+        //<![CDATA[
+        $(document).ready(function(){
+//달력
+            $(".datepicker").datepicker({
+                dateFormat: 'yy-mm-dd',
+                showMonthAfterYear:true,
+                showOn: "both",
+                buttonImage: "/images/icon_month.gif",
+                buttonImageOnly: true,
+                changeYear: true,
+                changeMonth: true,
+                yearRange: 'c-100:c+10',
+                yearSuffix: "년 ",
+                monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+                dayNamesMin: ['일','월','화','수','목','금','토']
+            });
+//체크박스
+            var $allCheck = $('#allCheck');
+            $allCheck.change(function () {
+                var $this = $(this);
+                var checked = $this.prop('checked');
+                $('input[name="chk_list"]').prop('checked', checked);
+            });
+            var boxes = $('input[name="chk_list"]');
+            boxes.change(function () {
+                var boxLength = boxes.length;
+                var checkedLength = $('input[name="chk_list"]:checked').length;
+                var selectallCheck = (boxLength == checkedLength);
+                $allCheck.prop('checked', selectallCheck);
+            });
+        });
+        //]]>
+    </script>
+    <?
+}else{###################################################### 사용자 페이지 ######################################################
+    $offset = 0;
+    if(isset($_GET["offset"])){
+        $offset = (int)$_GET["offset"];
+    }
+    ?>
+    <div class="inner">
+        <h3 class="heading3">공지사항</h3>
+        <form name="form1" method="get" action="<?=$_SERVER["PHP_SELF"]?>">
+            <input type="hidden" name="boardid" value="<?=$arrBoardInfo["list"][0]["boardid"]?>">
+            <div class="sorting-wrap">
+                <p class="total">총 <b class="c-primaryDark"><?=$arrBoardList["total"]?></b>건</p>
+                <div class="search-wrap">
+                    <select name="sw">
+                        <option value="s">제목</option>
+                        <option value="c">내용</option>
+                    </select>
+                    <div class="search">
+                        <input type="text" name="sk" value="<?=$_GET['sk']?>" maxlength="20" placeholder="검색어를 입력하세요.">
+                        <button type="button" onclick="document.form1.submit()"></button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="board-list data">
+            <div class="head">
+                <div class="row">
+                    <div class="col sm">NO</div>
+                    <div class="col full">제목</div>
+                    <div class="col rg">첨부파일</div>
+                    <div class="col lg">등록일</div>
+                </div>
+            </div>
+            <div class="body">
+                <?
+                if($arrBoardList["list"]["total"] > 0){
+                    for($i=0; $i < $arrBoardList["list"]["total"]; $i++){
+                        //글잠금 표시
+                        if($arrBoardList["list"][$i]['uselock'] == "Y"){
+                            $lockImage ="";	// 글잠금표시
+                        }else{
+                            $lockImage ="";
+                        }
+                        //순번 & 공지 & 신규표시
+                        $listNum = $arrBoardList["total"]-$i-$offset;
+                        //신규글 표시
+                        if(strtotime($arrBoardList["list"][$i]['wdate'])+($arrBoardInfo["list"][0]["newmark"]*86400) > mktime()){
+                            $categoryTitle ='class="new"';	// new 이미지
+                        }
+                        $noticeTxt = "";
+                        //공지
+                        if($arrBoardList["list"][$i]['no']=="0"){
+                            $listNum = '<span class="chip-inform">공지</span>';
+                            $noticeTxt = '<span class="chip-inform">공지</span>';
+                        }
+                        //파일
+                        $imgsrc[$i] = "/uploaded/board/".$arrBoardInfo["list"][0]["boardid"]."/".$arrBoardList["list"][$i]['re_name'];
+                        if(!$arrBoardList["list"][$i]['re_name']){$imgsrc[$i] = "/GATE/pub/images/img_story00.png";}
+                        ############################ 파일 확인 #############################
+                        $arrBoardArticle = getBoardArticleView($arrBoardInfo["list"][0]["boardid"], "", $arrBoardList["list"][$i]['idx'],"list");
+                        for($j=0;$j<$arrBoardArticle["total_files"];$j++){
+                            if(substr($arrBoardArticle["files"][$j]['re_name'],0,2) != "l_"){
+                                $fileImg[$i] = '첨부파일';
+                            }
+                        }
+
+                        if($arrBoardList["list"][$i]['etc_1']=="Y"){
+                            $arrBoardList["list"][$i]['etc_txt'] = '<i class="end">답변완료</i>';
+                        }else{
+                            $arrBoardList["list"][$i]['etc_txt'] = '<i class="ing">문의</i>';
+                        }
+                        $arrBoardList["list"][$i]['re_name'] = mb_substr($arrBoardList["list"][$i]['name'],0,1)."*".mb_substr($arrBoardList["list"][$i]['name'],-1);
+                        $arrBoardList["list"][$i]['re_hp'] = mb_substr($arrBoardList["list"][$i]['homepage'],0,1)."*".mb_substr($arrBoardList["list"][$i]['homepage'],-1);
+                        ?>
+                        <div class="row">
+                            <div class="col sm show-pc">
+                                <?=$listNum?>
+                            </div>
+                            <div class="col full">
+                                <a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=view&idx=<?=$arrBoardList["list"][$i]['idx']?>&sk=<?=$_GET['sk']?>&sw=<?=$_GET['sw']?>&offset=<?=$_GET['offset']?>&category=<?=$_GET['category']?>">
+                                    <?=$noticeTxt?>
+                                    <?=text_cut($arrBoardList["list"][$i]['subject'],70)?></a>
+                            </div>
+                            <div class="col rg show-pc">
+                                <?if($fileImg[$i]=="첨부파일"){?><i class="file"></i><?}?>
+                            </div>
+                            <div class="col lg"><?=str_replace("-",".",substr($arrBoardList["list"][$i]['schedule_date'],0,10))?></div>
+                            <?if($fileImg[$i]=="첨부파일"){?>
+                                <div class="col rg line show-mo">
+                                    <i class="file"></i>
+                                </div>
+                            <?}?>
+                        </div>
+                        <?
+                    }
+                }else{
+                    echo "<tr><td colspan='4'><a href='#'>등록된 데이터가 없습니다.</a></td></tr>";
+                }
+                ?>
+            </div>
+        </div>
+        <div class="paging">
+            <?
+            ############### paging ############### ST
+            $queryString = explode("&",$_SERVER['QUERY_STRING']);
+            $reQueryString = "";
+            $comma = "";
+            for($i=0;$i<count($queryString);$i++){
+                if(strpos($queryString[$i],"offset=")===false){
+                    $reQueryString .= $comma.$queryString[$i];
+                    $comma = "&";
+                }
+            }
+            echo pageNavigationUser($arrBoardList["total"],$arrBoardInfo["list"][0]["scale"],$arrBoardInfo["list"][0]["pagescale"],$_GET['offset'],$reQueryString);
+            ############### paging ############### ED
+            ?>
+        </div>
+    </div>
+    <?
+}
+?>

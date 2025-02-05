@@ -16,7 +16,7 @@ function checkComment(frm){
 	<?if(!$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]){?>
 	alert("로그인을 하셔야 댓글입력이 가능합니다.");
 	return false;
-	
+
 	<?}else if($_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["LEVEL"] >= $arrBoardInfo["list"][0]["replylevel"]){?>
 	if (frm.comment.value==""){
 		alert("댓글 내용을 입력해 주세요.");
@@ -36,18 +36,18 @@ function checkComment(frm){
 </script>
 <script type="text/javascript">
 <!--
-function boardDel(val){	
+function boardDel(val){
 	if(confirm("삭제 하시겠습니까?")) {
 		$.post("/module/board/ajax_board_del.php", { evnMode: "delete", g_idx: val, boardid: "<?=$arrBoardInfo["list"][0]["boardid"]?>" },
-		function(data){		
+		function(data){
 			//alert(data);
 			doLoad();
 		});
 	}
 }
-function doLoad(){	
+function doLoad(){
 	location.href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=list&sk=<?=$_GET['sk']?>&sw=<?=$_GET['sw']?>&offset=<?=$_GET['offset']?>&category=<?=$_GET['category']?>";
-}	
+}
 //-->
 </script>
 <div id="admin-content">
@@ -85,7 +85,7 @@ function doLoad(){
 			<?}?>
 			<?if($i<1){?>
 			첨부파일이 없습니다.
-			<?}?>	
+			<?}?>
 			</td>
 		</tr>
 			<tr>
@@ -101,26 +101,56 @@ function doLoad(){
 	</p>
 	<p class="btn_r">
 		<a href="javascript:void(0);" onclick="boardDel(<?=$arrBoardArticle["list"][0]['idx']?>)" class="btn_box black act_del">삭제</a>
-		<a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=modify&idx=<?=$arrBoardArticle["list"][0]['idx']?>&category=<?=$_GET['category']?>" class="btn_box act_upt">수정</a>		
+		<a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=modify&idx=<?=$arrBoardArticle["list"][0]['idx']?>&category=<?=$_GET['category']?>" class="btn_box act_upt">수정</a>
 	</p>
 	<dl class="more_list">
 		<dt>이전글</dt><dd><?if($arrBoardArticle["prev"]["idx"] !=0):?><a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=view&idx=<?=$arrBoardArticle["prev"]["idx"]?>&category=<?=$_GET['category']?>" title="<?=$arrBoardArticle["prev"]["subject"]?>" class="act_view"><?=text_cut($arrBoardArticle["prev"]["subject"],$arrBoardInfo["list"][0]['subjectcut'])?></a><?else:?><a href="javascript:void(0);">이전글이 없습니다.</a><?endif;?></dd>
 		<dt>다음글</dt><dd><?if($arrBoardArticle["next"]["idx"] !=0):?><a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=view&idx=<?=$arrBoardArticle["next"]["idx"]?>&category=<?=$_GET['category']?>" title="<?=$arrBoardArticle["next"]["subject"]?>" class="act_view"><?=text_cut($arrBoardArticle["next"]["subject"],$arrBoardInfo["list"][0]['subjectcut'])?></a><?else:?><a href="javascript:void(0);">다음글이 없습니다.</a><?endif;?></dd>
-	</dl> 
+	</dl>
 </div>
 <?}else{###################################################### 사용자 페이지 ######################################################?>
-    <?php
-    $dayTypeMap = [
-        'weekly' => '매주',
-        'biweekly' => '격주',
-        'other' => '기타'
-    ];
+	<?php
+	$dayTypeMap = [
+		'weekly' => '매주',
+		'biweekly' => '격주',
+		'other' => '기타'
+	];
 
-    $arrEquUser = getBoardArticleView("equ_applicants", "", "", "", "  equ_idx = " . $arrBoardArticle["list"][0]['idx']);
+	$arrEquUser = getBoardArticleView("equ_applicants", "", "", "", "  equ_idx = " . $arrBoardArticle["list"][0]['idx']);
 
-    $imgsrc = "/uploaded/board/".$arrBoardInfo["list"][0]["boardid"]."/".$arrBoardArticle["files"][0]['re_name'];
+	$imgsrc = "/uploaded/board/".$arrBoardInfo["list"][0]["boardid"]."/".$arrBoardArticle["files"][0]['re_name'];
 
-    ?>
+    $arrBoardHolidayList = getBoardListBaseNFile("holiday", $_GET["category"], $_GET['sw'], $_GET['sk'], $arrBoardInfo["list"][0]["scale"], $_GET['offset'], $_GET['reply']);
+
+    $holidayWeekdays = [];
+    $specificHolidayDates = [];
+
+    foreach ($arrBoardHolidayList['list'] as $holiday) {
+        // 요일 정보 처리
+        if (!empty($holiday['weekdays'])) {
+            $weekdays = explode('|', $holiday['weekdays']);
+            $holidayWeekdays = array_merge($holidayWeekdays, $weekdays);
+        }
+
+        // 특정 날짜 범위 처리
+        if (!empty($holiday['holly_start_date']) && !empty($holiday['holly_end_date'])) {
+            $startDate = strtotime($holiday['holly_start_date']);
+            $endDate = strtotime($holiday['holly_end_date']);
+
+            for ($date = $startDate; $date <= $endDate; $date = strtotime('+1 day', $date)) {
+                $specificHolidayDates[] = date('Y-m-d', $date);
+            }
+        }
+    }
+
+    // 중복 제거
+    $holidayWeekdays = array_unique($holidayWeekdays);
+    $specificHolidayDates = array_unique($specificHolidayDates);
+
+    // JavaScript 배열로 변환
+    $holidayWeekdaysJson = json_encode($holidayWeekdays);
+    $specificHolidayDatesJson = json_encode($specificHolidayDates);
+?>
     <form id="rentalForm"  method="POST">
     <input type="hidden" name="rental_date" id="rental_date">
         <input type="hidden" name="totalamount" id="total_price_hidden">
@@ -329,7 +359,6 @@ function doLoad(){
                 document.getElementById('usage_time_day').value = 0;
             });
 
-
             const today = new Date();
             const minStartDate = new Date();
             minStartDate.setDate(today.getDate() + 3);
@@ -339,6 +368,33 @@ function doLoad(){
             const feePerDay = <?= $arrBoardArticle["list"][0]['fee'] ?>;
             const maxRentalEndDate = new Date();
             maxRentalEndDate.setDate(today.getDate() + 3 + maxRentalDays);
+
+            //휴관일 데이터
+            const holidayWeekdays = <?= $holidayWeekdaysJson ?>;
+            const specificHolidayDates = <?= $specificHolidayDatesJson ?>;
+
+            // 요일 맵핑 (PHP의 요일명을 JavaScript의 숫자로 변환)
+            const weekdayMap = {
+                '일': 0, '월': 1, '화': 2, '수': 3, '목': 4, '금': 5, '토': 6
+            };
+
+            // 날짜가 휴관일인지 확인하는 함수
+            function isHoliday(date) {
+                // 요일 체크
+                const dayOfWeek = date.getDay();
+                const koreanDayName = Object.keys(weekdayMap).find(key => weekdayMap[key] === dayOfWeek);
+                if (holidayWeekdays.includes(koreanDayName)) {
+                    return [false, 'holiday', '휴관일'];
+                }
+
+                // 특정 날짜 체크
+                const dateString = date.toLocaleDateString('en-CA'); // 'en-CA' 형식은 'YYYY-MM-DD' 형식을 반환합니다.
+                if (specificHolidayDates.includes(dateString)) {
+                    return [false, 'holiday', '휴관일'];
+                }
+
+                return [true, '', ''];
+            }
 
             // Initialize the start date picker
             $("#st1").datepicker({
@@ -357,6 +413,7 @@ function doLoad(){
                 yearSuffix: '년',
                 minDate: minStartDate,
                 maxDate: maxRentalEndDate,
+                beforeShowDay: isHoliday,
                 onSelect: function(selectedDate) {
                     const startDate = new Date(selectedDate);
                     const newEndDate = new Date(startDate);
@@ -384,6 +441,7 @@ function doLoad(){
                 yearSuffix: '년',
                 minDate: minStartDate,
                 maxDate: maxRentalEndDate,
+                beforeShowDay: isHoliday,
                 onSelect: function(selectedDate) {
                     const rentalStartDate = $("#st1").datepicker("getDate");
                     if (!rentalStartDate) {

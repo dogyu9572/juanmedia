@@ -1,6 +1,6 @@
 <?php
 // 데이터베이스 연결
-$conn = mysqli_connect("10.14.32.4", "root", "2025Gabia@)@%", "juanmedia");
+$conn = mysqli_connect("10.14.33.3", "root", "2025Gabia@)@%", "juanmedia");
 
 // 연결 확인
 if (!$conn) {

@@ -51,7 +51,7 @@
 			<!-- //subSec -->
 
 			<!-- subSec -->
-			<div class="subSec blue last">
+			<!-- <div class="subSec blue last">
 				<div class="inner ">
 					<div class="organList">
 						<div class="titleType1">
@@ -171,7 +171,7 @@
 						</ul>
 					</div>
 				</div>
-			</div>
+			</div> -->
 			<!-- //subSec -->
 
 		</div>

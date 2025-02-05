@@ -256,6 +256,7 @@
                                 <input type="hidden" id="totalamountInput" name="totalamountInput" value="<?=$arrBoardList["list"][$i]['totalamount']?>">
                                 <input type="hidden" id="finalamountInput" name="finalamountInput" value="<?=$arrBoardList["list"][$i]['totalamount']?>>">
                                 <input type="hidden" id="discountamountInput" name="discountamountInput" value="0">
+                                <input type="hidden" id="gender" name="gender" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["GENDER"]?>">
                                 <!-- 기타 필요한 제품 정보들 -->
 			                <?php endfor; ?>
 		                <?php endif; ?>

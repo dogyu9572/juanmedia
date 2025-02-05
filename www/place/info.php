@@ -31,7 +31,7 @@
 								</li>
 								<li>
 									<div class="img"><img src="/images/ico_eq2.svg" alt="아이콘"></div>
-									<div class="text">전화 확인<br />(070-4607<br class="mob" />-1214)</div>
+									<div class="text">전화 확인<br />(070-4607<br class="mob" />-1217)</div>
 								</li>
 								<li>
 									<div class="img"><img src="/images/ico_eq3.svg" alt="아이콘"></div>
@@ -73,7 +73,7 @@
 							<div class="twoPoint">
 								<div class="pointBox">
 									<span class="tit">화요일~금요일</span>
-									<div class="name">09:00~21:00</div>
+									<div class="name">10:00~21:00</div>
 								</div>
 								<div class="pointBox">
 									<span class="tit sky">토요일</span>
@@ -92,7 +92,7 @@
 							</ul>
 							<div class="pointBox">
 								<span class="tit">입금계좌</span>
-								<div class="name">신한은행 100-035-698102(주안영상미디어센터) </div>
+								<div class="name">우리은행 1005-304-746644 [처운대학교산학협력단(인천캠퍼스)]</div>
 							</div>
 						</div>
 					</div>
@@ -126,7 +126,7 @@
 								</li>
 							</ul>
 							<div class="warnIco">
-								위 대상에 해당하는 분은 장비 결제 시 50% 할인된 가격으로 결제를 진행하시면 됩니다.<br />단, 장비 수령 시 증빙서류(국가유공자증서, 수급자 증명서, 장애인증명서, 주민등록등본 등)를  반드시 제출해 주셔야 합니다.<br />증빙서류는 대여일로부터 1달 이내에 발급받은 것이어야 합니다.
+								위 대상에 해당하는 분은 공간 결제 시 50% 할인된 가격으로 결제를 진행하시면 됩니다.<br />단, 공간 대관 시 증빙서류(국가유공자증서, 수급자 증명서, 장애인증명서, 주민등록등본 등)를  반드시 제출해 주셔야 합니다.<br />증빙서류는 대여일로부터 1달 이내에 발급받은 것이어야 합니다.
 							</div>
 						</div>
 					</div>

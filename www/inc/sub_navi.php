@@ -37,8 +37,8 @@ SetDisConn($dblink);
 			foreach($arrTopMenu as $key => $arrVal):
 				if($arrVal["cat_engname"] == "/edu/info.php" && $gNum=="01"): ?>
                     <li class="<?if($gNum=="01"&&$sNum=="01"){?>on<?}?>"><a href="/edu/info.php">교육신청 안내</a></li>
-                    <li class="<?if($gNum=="01"&&$sNum=="02"){?>on<?}?>"><a href="/edu/list.php?cat_no=63">상설교육</a></li>
-                    <li class="<?if($gNum=="01"&&$sNum=="03"){?>on<?}?>"><a href="/edu/list.php?cat_no=64">공동체교육</a></li>
+                    <li class="<?if($gNum=="01"&&$sNum=="02"){?>on<?}?>"><a href="/edu/list.php?cat_no=115">상설교육</a></li>
+                    <li class="<?if($gNum=="01"&&$sNum=="03"){?>on<?}?>"><a href="/edu/list.php?cat_no=116">공동체교육</a></li>
                     <li class="<?if($gNum=="01"&&$sNum=="04"){?>on<?}?>"><a href="/edu/teacher.php">강사지원</a></li>
 				<?php elseif($arrVal["cat_engname"] == "/equ/info.php" && $gNum=="02"): ?>
                     <li class="<?if($gNum=="02"&&$sNum=="01"){?>on<?}?>"><a href="/equ/info.php">대여안내</a></li>

@@ -19,22 +19,22 @@ $email = $arrBoardArticle["list"][0]['email'];
 $encodedEmail = base64_encode($email);
 
 $arrList = getMemberList(
-    mysqli_real_escape_string($GLOBALS['dblink'], $_REQUEST['jb']),
-    mysqli_real_escape_string($GLOBALS['dblink'], $_REQUEST['sw']),
-    mysqli_real_escape_string($GLOBALS['dblink'], $_REQUEST['sk']),
-    $scale,
-    $_REQUEST['offset'],
-    "AND (email = '$email' OR email = '$encodedEmail' OR user_id = '$email' OR user_id = '$encodedEmail')"
+	mysqli_real_escape_string($GLOBALS['dblink'], $_REQUEST['jb']),
+	mysqli_real_escape_string($GLOBALS['dblink'], $_REQUEST['sw']),
+	mysqli_real_escape_string($GLOBALS['dblink'], $_REQUEST['sk']),
+	$scale,
+	$_REQUEST['offset'],
+	"AND (email = '$email' OR email = '$encodedEmail' OR user_id = '$email' OR user_id = '$encodedEmail')"
 );
 
 $arrLevel = getArticleList ( $_conf_tbl ["member_level"], 0, 0, "order by level_no desc " );
 for($i = 0; $i < $arrLevel["total"]; $i ++) {
-    $arrayLevel[$arrLevel["list"][$i]['level_no']] = $arrLevel["list"][$i]['level_name'];
+	$arrayLevel[$arrLevel["list"][$i]['level_no']] = $arrLevel["list"][$i]['level_name'];
 }
 
 if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoffice/module/board/board_view.php"){
 ###################################################### 관리자 페이지 ######################################################?>
-    <?if($_GET['mode']=="write"){$inputText="등록";}else{$inputText="수정";}?>
+	<?if($_GET['mode']=="write"){$inputText="등록";}else{$inputText="수정";}?>
     <script src='https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js'></script>
     <script type="text/javascript">
         <!--
@@ -104,13 +104,13 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                 <input type="hidden" name="category1" value="<?=$arrBoardArticle["list"][0]["category1"]?>">
                 <input type="hidden" name="category2" value="<?=$arrBoardArticle["list"][0]["category2"]?>">
                 <input type="hidden" name="email" <?=$arrBoardArticle["list"][0]["email"]?>>
-                <?if($_REQUEST['mode']=="reply"):?>
+				<?if($_REQUEST['mode']=="reply"):?>
                     <input type="hidden" name="evnMode" value="reply">
-                <?elseif($_REQUEST['mode']=="modify"):?>
+				<?elseif($_REQUEST['mode']=="modify"):?>
                     <input type="hidden" name="evnMode" value="modify">
-                <?else:?>
+				<?else:?>
                     <input type="hidden" name="evnMode" value="write">
-                <?endif;?>
+				<?endif;?>
 
                 <div class="tit"><?=$arrBoardInfo["list"][0]["boardname"]?> 정보 <i>*</i></div>
                 <table>
@@ -122,15 +122,15 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                         <th>회원상태<span>*</span></th>
                         <td>
                             <div class="inputs">
-                                <?php
+								<?php
 
-                                //$user_level = $arrList["list"][0]["user_level"];
-                                $user_level = $arrBoardArticle["list"][0]['user_level'];
-                                if (isset($arrayLevel[$user_level])) {
-                                    $level = $arrayLevel[$user_level];
-                                    echo "<div id='userLevelContainer'>$level</div>";
-                                }
-                                ?>
+								//$user_level = $arrList["list"][0]["user_level"];
+								$user_level = $arrBoardArticle["list"][0]['user_level'];
+								if (isset($arrayLevel[$user_level])) {
+									$level = $arrayLevel[$user_level];
+									echo "<div id='userLevelContainer'>$level</div>";
+								}
+								?>
                                 <div id="userLevelContainer"></div>
                             </div>
                         </td>
@@ -189,29 +189,25 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                             <div class="inputs">
                                 <select name="rental_start_time" id="rental_start_time" class="w2">
                                     <option value="">선택</option>
-                                    <?php for ($hour = 9; $hour <= 22; $hour++): ?>
-                                        <?php $time = sprintf('%02d:00', $hour); ?>
+									<?php for ($hour = 9; $hour <= 22; $hour++): ?>
+										<?php $time = sprintf('%02d:00', $hour); ?>
                                         <option value="<?= $time ?>" <?= $arrBoardArticle["list"][0]['rental_start_time'] == $time ? 'selected' : '' ?>><?= $time ?></option>
-                                    <?php endfor; ?>
+									<?php endfor; ?>
                                 </select>
                                 <em>&nbsp;~&nbsp;</em>
                                 <select name="rental_end_time" id="rental_end_time" class="w2">
                                     <option value="">선택</option>
-                                    <?php for ($hour = 9; $hour <= 22; $hour++): ?>
-                                        <?php $time = sprintf('%02d:00', $hour); ?>
+									<?php for ($hour = 9; $hour <= 22; $hour++): ?>
+										<?php $time = sprintf('%02d:00', $hour); ?>
                                         <option value="<?= $time ?>" <?= $arrBoardArticle["list"][0]['rental_end_time'] == $time ? 'selected' : '' ?>><?= $time ?></option>
-                                    <?php endfor; ?>
+									<?php endfor; ?>
                                 </select>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>사용시간<span>*</span></th>
-                        <td>
-                            <div class="inputs">
-                                <span id="usage_time_display"><?= $arrBoardArticle["list"][0]['usage_time'] ?? '0' ?>시간</span>
-                                <input type="hidden" name="usage_time" id="usage_time_hidden" value="<?= $arrBoardArticle["list"][0]['usage_time'] ?? '0' ?>">
-                                <input type="hidden" name="total_price" id="total_price_hidden" value="0">
+                                <div style="display: flex; align-items: center;">
+                                    사용시간 :
+                                    <span id="usage_time_display"><?= $arrBoardArticle["list"][0]['usage_time'] ?? '0' ?>시간</span>
+                                    <input type="hidden" name="usage_time" id="usage_time_hidden" value="<?= $arrBoardArticle["list"][0]['usage_time'] ?? '0' ?>">
+                                    <input type="hidden" name="total_price" id="total_price_hidden" value="0">
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -221,40 +217,53 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                             <div class="inputs">
                                 <select id="discountSelect" name="discount" onchange="calculateDiscount()" class="w3">
                                     <option value="">선택</option>
-                                    <?php
-                                    $discounts = [
-                                        '토요일' => 'place_discount1',
-                                        '일요일' => 'place_discount2',
-                                        '일반' => 'place_discount3',
-                                        '경로우대' => 'place_discount4',
-                                        '국가유공자' => 'place_discount5',
-                                        '기초생활수급자' => 'place_discount6',
-                                        '장애인' => 'place_discount7',
-                                        '청소년' => 'place_discount8',
-                                        '한부모가족' => 'place_discount9',
-                                        '다문화가족' => 'place_discount10',
-                                        '다자녀가정' => 'place_discount11',
-                                        '새터민' => 'place_discount12',
-                                        '사회복지시설거주자' => 'place_discount13',
-                                        '정회원 지원' => 'place_discount14',
-                                        '동아리 지원' => 'place_discount15',
-                                        '교육 지원' => 'place_discount16',
-                                        '구청 지원' => 'place_discount17',
-                                        '공익 지원(공문)' => 'place_discount18',
-                                        '미추홀구민 할인' => 'place_discount19',
-                                    ];
+									<?php
+									$discounts = [
+										'토요일' => 'place_discount1',
+										'일요일' => 'place_discount2',
+										'일반' => 'place_discount3',
+										'경로우대' => 'place_discount4',
+										'국가유공자' => 'place_discount5',
+										'기초생활수급자' => 'place_discount6',
+										'장애인' => 'place_discount7',
+										'청소년' => 'place_discount8',
+										'한부모가족' => 'place_discount9',
+										'다문화가족' => 'place_discount10',
+										'다자녀가정' => 'place_discount11',
+										'새터민' => 'place_discount12',
+										'사회복지시설거주자' => 'place_discount13',
+										'정회원 지원' => 'place_discount14',
+										'동아리 지원' => 'place_discount15',
+										'교육 지원' => 'place_discount16',
+										'구청 지원' => 'place_discount17',
+										'공익 지원(공문)' => 'place_discount18',
+										'미추홀구민 할인' => 'place_discount19',
+									];
 
-                                    foreach ($discounts as $label => $name) {
-	                                    if ($arrDiscountInfo['list'][0][$name] == 'Y') {
-		                                    $value = $arrDiscountInfo['list'][0][$name . '_value'];
-		                                    $selected = ($arrBoardArticle["list"][0]['discount_text'] == $label) ? 'selected' : '';
-		                                    echo "<option value='{$value}' data-label='{$label}' {$selected}>{$label}</option>";
-	                                    }
-                                    }
-                                    ?>
+									foreach ($discounts as $label => $name) {
+										if ($arrDiscountInfo['list'][0][$name] == 'Y') {
+											$value = $arrDiscountInfo['list'][0][$name . '_value'];
+											$selected = ($arrBoardArticle["list"][0]['discount_text'] == $label) ? 'selected' : '';
+											echo "<option value='{$value}' data-label='{$label}' {$selected}>{$label}</option>";
+										}
+									}
+									?>
                                 </select>
                                 &nbsp;<div id="finalAmountDisplay" style="display: flex; align-items: center;">
                                     결제금액 : <?= number_format($arrBoardArticle["list"][0]['finalamount']) ?>원
+                                </div>
+                                <input type="hidden" id="discountText" name="discount_text" value="">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>결제금액<span>*</span></th>
+                        <td>
+                            <div class="inputs">
+                                <div id="totalAmountDisplay">
+                                    <span id="displayFinalAmount"><?= number_format($arrBoardArticle["list"][0]['finalamount']) ?></span>원
+                                    (할인전 금액: <span><?= number_format($arrBoardArticle["list"][0]['totalamount']) ?></span>원 /
+                                    할인금액 : <span id="displayDiscountAmount"><?= number_format($arrBoardArticle["list"][0]['discountamount']) ?></span>원 )
                                 </div>
                                 <input type="hidden" id="discountText" name="discount_text" value="">
                             </div>
@@ -288,9 +297,9 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                                 </select>
                                 <select name="rental_discount" id="rental_discount" style="width: 70px; display: none;" onchange="calculateDiscount()">
                                     <option value="">선택</option>
-                                    <?php for ($i = 10; $i <= 100; $i += 10): ?>
+									<?php for ($i = 10; $i <= 100; $i += 10): ?>
                                         <option value="<?= $i ?>%" <?= $arrBoardArticle["list"][0]['rental_discount'] == "$i%" ? 'selected' : '' ?>><?= $i ?>%</option>
-                                    <?php endfor; ?>
+									<?php endfor; ?>
                                 </select>
                             </div>
                         </td>
@@ -311,26 +320,26 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                                     </div>
                                     <div class="filebox">선택된 파일 없음</div>
                                 </div>
-                                <?
-                                if($arrBoardArticle["total_files"]>0 && $_REQUEST['mode']=="modify"){
-                                    ?>
+								<?
+								if($arrBoardArticle["total_files"]>0 && $_REQUEST['mode']=="modify"){
+									?>
                                     <table id="files_list" border="0" cellpadding="3" cellspacing="1" width="100%" style="padding:1%">
                                         <tbody>
-                                        <?
-                                        for($i=0;$i<$arrBoardArticle["total_files"];$i++){
-                                            if(substr($arrBoardArticle["files"][$i]['re_name'],0,2) != "l_" && substr($arrBoardArticle["files"][$i]['re_name'],0,2) != "v_") {
-                                                ?>
+										<?
+										for($i=0;$i<$arrBoardArticle["total_files"];$i++){
+											if(substr($arrBoardArticle["files"][$i]['re_name'],0,2) != "l_" && substr($arrBoardArticle["files"][$i]['re_name'],0,2) != "v_") {
+												?>
                                                 <tr>
                                                     <td><label class="check"><input type="checkbox" name="filedel[]" value="<?=$arrBoardArticle["files"][$i]['idx']?>"><i></i>삭제</label>
                                                         file :  <a href="javascript:void(0);" onclick="fileDownload('<?=$arrBoardArticle["files"][$i]['boardid']?>','<?=$arrBoardArticle["files"][$i]['b_idx']?>','<?=$arrBoardArticle["files"][$i]['idx']?>');"><?=$arrBoardArticle["files"][$i]['ori_name']?></a>
                                                     </td>
                                                 </tr>
-                                                <?
-                                            }
-                                        }?>
+												<?
+											}
+										}?>
                                         </tbody>
                                     </table>
-                                <?}?>
+								<?}?>
 
                             </div>
                         </td>
@@ -363,12 +372,12 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                                     </tr>
                                     </thead>
                                     <tbody id="childlist">
-						            <?
-						            $arrChildAdmin = explode("||", $arrBoardArticle["list"][0]['child_admin']);
-						            $arrChildWdate = explode("||", $arrBoardArticle["list"][0]['child_wdate']);
-						            if ($arrBoardArticle["list"][0]['child_admin']){
-							            for ($i = 0; $i < count($arrChildAdmin); $i++) {
-								            ?>
+									<?
+									$arrChildAdmin = explode("||", $arrBoardArticle["list"][0]['child_admin']);
+									$arrChildWdate = explode("||", $arrBoardArticle["list"][0]['child_wdate']);
+									if ($arrBoardArticle["list"][0]['child_admin']){
+										for ($i = 0; $i < count($arrChildAdmin); $i++) {
+											?>
                                             <tr>
                                                 <td>
                                                     <span class="text-content"><?=$arrChildAdmin[$i]?></span>
@@ -383,10 +392,10 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                                                     <a href="javascript:void(0);" onclick="fnChildDel(this, <?=($i+1)?>)" class="btn del" style="display: inline-block;">삭제</a>
                                                 </td>
                                             </tr>
-								            <?
-							            }
-						            }
-						            ?>
+											<?
+										}
+									}
+									?>
                                     </tbody>
                                 </table>
                             </div>
@@ -685,6 +694,9 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                     discountSelect.style.display = 'none';
                     finalAmountDisplay.innerText = '결제금액 : 0원';
                     document.getElementById('finalamount').value = 0;
+                    document.getElementById('displayDiscountAmount').innerText = totalAmount.toLocaleString();
+                    document.getElementById('displayFinalAmount').innerText = '0';
+                    document.getElementById('finalAmountDisplay').innerText = '결제금액 : 0원';
                 } else if (rentalType === '할인') {
                     discountSelect.style.display = 'inline-block';
                     calculateDiscount();
@@ -693,13 +705,18 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                     var discountValue = parseFloat(document.getElementById('discountSelect').value) || 0;
                     var discountAmount = totalAmount * (discountValue / 100);
                     var finalAmount = totalAmount - discountAmount;
+
                     document.getElementById('discountamount').value = discountAmount;
                     document.getElementById('finalamount').value = finalAmount;
-                    finalAmountDisplay.innerText = '결제금액 : ' + finalAmount.toLocaleString() + '원';
+                    document.getElementById('displayDiscountAmount').innerText = discountAmount.toLocaleString();
+                    document.getElementById('displayFinalAmount').innerText = finalAmount.toLocaleString();
+                    document.getElementById('finalAmountDisplay').innerText = '결제금액 : ' + finalAmount.toLocaleString() + '원';
                 } else {
                     discountSelect.style.display = 'none';
-                    finalAmountDisplay.innerText = '결제금액 : ' + totalAmount.toLocaleString() + '원';
                     document.getElementById('finalamount').value = totalAmount;
+                    document.getElementById('displayDiscountAmount').innerText = '0';
+                    document.getElementById('displayFinalAmount').innerText = totalAmount.toLocaleString();
+                    document.getElementById('finalAmountDisplay').innerText = '결제금액 : ' + totalAmount.toLocaleString() + '원';
                 }
             }
 
@@ -742,6 +759,8 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                 document.getElementById('discountamount').value = discountAmount;
                 document.getElementById('finalamount').value = finalAmount;
                 document.getElementById('finalAmountDisplay').innerText = '결제금액 : ' + finalAmount.toLocaleString() + '원';
+                document.getElementById('displayDiscountAmount').innerText = discountAmount.toLocaleString();
+                document.getElementById('displayFinalAmount').innerText = finalAmount.toLocaleString();
                 document.getElementById('discountText').value = discountSelect.options[discountSelect.selectedIndex].getAttribute('data-label');
             }
 
@@ -779,7 +798,7 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
         });
         //]]>
     </script>
-    <?######################################### iframe fancybox ######################################### ST?>
+	<?######################################### iframe fancybox ######################################### ST?>
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"/>
     <style type="text/css">
@@ -831,11 +850,11 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
             ]);
         }
         //-->
-        <?php if (isset($arrBoardArticle["list"][0]["totalamount"])): ?>
+		<?php if (isset($arrBoardArticle["list"][0]["totalamount"])): ?>
         var totalamount = <?= $arrBoardArticle["list"][0]["totalamount"] ?>;
-        <?php else: ?>
+		<?php else: ?>
         var totalamount = 0;
-        <?php endif; ?>
+		<?php endif; ?>
 
         function fnGoodSelect(stridx, inputName) {
             if (stridx) { $(".is-close-btn").click(); }
@@ -882,17 +901,17 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
             );
         }
     </script>
-    <?######################################### iframe fancybox ######################################### ED?>
+	<?######################################### iframe fancybox ######################################### ED?>
 <?}else{###################################################### 사용자 페이지 ######################################################?>
-    <?
+	<?
 //관리자만 글쓰기 기능 체크
-    if($arrBoardInfo["list"][0]["useadminonly"] !="Y" || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"]):
-        if($_REQUEST['mode']=="reply" && $arrBoardInfo["list"][0]["usereply"] !="Y"):
-            jsMsg("답글쓰기가 제한된 게시판 입니다.");
-            jsHistory("-1");
-            exit;
-        endif;
-        ?>
+	if($arrBoardInfo["list"][0]["useadminonly"] !="Y" || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"]):
+		if($_REQUEST['mode']=="reply" && $arrBoardInfo["list"][0]["usereply"] !="Y"):
+			jsMsg("답글쓰기가 제한된 게시판 입니다.");
+			jsHistory("-1");
+			exit;
+		endif;
+		?>
         <script type="text/javascript">
             <!--
             function frmCheck(frm){
@@ -918,13 +937,13 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                 <input type="hidden" name="category1" value="<?=$arrBoardArticle["list"][0]["category1"]?>">
                 <input type="hidden" name="category2" value="<?=$arrBoardArticle["list"][0]["category2"]?>">
                 <input type="hidden" name="usehtml" value="N">
-                <?if($_REQUEST['mode']=="reply"):?>
+				<?if($_REQUEST['mode']=="reply"):?>
                     <input type="hidden" name="evnMode" value="reply">
-                <?elseif($_REQUEST['mode']=="modify"):?>
+				<?elseif($_REQUEST['mode']=="modify"):?>
                     <input type="hidden" name="evnMode" value="modify">
-                <?else:?>
+				<?else:?>
                     <input type="hidden" name="evnMode" value="write">
-                <?endif;?>
+				<?endif;?>
                 <input type="hidden" name="w_user" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]?>">
                 <input type="hidden" name="name" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["NAME"]?>">
                 <input type="hidden" name="tel" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["TEL"]?>">
@@ -941,10 +960,10 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                         <dt class="label">내용</dt>
                         <dd class="value">
                             <textarea id="contents" name="contents"><?=stripslashes($arrBoardArticle["list"][0]['contents'])?></textarea>
-                            <?
-                            $CKContent = "contents";
-                            include $_SERVER['DOCUMENT_ROOT'] . "/ckeditor/Editor.php";
-                            ?>
+							<?
+							$CKContent = "contents";
+							include $_SERVER['DOCUMENT_ROOT'] . "/ckeditor/Editor.php";
+							?>
                         </dd>
                     </dl>
                     <dl class="row">
@@ -959,10 +978,10 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                 </div>
             </form>
         </div>
-    <?
-    else:
-        jsMsg("관리자만 등록/수정/삭제 할 수 있는 게시판 입니다.");
-        jsHistory("-1");
-    endif;
-    ?>
+	<?
+	else:
+		jsMsg("관리자만 등록/수정/삭제 할 수 있는 게시판 입니다.");
+		jsHistory("-1");
+	endif;
+	?>
 <?}?>

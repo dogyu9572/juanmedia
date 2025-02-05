@@ -5,6 +5,7 @@ include_once $_SERVER['DOCUMENT_ROOT'] . "/module/board/board.lib.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/module/banner/banner.lib.php";
 
 $dblink = SetConn($_conf_db["main_db"]);
+$arrEduListAll = getBoardListBaseNFile("edu", "", "", "", 4, 0,'', "user");
 $arrEduList1 = getBoardListBaseNFile("edu", "", "", "", 4, 0,'and reception_status="접수중"', "user");
 $arrEduList2 = getBoardListBaseNFile("edu", "", "", "", 4, 0,'and reception_status="대기접수"', "user");
 $arrEduList3 = getBoardListBaseNFile("edu", "", "", "", 4, 0,'and reception_status="교육중"', "user");
@@ -80,7 +81,7 @@ SetDisConn($dblink);
         <!-- mainIcon -->
         <div class="mainIcon">
             <ul>
-                <li><a href="/edu/list.php?cat_no=63"> <span class="img"><img src="/images/ico_main01.svg"
+                <li><a href="/edu/list.php?cat_no=115"> <span class="img"><img src="/images/ico_main01.svg"
                                                                               alt="교육신청"></span> <span class="tit">교육신청</span> </a></li>
                 <li><a href="/equ/list.php"> <span class="img"><img src="/images/ico_main02.svg" alt="장비대여"></span>
                         <span class="tit">장비대여</span> </a></li>
@@ -97,16 +98,53 @@ SetDisConn($dblink);
             <div class="mainTit">
                 <div class="tit">미디어 교육</div>
                 <div class="tabList">
-                    <a href="javascript:void(0)" class="active" data-name="ing">접수중</a>
+                    <a href="javascript:void(0)" class="active" data-name="all">전체</a>
+                    <a href="javascript:void(0)" data-name="ing">접수중</a>
                     <a href="javascript:void(0)" data-name="etc">대기접수</a>
                     <a href="javascript:void(0)" data-name="ready">교육중</a>
                     <a href="javascript:void(0)" data-name="end">종료</a>
                 </div>
-                <a href="/edu/list.php?cat_no=63" class="btnMore">More</a>
+                <a href="/edu/list.php?cat_no=115" class="btnMore">More</a>
             </div>
             <div class="tabCont">
-                <div id="cont" class="ing">
+                <div id="cont" class="all">
                     <ul class="swiper-wrapper">
+	                    <?php
+	                    for ($i = 0; $i < $arrEduListAll["list"]["total"]; $i++) {
+		                    $status = $arrEduListAll["list"][$i]["reception_status"];
+		                    $class = "";
+		                    $text = "";
+
+		                    switch ($status) {
+			                    case "접수중":
+				                    $class = "ing";
+				                    $text = "접수중";
+				                    break;
+			                    case "대기접수":
+				                    $class = "etc";
+				                    $text = "대기접수";
+				                    break;
+			                    case "교육중":
+				                    $class = "ready";
+				                    $text = "교육중";
+				                    break;
+			                    case "종료":
+				                    $class = "end";
+				                    $text = "종료";
+				                    break;
+			                    default:
+				                    $class = "unknown";
+				                    $text = "알수없음";
+				                    break;
+		                    }
+		                    ?>
+                            <li class="all">
+                                <a href="/edu/list.php?boardid=edu&mode=view&idx=<?=$arrEduListAll["list"][$i]["idx"]?>">
+                                    <span class="img"><img src="/uploaded/board/edu/<?=$arrEduListAll["list"][$i]["re_name"]?>" alt="썸네일"></span>
+                                    <div class="stateBox <?=$class?>"><span><?=$text?></span></div>
+                                </a>
+                            </li>
+	                    <?php } ?>
                         <?php for($i=0;$i<$arrEduList1["list"]["total"];$i++){?>
                             <li class="ing">
                                 <a href="/edu/list.php?boardid=edu&mode=view&idx=<?=$arrEduList1["list"][$i]["idx"]?>">
@@ -289,7 +327,7 @@ SetDisConn($dblink);
             <!-- mainYoutube -->
             <div class="mainYoutube">
                 <div class="mainTit">
-                    <div class="tit">주영상 유튜브</div>
+                    <div class="tit">주영미 유튜브</div>
                     <a href="#;" class="btnMore">More</a>
                 </div>
                 <div class="youtubeList">
@@ -307,7 +345,7 @@ SetDisConn($dblink);
             <!-- mainVideo -->
             <div class="mainVideo">
                 <div class="mainTit">
-                    <div class="tit">주영상 안내</div>
+                    <div class="tit">주영미 안내</div>
                     <div class="swiperPaging"></div>
                 </div>
                 <div class="videoSwiper">

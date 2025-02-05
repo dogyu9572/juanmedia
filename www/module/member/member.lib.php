@@ -256,6 +256,22 @@ function getMemberList($jb, $sw, $sk, $scale, $offset=0, $subQuery="", $orderBy=
 	if($_GET["kakao_accept"] != ""){
 		$sql .= " AND kakao_accept = '".mysqli_real_escape_string($GLOBALS['dblink'], $_GET['kakao_accept'])."' ";
 	}
+	if($_GET['join_type']){
+		$sql .= " AND join_type='".$_GET['join_type']."' ";
+	}
+	if($_GET['job']){
+		$sql .= " AND job='".$_GET['job']."' ";
+	}
+	if($_GET['etc1']){
+		$sql .= " AND etc_1='".$_GET['etc1']."' ";
+	}
+
+	/*if($_GET['email_accept']){
+		$subQuery .= " AND email_accept='".$_GET['email_accept']."' ";
+	}
+	if($_GET['sms_accept']){
+		$subQuery .= " AND sms_accept='".$_GET['sms_accept']."' ";
+	}*/
 
 	if($orderBy){
 		$sql .= $orderBy;

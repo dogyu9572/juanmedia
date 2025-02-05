@@ -1,5 +1,11 @@
 <?php include("../inc/header.php"); ?>
-<?php $gNum = "04"; $sNum = "02"; $gName = "미디어체험"; $sName = "체험신청"; ?>
+<?php $gNum = "04"; $sNum = "02"; $gName = "미디어체험"; $sName = "체험신청";
+echo "echo:"; print_r($arrSetInfo["list"][0]["tv_broadcasting"]); echo "<br>" ;
+echo "echo:"; print_r($arrSetInfo["list"][0]["radio_broadcasting"]); echo "<br>" ;
+echo "echo:"; print_r($arrSetInfo["list"][0]["weather_forecaster"]); echo "<br>" ;
+echo "echo:"; print_r($arrSetInfo["list"][0]["drone"]); echo "<br>" ;
+echo "echo:"; print_r($arrSetInfo["list"][0]["vr"]); echo "<br>" ;
+?>
 
 <!-- Container -->
 <div class="container sub" id="container">
@@ -307,7 +313,7 @@
                                 <div class="box">
                                     <div class="mText">총인원</div>
                                     <div class="baseInput">
-                                        <input type="tel" name="total_members" placeholder="0" maxlength="4" >
+                                        <input type="tel" name="total_members" id="total_members" placeholder="0" maxlength="4" oninput="checkMembers()">
                                     </div>
                                     <div class="mText">명</div>
                                 </div>
@@ -335,23 +341,23 @@
                         <div class="right">
                             <div class="expCk">
                                 <div class="baseCheck2">
-                                    <input type="checkbox" name="experience[]" value="TV방송제작" id="exp1" />
+                                    <input type="checkbox" name="experience[]" value="TV방송제작" id="exp1" disabled />
                                     <label for="exp1">TV방송제작</label>
                                 </div>
                                 <div class="baseCheck2">
-                                    <input type="checkbox" name="experience[]" value="라디오 방송제작" id="exp2" />
+                                    <input type="checkbox" name="experience[]" value="라디오 방송제작" id="exp2" disabled />
                                     <label for="exp2">라디오 방송제작</label>
                                 </div>
                                 <div class="baseCheck2">
-                                    <input type="checkbox" name="experience[]" value="기상캐스터" id="exp3" />
+                                    <input type="checkbox" name="experience[]" value="기상캐스터" id="exp3" disabled />
                                     <label for="exp3">기상캐스터</label>
                                 </div>
                                 <div class="baseCheck2">
-                                    <input type="checkbox" name="experience[]" value="드론" id="exp4" />
+                                    <input type="checkbox" name="experience[]" value="드론" id="exp4" disabled />
                                     <label for="exp4">드론</label>
                                 </div>
                                 <div class="baseCheck2">
-                                    <input type="checkbox" name="experience[]" value="VR(가상현실)" id="exp5" />
+                                    <input type="checkbox" name="experience[]" value="VR(가상현실)" id="exp5" disabled />
                                     <label for="exp5">VR(가상현실)</label>
                                 </div>
                             </div>
@@ -729,8 +735,46 @@
 
         return true;
     }
-</script>
 
+    function checkMembers() {
+        const totalMembers = parseInt(document.getElementById('total_members').value, 10) || 0;
+        const tvBroadcasting = <?= $arrSetInfo["list"][0]["tv_broadcasting"] ?>;
+        const radioBroadcasting = <?= $arrSetInfo["list"][0]["radio_broadcasting"] ?>;
+        const weatherForecaster = <?= $arrSetInfo["list"][0]["weather_forecaster"] ?>;
+        const drone = <?= $arrSetInfo["list"][0]["drone"] ?>;
+        const vr = <?= $arrSetInfo["list"][0]["vr"] ?>;
+
+        const totalRequired = tvBroadcasting + radioBroadcasting + weatherForecaster + drone + vr;
+
+        document.getElementById('exp1').disabled = totalMembers < tvBroadcasting;
+        document.getElementById('exp2').disabled = totalMembers < radioBroadcasting;
+        document.getElementById('exp3').disabled = totalMembers < weatherForecaster;
+        document.getElementById('exp4').disabled = totalMembers < drone;
+        document.getElementById('exp5').disabled = totalMembers < vr;
+
+        const allowedChecks = Math.floor(totalMembers / totalRequired * 5);
+
+        const checkboxes = document.querySelectorAll('input[name="experience[]"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const checkedCount = document.querySelectorAll('input[name="experience[]"]:checked').length;
+                if (checkedCount >= allowedChecks) {
+                    checkboxes.forEach(box => {
+                        if (!box.checked) {
+                            box.disabled = true;
+                        }
+                    });
+                } else {
+                    checkboxes.forEach(box => {
+                        if (!box.checked) {
+                            box.disabled = false;
+                        }
+                    });
+                }
+            });
+        });
+    }
+</script>
 </body>
 </html>
 

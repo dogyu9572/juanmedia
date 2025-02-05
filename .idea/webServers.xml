@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="a97381ac-78b7-48be-bc38-4540ac95515a" name="주안영상미디어센터_실서버" url="">
+        <fileTransfer rootFolder="/var/www/html/juanmedia/" accessType="SFTP" host="114.108.154.168" port="2222" sshConfigId="9edc4ca4-377a-470c-9919-fd77094d5f6b" sshConfig="root@114.108.154.168:2222 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

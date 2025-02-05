@@ -3,7 +3,7 @@ session_start();
 include $_SERVER['DOCUMENT_ROOT'] . "/common/conf/config.inc.php";
 include $_SERVER['DOCUMENT_ROOT'] . "/backoffice/auth/auth.php";
 include $_SERVER['DOCUMENT_ROOT'] . "/module/banner/banner.lib.php";
-if(!in_array("banner_manage",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTH"]) && $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]!="ROOT"):
+if(!in_array("board_manage",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTH"]) && $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]!="ROOT"):
 	jsMsg("권한이 없습니다.");
 	jsHistory("-1");
 endif;

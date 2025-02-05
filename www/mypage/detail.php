@@ -100,6 +100,10 @@ $imgsrc = "/uploaded/board/edu/".$arrBoardEduArticle["files"][0]['re_name'];
 									<div class="th">결제금액</div>
 									<div class="td"><?=number_format($arrBoardArticle["list"][0]['finalamount'])?>원 <button type="button" class="btnTypeSm" onclick="contentPop('.paymentPop');">입금 확인 요청</button></div>
 								</div>
+                                <div class="line">
+									<div class="th">할인적용</div>
+									<div class="td"><?=$arrBoardArticle["list"][0]["discount_text"]?> (<?=$arrBoardArticle["list"][0]["discount"]?>) </div>
+								</div>
 								<!-- <div class="line">
 									<div class="th">결제방법</div>
 									<div class="td">신용카드</div>

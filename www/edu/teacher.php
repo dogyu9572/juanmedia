@@ -45,7 +45,7 @@ SetDisConn ( $dblink );
                  <div class="right">
                      <div class="checks_flex">
                          <label class="check"><input type="checkbox"><i></i>상설교육</label>
-                         <label class="check"><input type="checkbox"><i></i>공통체교육</label>
+                         <label class="check"><input type="checkbox"><i></i>공동체교육</label>
                          <label class="check"><input type="checkbox"><i></i>미디어체험</label>
                      </div>
                      <p>중복 체크 가능합니다</p>
