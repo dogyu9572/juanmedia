@@ -125,25 +125,27 @@ $arrBoardList	= getBoardListBaseNFile($arrBoardInfo["list"][0]["boardid"], "", $
 								<div class="tableType2 order">
 									<table>
 										<colgroup>
-											<col class="no1" />
-											<col class="no2" />
-											<col class="no3" />
-											<col class="no4" />
-											<col class="no5" />
-											<col class="no6" />
-											<col class="no7" />
+											<!-- <col class="num" /> -->
+											<col class="w110" />
+											<col class="w120" />
+											<col class="wauto" />
+											<col class="w120" />
+											<col class="w130" />
+											<col class="w90" />
+											<col class="w90" />
+											<col class="w120" />
+											<col class="w100" />
 										</colgroup>
 										<thead>
 											<tr>
 												<th>NO.</th>
-												<th>접수번호</th>
+												<!-- <th>접수번호</th> -->
 												<th>카테고리</th>
-												<th>교육분류</th>
 												<th>교육명</th>
 												<th>교육기간</th>
 												<th>교육시간</th>
 												<th>결제금액</th>
-												<th>등록일</th>
+												<th>신청일</th>
 												<th>신청상태</th>
 												<th>상세보기</th>
 											</tr>
@@ -165,15 +167,23 @@ $arrBoardList	= getBoardListBaseNFile($arrBoardInfo["list"][0]["boardid"], "", $
 
                                             $arrBoardArticle = getBoardArticleView("edu", "", $arrBoardList["list"][$i]['edu_idx'],"list");
 
+                                            $dayTypeMap = [
+                                                'weekly' => '매주',
+                                                'biweekly' => '격주',
+                                                'other' => '기타'
+                                            ];
+                                            $dayType = $dayTypeMap[$arrBoardArticle["list"][0]['day_type']];
+
+                                            $days = str_replace('|', '/', $arrBoardArticle["list"][0]['days']);
+
                                         ?>
 											<tr data-order="<?=$arrBoardList['list'][$i]['idx']?>">
-												<td><?=$arrBoardList["list"][$i]['no']=="0"?"공지":$categoryTitle?></td>
+												<!-- <td><?=$arrBoardList["list"][$i]['no']=="0"?"공지":$categoryTitle?></td> -->
 												<td><?=$arrBoardList["list"][$i]['app_no']?></td>
 												<td><?=getCategoryName($arrBoardList["list"][$i]['category1']);?></td>
-												<td><?=getCategoryName($arrBoardList["list"][$i]['category2']);?></td>
-												<td class="name"><a href="detail.php"><?=$arrBoardList["list"][$i]['subject']?></a></td>
+												<td><a href="/edu/list.php?boardid=edu&mode=view&idx=<?=$arrBoardArticle["list"][0]['idx']?>"><?=$arrBoardList["list"][$i]['subject']?></a></td>
 												<td><?=$arrBoardArticle["list"][0]['e_start_date']?> ~<br /><?=$arrBoardArticle["list"][0]['e_end_date']?></td>
-												<td>매주 화 09:30 ~ 15:00</td>
+												<td><?=$dayType?><br/><?=$days?></td>
 												<td><?= number_format($arrBoardList["list"][$i]['finalamount']) ?>원</td>
 												<td><?=date("Y-m-d",strtotime($arrBoardList["list"][$i]['wdate']))?></td>
 												<td><?=$arrBoardList["list"][$i]['status'];?></td>

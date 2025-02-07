@@ -42,6 +42,7 @@ function CheckForm(frm){
 					<select name="b_device">
 						<option value="1">1. PC 슬라이드 배너 (1920px * 420px)</option>
 						<option value="2">2. 모바일 슬라이드 배너 (750px * 1332px)</option>
+                        <option value="3">3. 공통</option>
 					</select>
 				</div></td>
 			</tr>
@@ -49,10 +50,8 @@ function CheckForm(frm){
                 <th>구분</th>
                 <td>
                     <div class="inputs">
-                        <label class="radio"><input type="radio" name="b_type" value="1"<?=$arrInfo["list"][0]['b_type']=="1"?" checked":""?>><i></i>메인 배너</label>
-                        <label class="radio"><input type="radio" name="b_type" value="2"<?=$arrInfo["list"][0]['b_type']=="2"?" checked":""?>><i></i>브런치 무비톡</label>
-                        <label class="radio"><input type="radio" name="b_type" value="3"<?=$arrInfo["list"][0]['b_type']=="3"?" checked":""?>><i></i>미디어 체험 배너</label>
-                        <label class="radio"><input type="radio" name="b_type" value="4"<?=$arrInfo["list"][0]['b_type']=="4"?" checked":""?>><i></i>유튜브</label>
+                        <label class="radio"><input type="radio" name="b_type" value="1"<?=$arrInfo["list"][0]['b_type']=="1"?" checked":""?>><i></i>메인 상단 배너</label>
+                        <label class="radio"><input type="radio" name="b_type" value="2"<?=$arrInfo["list"][0]['b_type']=="2"?" checked":""?>><i></i>메인 하단 배너</label>
                     </div>
                 </td>
             </tr>

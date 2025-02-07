@@ -508,7 +508,6 @@ echo "echo:"; print_r($arrSetInfo["list"][0]["vr"]); echo "<br>" ;
 
 </div>
 <!-- //Wrap -->
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // 달력 관련 상수 및 변수 설정
@@ -543,7 +542,7 @@ echo "echo:"; print_r($arrSetInfo["list"][0]["vr"]); echo "<br>" ;
             // 요일별 예약 상태 설정 (0: 일요일, 6: 토요일)
             weekdaySettings: {
                 0: 'unavailable', // 일요일
-                1: 'unavailable', // 일요일
+                1: 'unavailable', // 월요일
                 //6: 'available'    // 토요일
             }
         };

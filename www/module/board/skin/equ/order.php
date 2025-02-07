@@ -110,21 +110,15 @@
     </div>
 <?}else{###################################################### 사용자 페이지 ######################################################?>
     <?php
-    //echo "echo:"; print_r($_POST); echo "<br>" ;
 	include_once ($_SERVER['DOCUMENT_ROOT'] . "/module/member/auth.php");
-    $dayTypeMap = [
-        'weekly' => '매주',
-        'biweekly' => '격주',
-        'other' => '기타'
-    ];
-    $subQuery = "AND equ_idx={$_GET["idx"]} AND (rental_start_date <= '{$_POST["rental_end_date"]}' AND rental_end_date >= '{$_POST["rental_start_date"]}')";
-    $arrBoardList = getBoardListBase("equ_applicants", "", "", "", 100, 0, $subQuery, "", "");
 
-    if($arrBoardList["total"] >= $arrSetInfo["list"][0]["equ_max_rental_count"]){
+    $subQuery = "AND equ_idx={$_GET["idx"]} AND (rental_start_date <= '{$_POST["rental_end_date"]}' AND rental_end_date >= '{$_POST["rental_start_date"]}')";
+    $arrBoardEquList = getBoardListBase("equ_applicants", "", "", "", 100, 0, $subQuery, "", "");
+
+    if($arrBoardEquList["total"] >= $arrSetInfo["list"][0]["equ_max_rental_count"]){
         jsMsg("대여 가능한 장비의 수량을 초과하였습니다.");
         jsHistory("-1");
     }
-
 
     $imgsrc = "/uploaded/board/".$arrBoardInfo["list"][0]["boardid"]."/".$arrBoardArticle["files"][0]['re_name'];
 
@@ -163,19 +157,27 @@
                             </div>
                         </div>
 	                        <?php else:
-	                        $totalAmount = 0;
+	                             $totalAmount = 0;
                                 if($arrBoardList["list"]["total"] > 0){
-                                for($i=0; $i < $arrBoardList["list"]["total"]; $i++){
+                                    for($i=0; $i < $arrBoardList["list"]["total"]; $i++){
+                                        $subQuery = "AND equ_idx={$arrBoardList["list"][$i]['equ_idx']} AND (rental_start_date <= '{$arrBoardList["list"][$i]['rental_start_date']}' AND rental_end_date >= '{$arrBoardList["list"][$i]['rental_end_date']}')";
+                                        $arrBoardEquList = getBoardListBase("equ_applicants", "", "", "", 100, 0, $subQuery, "", "");
 
-                                $imgsrc_order[$i] = "/uploaded/board/equ/".$arrBoardList["list"][$i]['re_name'];
-                                ############################ 파일 확인 #############################
-                                $arrBoardArticle = getBoardArticleView($arrBoardInfo["list"][0]["boardid"], "", $arrBoardList["list"][$i]['idx'],"list");
-                                for($j=0;$j<$arrBoardArticle["total_files"];$j++){
-                                    if(substr($arrBoardArticle["files"][$j]['re_name'],0,2) != "l_"){
-                                        $fileImg[$i] = '<img src="/backoffice/pub_old/images/file.png">';
+                                        if($arrBoardEquList["total"] >= $arrSetInfo["list"][0]["equ_max_rental_count"]){
+                                            jsMsg($arrBoardList["list"][$i]['subject']. " 장비가 대여 가능한 장비의 수량을 초과하였습니다.");
+                                            jsHistory("-1");
+                                        }
+
+                                    $imgsrc_order[$i] = "/uploaded/board/equ/".$arrBoardList["list"][$i]['re_name'];
+                                    ############################ 파일 확인 #############################
+
+                                    $arrBoardArticle = getBoardArticleView($arrBoardInfo["list"][0]["boardid"], "", $arrBoardList["list"][$i]['idx'],"list");
+                                    for($j=0;$j<$arrBoardArticle["total_files"];$j++){
+                                        if(substr($arrBoardArticle["files"][$j]['re_name'],0,2) != "l_"){
+                                            $fileImg[$i] = '<img src="/backoffice/pub_old/images/file.png">';
+                                        }
                                     }
-                                }
-                                $totalAmount += $arrBoardList["list"][$i]['totalamount'];
+                                    $totalAmount += $arrBoardList["list"][$i]['totalamount'];
 	                        ?>
                         <div class="simpleBox">
                             <div class="img"><img src="<?=$imgsrc_order[$i]?>" alt="섬네일"></div>
@@ -200,24 +202,6 @@
                                 }
                             }
                                 endif; ?>
-                        <!-- <div class="simpleBox">
-                            <div class="img"><img src="/images/thumb1.png" alt="섬네일"></div>
-                            <div class="textWrap">
-                                <div class="title">HXR-MC88</div>
-                                <div class="info">
-                                    <div class="tit">장비번호</div>
-                                    <div class="txt">222222</div>
-                                </div>
-                                <div class="info">
-                                    <div class="tit">대여일/반납일</div>
-                                    <div class="txt">2024-08-07 ~ 2024-08-08 (2일)</div>
-                                </div>
-                                <div class="info">
-                                    <div class="tit">대여금액</div>
-                                    <div class="txt">30,000원</div>
-                                </div>
-                            </div>
-                        </div> -->
                     </div>
                     <form id="enrollmentForm" name="form1" method="post" action="/module/board/board_evn.php" ENCTYPE="multipart/form-data">
                         <input type="hidden" name="boardid" value="equ_applicants">

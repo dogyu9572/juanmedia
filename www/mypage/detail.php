@@ -87,18 +87,21 @@ $imgsrc = "/uploaded/board/edu/".$arrBoardEduArticle["files"][0]['re_name'];
 							<div class="detailTit">신청정보 <a href="/mypage/print.php" target="_blank" class="more">수료증 확인</a></div>
 							<div class="detailTable">
 								<div class="line">
-									<div class="th">접수번호</div>
+									<div class="th">NO</div>
 									<div class="td"><?=$arrBoardArticle["list"][0]["app_no"]?></div>
 								</div>
 								<div class="line">
 									<div class="th">신청상태</div>
 									<div class="td">
-                                        <?=$arrBoardArticle["list"][0]["status"]?> <?=$arrBoardArticle["list"][0]["status"] == "신청완료" ?  ' <a href="#;" class="btnTypeSm" onclick="contentPop(\'.cancelPop\');">신청 취소</a>' : "" ?>
+                                        <?=$arrBoardArticle["list"][0]["status"]?>
+                                        <?=$arrBoardArticle["list"][0]["status"] == "신청완료" || $arrBoardArticle["list"][0]["status"] == "신청대기" ? '<a href="#;" class="btnTypeSm" onclick="contentPop(\'.cancelPop\');">신청 취소</a>' : "" ?>
 									</div>
 								</div>
 								<div class="line">
 									<div class="th">결제금액</div>
-									<div class="td"><?=number_format($arrBoardArticle["list"][0]['finalamount'])?>원 <button type="button" class="btnTypeSm" onclick="contentPop('.paymentPop');">입금 확인 요청</button></div>
+									<div class="td"><?=number_format($arrBoardArticle["list"][0]['finalamount'])?>원
+                                       <?=$arrBoardArticle["list"][0]["status"] !== "결제완료" ?  '<button type="button" class="btnTypeSm" onclick="contentPop(\'.paymentPop\');">입금 확인 요청</button>' : "" ?>
+                                        </div>
 								</div>
                                 <div class="line">
 									<div class="th">할인적용</div>
@@ -141,18 +144,27 @@ $imgsrc = "/uploaded/board/edu/".$arrBoardEduArticle["files"][0]['re_name'];
 												<div class="tit">교육기간</div>
 												<div class="txt"><?=$arrBoardEduArticle["list"][0]["e_start_date"]?> ~ <?=$arrBoardEduArticle["list"][0]["e_end_date"]?></div>
 											</div>
+                                            <div class="info">
+                                                <div class="tit">교육시간</div>
+                                                <div class="txt"><?=$arrBoardEduArticle["list"][0]['start_hour']?>:<?=$arrBoardEduArticle["list"][0]['start_minute']?> ~ <?=$arrBoardEduArticle["list"][0]['end_hour']?>:<?=$arrBoardEduArticle["list"][0]['end_minute']?></div>
+                                            </div>
 											<div class="info">
-												<div class="tit">구분</div>
-												<div class="txt"><?=getCategoryName($arrBoardEduArticle["list"][0]['category1'])?> / <?=getCategoryName($arrBoardEduArticle["list"][0]['category2'])?></div>
+												<div class="tit">카테고리</div>
+												<div class="txt"><?=getCategoryName($arrBoardEduArticle["list"][0]['category1'])?></div>
 											</div>
+                                            <div class="info">
+                                                <div class="tit">교육장소</div>
+                                                <div class="txt"><?=$arrBoardEduArticle["list"][0]["education_name"]?></div>
+                                            </div>
+                                            <div class="info">
+                                                <div class="tit">강사</div>
+                                                <div class="txt"><?=$arrBoardEduArticle["list"][0]["instructor"]?></div>
+                                            </div>
 											<div class="info">
 												<div class="tit">수강료</div>
 												<div class="txt"><?=number_format($arrBoardEduArticle["list"][0]['fee'])?>원</div>
 											</div>
-											<div class="info">
-												<div class="tit">교육장소</div>
-												<div class="txt"><?=$arrBoardEduArticle["list"][0]["education_name"]?></div>
-											</div>
+
 										</div>
 									</div>
 								</div>
@@ -162,6 +174,7 @@ $imgsrc = "/uploaded/board/edu/".$arrBoardEduArticle["files"][0]['re_name'];
 
 						<div class="btnCenter">
 							<a href="orderList.php" class="btnType1 black list">목록</a>
+							<a href="#this" class="btnType1 gray list">수정</a>
 						</div>
 
 					</div> 
@@ -203,7 +216,7 @@ $imgsrc = "/uploaded/board/edu/".$arrBoardEduArticle["files"][0]['re_name'];
 <!-- 결제금액팝업 -->
 <form name="form2"  method="post" action="/module/board/board_evn.php" ENCTYPE="multipart/form-data" onsubmit="return frmSubmit(this);">
     <input type="hidden" name="boardid" value="payment">
-    <input type="hidden" name="returnURL" value="<?=$_SERVER["PHP_SELF"]?>">
+    <input type="hidden" name="returnURL" value="/mypage/detail.php?idx=<?=$arrBoardArticle["list"][0]["idx"]?>">
     <input type="hidden" name="evnMode" value="write">
     <input type="hidden" name="board_type" value="edu">
     <input type="hidden" name="type_idx" value="<?=$arrBoardArticle["list"][0]["idx"]?>">

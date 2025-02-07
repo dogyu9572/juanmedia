@@ -298,6 +298,11 @@ function fnCopyEst(eidx){
                 </div>
 				<div class="count">
 					<select name="page_size" onchange="document.form1.submit()"  style="width:60px;">
+						<option value="0" <?if($arrBoardInfo["list"][0]["scale"]=="0"){echo 'selected="selected"';}?>>전체</option>
+                        <option value="500" <?if($arrBoardInfo["list"][0]["scale"]=="500"){echo 'selected="selected"';}?>>500</option>
+                        <option value="400" <?if($arrBoardInfo["list"][0]["scale"]=="400"){echo 'selected="selected"';}?>>400</option>
+                        <option value="300" <?if($arrBoardInfo["list"][0]["scale"]=="300"){echo 'selected="selected"';}?>>300</option>
+                        <option value="200" <?if($arrBoardInfo["list"][0]["scale"]=="200"){echo 'selected="selected"';}?>>200</option>                      
 						<option value="100" <?if($arrBoardInfo["list"][0]["scale"]=="100"){echo 'selected="selected"';}?>>100</option>
 						<option value="50" <?if($arrBoardInfo["list"][0]["scale"]=="50"){echo 'selected="selected"';}?>>50</option>
 						<option value="40" <?if($arrBoardInfo["list"][0]["scale"]=="40"){echo 'selected="selected"';}?>>40</option>
@@ -539,15 +544,14 @@ $(document).ready(function(){
 	if(isset($_GET["offset"])){
 		$offset = (int)$_GET["offset"];
 	}
-
-    $arrCategoryInfo = getCategoryInfo(mysqli_real_escape_string($GLOBALS['dblink'], $_GET["cat_no"]));
+    $arrCategoryInfo = getCategoryInfo(mysqli_real_escape_string($GLOBALS['dblink'], 36));
 
     //카테고리 정보
     $arrCatCode = explode("/", $arrCategoryInfo["list"][0]['cat_code']);
 
     //분류 리스트
-    $arrCategory1 = getCategoryList(62);
-    if($arrCatCode[2]){	$arrCategory2 = getCategoryList($arrCatCode[2]); }
+    $arrCategory1 = getCategoryList(36);
+    if($arrCatCode[2]){	$arrCategory2 = getCategoryList($arrCatCode[2]);  }
 
     //$arrCategory2 = getCategoryList(63);
 
@@ -556,16 +560,19 @@ $(document).ready(function(){
     <div class="pageTitle inner">공간대관신청</div>
     <!-- //pageTitle -->
 
-    <!-- tabType1
+    <!-- tabType1 -->
     <div class="tabType1">
         <ul>
-            <li class="active"><a href="#;">전체</a></li>
-            <li><a href="#;">초급</a></li>
-            <li><a href="#;">중급</a></li>
-            <li><a href="#;">고급</a></li>
+            <li class="<?= $_GET['cat_no'] == '' ? 'active' : '' ?>"><a href="/place/list.php">전체</a></li>
+            <?php
+            for($i=0; $i<$arrCategory1["total"]; $i++):
+                $activeClass = ($_GET['cat_no'] == $arrCategory1["list"][$i]['cat_no']) ? 'class="active"' : '';
+                ?>
+                <li <?=$activeClass?>><a href="/place/list.php?cat_no=<?=$arrCategory1["list"][$i]['cat_no']?>"><?=$arrCategory1["list"][$i]['cat_name']?></a></li>
+            <?php endfor; ?>
         </ul>
     </div>
-     //tabType1 -->
+    <!-- //tabType1 -->
 
     <!-- subSec -->
     <div class="subSec last">

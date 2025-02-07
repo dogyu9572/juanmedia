@@ -8,11 +8,11 @@ include_once $_SERVER['DOCUMENT_ROOT'] . "/module/category/category.lib.php";
 //DB연결
 $dblink = SetConn($_conf_db["main_db"]);
 
-$arrBoardInfo = getBoardInfo($_conf_tbl['board_info'], "place_applicants");
+$arrBoardInfo = getBoardInfo($_conf_tbl['board_info'], "video_applicants");
 
 $arrBoardArticle = getBoardArticleView($arrBoardInfo["list"][0]["boardid"], $_GET["category"], $_GET["idx"],"read");
-$arrBoardPlaceArticle = getBoardArticleView("place", $_GET["category"], $arrBoardArticle["list"][0]["place_idx"],"read");
-$imgsrc = "/uploaded/board/place/".$arrBoardPlaceArticle["files"][0]['re_name'];
+$arrBoardvideoArticle = getBoardArticleView("video", $_GET["category"], $arrBoardArticle["list"][0]["video_idx"],"read");
+$imgsrc = "/uploaded/board/video/".$arrBoardvideoArticle["files"][0]['re_name'];
 
 ?>
 
@@ -31,7 +31,7 @@ $imgsrc = "/uploaded/board/place/".$arrBoardPlaceArticle["files"][0]['re_name'];
                     <ul>
                         <li><a href="/equ/info.php">미디어장비</a></li>
                         <li><a href="/equ/info.php">장비대여</a></li>
-                        <li><a href="/place/info.php">공간대관</a></li>
+                        <li><a href="/place/info.php">상영회대관</a></li>
                         <li><a href="/media/info.php">미디어체험</a></li>
                         <li><a href="/center/intro.php">센터안내</a></li>
                         <li><a href="/cm/notice.php">게시판</a></li>
@@ -60,8 +60,8 @@ $imgsrc = "/uploaded/board/place/".$arrBoardPlaceArticle["files"][0]['re_name'];
                         <ul>
                             <li><a href="orderList.php">교육신청</a></li>
                             <li><a href="orderListEq.php" >장비대여</a></li>
-                            <li><a href="orderListPlace.php" class="active">공간대여</a></li>
-                            <li><a href="orderListVideo.php">상영회</a></li>
+                            <li><a href="orderListPlace.php" >공간대여</a></li>
+                            <li><a href="orderListVideo.php" class="active">상영회</a></li>
                         </ul>
                     </div>
                     <div class="box">
@@ -81,33 +81,23 @@ $imgsrc = "/uploaded/board/place/".$arrBoardPlaceArticle["files"][0]['re_name'];
             </div>
 
             <div class="rightCont">
-                <div class="bigTit">공간신청 상세</div>
+                <div class="bigTit">상영회신청 상세</div>
 
                 <div class="myDetail">
                     <div class="detailTit">신청정보 <!-- <a href="/mypage/print.php" target="_blank" class="more">수료증 확인</a> --></div>
                     <div class="detailTable">
                         <div class="line">
+                            <div class="th">NO.</div>
+                            <div class="td">
+                                <?=$arrBoardArticle["list"][0]["app_no"]?>
+                            </div>
+                        </div>
+                        <div class="line">
                             <div class="th">신청상태</div>
                             <div class="td">
                                 <?=$arrBoardArticle["list"][0]["status"]?>
-                                <?=$arrBoardArticle["list"][0]["status"] == "신청완료" || $arrBoardArticle["list"][0]["status"] == "신청대기"   || $arrBoardArticle["list"][0]["status"] == "승인"   ? '<a href="#;" class="btnTypeSm" onclick="contentPop(\'.cancelPop\');">신청 취소</a>' : "" ?>
                             </div>
                         </div>
-                        <div class="line">
-                            <div class="th">결제금액</div>
-                            <div class="td">
-                                <?=number_format($arrBoardArticle["list"][0]['finalamount'])?>원
-                                <?=$arrBoardArticle["list"][0]["status"] == "승인" ? '<button type="button" class="btnTypeSm" onclick="contentPop(\'.paymentPop\');">입금 확인 요청</button>' : "" ?>
-                            </div>
-                        </div>
-                        <div class="line">
-                            <div class="th">할인적용</div>
-                            <div class="td"><?=$arrBoardArticle["list"][0]["discount_text"]?> (<?=$arrBoardArticle["list"][0]["discount"]?>) </div>
-                        </div>
-                        <!-- <div class="line">
-                            <div class="th">결제방법</div>
-                            <div class="td">신용카드</div>
-                        </div> -->
                     </div>
                 </div>
                 <div class="myDetail">
@@ -129,28 +119,33 @@ $imgsrc = "/uploaded/board/place/".$arrBoardPlaceArticle["files"][0]['re_name'];
                 </div>
 
                 <div class="myDetail">
-                    <div class="detailTit">공간 정보</div>
+                    <div class="detailTit">상영회 정보</div>
                     <div class="detailWrap">
                         <div class="simpleView">
                             <div class="simpleBox">
                                 <div class="img"><img src="<?=$imgsrc?>" alt="섬네일"></div>
                                 <div class="textWrap">
-                                    <div class="title"><?=$arrBoardPlaceArticle["list"][0]["subject"]?></div>
+                                    <div class="title"><?=$arrBoardvideoArticle["list"][0]["subject"]?></div>
                                     <div class="info">
-                                        <div class="tit">대관일</div>
-                                        <div class="txt"><?=$arrBoardArticle["list"][0]["rental_date"]?></div>
+                                        <div class="tit">상영일</div>
+                                        <div class="txt"><?=$arrBoardvideoArticle["list"][0]["screening_date"]?></div>
                                     </div>
                                     <div class="info">
-                                        <div class="tit">대관시간</div>
-                                        <div class="txt"><?=$arrBoardArticle["list"][0]["rental_start_time"]?> ~ <?=$arrBoardArticle["list"][0]["rental_end_time"]?></div>
+                                        <div class="tit">상영시간</div>
+                                        <div class="txt"><?=$arrBoardvideoArticle["list"][0]['start_hour']?>:<?=$arrBoardvideoArticle["list"][0]['start_minute']?> ~ <?=$arrBoardvideoArticle["list"][0]['end_hour']?>:<?=$arrBoardvideoArticle["list"][0]['end_minute']?></div>
+
                                     </div>
                                     <div class="info">
-                                        <div class="tit">사용인원</div>
-                                        <div class="txt"><?=$arrBoardArticle["list"][0]["usage_people"]?></div>
+                                        <div class="tit">카테고리</div>
+                                        <td><?=getCategoryName($arrBoardvideoArticle["list"][0]['category1']);?></td>
                                     </div>
                                     <div class="info">
-                                        <div class="tit">대여금액</div>
-                                        <div class="txt"><?=number_format($arrBoardArticle["list"][0]['finalamount'])?>원</div>
+                                        <div class="tit">위치</div>
+                                        <div class="txt"><?=$arrBoardvideoArticle["list"][0]["location"]?></div>
+                                    </div>
+                                    <div class="info">
+                                        <div class="tit">장르</div>
+                                        <div class="txt"><?=$arrBoardvideoArticle["list"][0]["genre"]?></div>
                                     </div>
                                 </div>
                             </div>
@@ -160,8 +155,7 @@ $imgsrc = "/uploaded/board/place/".$arrBoardPlaceArticle["files"][0]['re_name'];
                 </div>
 
                 <div class="btnCenter">
-                    <a href="orderListPlace.php" class="btnType1 black list">목록</a>
-					<a href="#this" class="btnType1 gray list">수정</a>
+                    <a href="orderListVideo.php" class="btnType1 black list">목록</a>
                 </div>
 
             </div>
@@ -182,7 +176,7 @@ $imgsrc = "/uploaded/board/place/".$arrBoardPlaceArticle["files"][0]['re_name'];
             <div class="popTit">취소사유</div>
             <form name="form1" method="post" action="/module/board/board_evn.php" >
                 <input type="hidden" name="boardid" value="<?=$arrBoardInfo["list"][0]["boardid"]?>">
-                <input type="hidden" name="returnURL" value="/mypage/detailPlace.php?idx=<?=$arrBoardArticle["list"][0]["idx"]?>">
+                <input type="hidden" name="returnURL" value="/mypage/detailvideo.php?idx=<?=$arrBoardArticle["list"][0]["idx"]?>">
                 <input type="hidden" name="idx" value="<?=$arrBoardArticle["list"][0]["idx"]?>">
                 <input type="hidden" name="evnMode" value="cancel">
                 <div class="cancelBox">
@@ -203,9 +197,9 @@ $imgsrc = "/uploaded/board/place/".$arrBoardPlaceArticle["files"][0]['re_name'];
 <!-- 결제금액팝업 -->
 <form name="form2"  method="post" action="/module/board/board_evn.php" ENCTYPE="multipart/form-data" onsubmit="return frmSubmit(this);">
     <input type="hidden" name="boardid" value="payment">
-    <input type="hidden" name="returnURL" value="/mypage/detailPlace.php?idx=<?=$arrBoardArticle["list"][0]["idx"]?>">
+    <input type="hidden" name="returnURL" value="/mypage/detailvideo.php?idx=<?=$arrBoardArticle["list"][0]["idx"]?>">
     <input type="hidden" name="evnMode" value="write">
-    <input type="hidden" name="board_type" value="place">
+    <input type="hidden" name="board_type" value="video">
     <input type="hidden" name="type_idx" value="<?=$arrBoardArticle["list"][0]["idx"]?>">
     <input type="hidden" name="app_no" value="<?=$arrBoardArticle["list"][0]["app_no"]?>">
     <input type="hidden" name="email" value="<?=$arrBoardArticle["list"][0]["email"]?>">

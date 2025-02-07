@@ -299,6 +299,11 @@ function fnCopyEst(eidx){
                 </div>
 				<div class="count">
 					<select name="page_size" onchange="document.form1.submit()"  style="width:60px;">
+						<option value="0" <?if($arrBoardInfo["list"][0]["scale"]=="0"){echo 'selected="selected"';}?>>전체</option>
+                        <option value="500" <?if($arrBoardInfo["list"][0]["scale"]=="500"){echo 'selected="selected"';}?>>500</option>
+                        <option value="400" <?if($arrBoardInfo["list"][0]["scale"]=="400"){echo 'selected="selected"';}?>>400</option>
+                        <option value="300" <?if($arrBoardInfo["list"][0]["scale"]=="300"){echo 'selected="selected"';}?>>300</option>
+                        <option value="200" <?if($arrBoardInfo["list"][0]["scale"]=="200"){echo 'selected="selected"';}?>>200</option>                      
 						<option value="100" <?if($arrBoardInfo["list"][0]["scale"]=="100"){echo 'selected="selected"';}?>>100</option>
 						<option value="50" <?if($arrBoardInfo["list"][0]["scale"]=="50"){echo 'selected="selected"';}?>>50</option>
 						<option value="40" <?if($arrBoardInfo["list"][0]["scale"]=="40"){echo 'selected="selected"';}?>>40</option>

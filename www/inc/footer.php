@@ -1,6 +1,6 @@
 
 <!--footer-->
-<div class="footer">`
+<div class="footer">
 	<div class="info">
 		<div class="inner">
 			<div class="left">
@@ -16,10 +16,12 @@
 					<div class="scroll">
 						<ul>
                             <?php
-                            $footertCategory = getCategoryList(5);
+                            $dblink = SetConn($_conf_db["main_db"]);
+                            $footertCategory = getCategoryList(5, "Y");
                             for ($i = 0; $i < count($footertCategory["list"]); $i++) {
                                 echo '<li><a href="' . $footertCategory["list"][$i]['cat_engname'] . '" target="_blank">' . $footertCategory["list"][$i]['cat_name'] . '</a></li>';
                             }
+                            SetDisConn($dblink);
                             ?>
 						</ul>
 					</div>

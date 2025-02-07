@@ -381,6 +381,7 @@ if(isset($_GET["offset"])){
                         <li class="no2">
                             <div class="titleFile">
                                 <div class="title"><a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=view&idx=<?=$arrBoardList["list"][$i]['idx']?>" class="row <?=$addClass?>"><?=$arrBoardList["list"][$i]['subject']?></a></div>
+								<!-- <div class="title"><a href="javascript:void(0);" onclick="contentPop('.pop_password');" class="btn_lock row <?=$addClass?>"><?=$arrBoardList["list"][$i]['subject']?></a></div> -->
                                 <div class="mob">
                                     <?=$fileLinks?>
                                 </div>
@@ -447,4 +448,24 @@ if(isset($_GET["offset"])){
         </div>
     </div>
     <!-- //subSec -->
+
+	<div class="contentPop paymentPop pop_password">
+		<div class="bg"></div>
+		<div class="popIn">
+			<div class="content">
+				<div class="popTit">비밀번호 입력</div>
+				<div class="cancelBox">
+					<dl>
+						<dt>비밀번호</dt>
+						<dd><input type="password"></dd>
+				</div>
+				<div class="btnCenter">
+					<a href="javascript:void(0);" class="btnType1 black list" onclick="">확인</a>
+				</div>
+				<div class="closePop">
+					<a href="javascript:void(0);" onclick="contentClose()">팝업닫기</a>
+				</div>
+			</div>
+		</div>
+	</div>
 <?}?>

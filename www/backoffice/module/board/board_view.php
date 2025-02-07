@@ -196,11 +196,13 @@ if($arrBoardInfo["total"] > 0){
 			//getBoardListBaseNFile : 파일테이블과 left join
 			//getBoardListBaseNMemoCnt : 베이스 + 메모카운트
 
-			if(isset($_GET['page_size'])){
-				if($_GET['page_size']){
-					$arrBoardInfo["list"][0]["scale"] = $_GET['page_size'];
-				}
+		if (isset($_GET['page_size'])) {
+			if ($_GET['page_size'] == 0) {
+				$arrBoardInfo["list"][0]["scale"] = 0;
+			} else {
+				$arrBoardInfo["list"][0]["scale"] = $_GET['page_size'];
 			}
+		}
 
 			//관리자이거나 회원등급이 게시물 목록보기등급 이상일 경우
 			if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] || $_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["LEVEL"] >= $arrBoardInfo["list"][0]["listlevel"]){

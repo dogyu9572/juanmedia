@@ -26,112 +26,105 @@ SetDisConn ( $dblink );
     <!-- pageTitle -->
     <div class="pageTitle inner">강사지원</div>
     <!-- //pageTitle -->
-    <!-- subSec -->
-    <form name="form1" method="post" action="/module/board/board_evn.php" ENCTYPE="multipart/form-data" onsubmit="return frmSubmit(this);">
+    <form name="form1" method="post" action="/module/board/board_evn.php" ENCTYPE="multipart/form-data">
         <input type="hidden" name="boardid" value="teacher">
         <input type="hidden" name="returnURL" value="<?=$_SERVER["PHP_SELF"]?>">
         <input type="hidden" name="evnMode" value="write">
         <input type="hidden" name="w_user" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]?>">
-    <div class="subSec last pt0">
-        <div class="expFrom">
-            <div class="title">
-                <div class="tit">정보입력</div>
-                <div class="eq"><span>*</span> 는 필수 입력 사항입니다.</div>
-            </div>
-            <!-- formBox -->
-            <div class="formBox">
-                <!--<div class="row">
-                 <div class="formTit">이름<span>*</span></div>
-                 <div class="right">
-                     <div class="checks_flex">
-                         <label class="check"><input type="checkbox"><i></i>상설교육</label>
-                         <label class="check"><input type="checkbox"><i></i>공동체교육</label>
-                         <label class="check"><input type="checkbox"><i></i>미디어체험</label>
-                     </div>
-                     <p>중복 체크 가능합니다</p>
-                 </div>
-             </div>-->
-                <div class="row">
-                    <div class="formTit">이름<span>*</span></div>
-                    <div class="right">
-                        <div class="baseInput">
-                            <input type="text" name="name" id="name">
+        <!-- subSec -->
+        <div class="subSec pt0 last">
+            <div class="inner">
+                <div class="btnBack">
+                    <a href="javascript:history.back()">뒤로</a>
+                </div>
+
+                <div class="writeForm">
+                    <!-- formBox -->
+                    <div class="formBox">
+                        <div class="row">
+                            <div class="formTit">제목<span>*</span></div>
+                            <div class="right">
+                                <div class="baseInput">
+                                    <input type="text" name="subject" id="subject">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="formTit">내용</div>
+                            <div class="right">
+                                <textarea class="baseTextarea" name="contents" id="contents"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="formTit">첨부파일</div>
+                            <div class="right">
+                                <div class="fileAddWrap">
+                                    <div class="inputFile">
+                                        <div class="fileInput">
+                                            <button class="fileInputButton">파일 선택</button>
+                                            <input name="upfiles[]" type="file" class="fileInputHidden" onchange="javascript: document.getElementById('fileName').value = this.value">
+                                        </div>
+                                        <input type="text" id="fileName" class="fileInputTextbox" readonly="readonly" value="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="formTit">자동등록방지<span>*</span></div>
+                            <div class="right">
+                                <div class="autoPrevent">
+                                    <div class="baseInput">
+                                        <div class="imgfit"><img src="/_securimage/securimage_show.php?sid=<?php echo md5(time()) ?>" alt="image" id="siimage" style="height: 50px"></div>
+                                    </div>
+                                    <button type="button" class="btnRe" onclick="document.getElementById('siimage').src = '/_securimage/securimage_show.php?sid=' + Math.random(); return false"></button>
+                                    <div class="baseInput">
+                                        <input type="text" class="text" name="code" maxlength="6" placeholder="">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="formTit">연락처<span>*</span></div>
-                    <div class="right">
-                        <div class="baseInput">
-                            <input type="text" name="contact" id="contact">
-                        </div>
+                    <!-- //formBox -->
+
+                    <div class="btnCenter two mt">
+                        <a href="#;" class="btnType1 fix" onclick="fnFrmCheck(document.form1)">저장</a>
+                        <a href="free.php" class="btnType1 fix gray">취소</a>
                     </div>
+
                 </div>
-                <div class="row">
-                    <div class="formTit">이메일<span>*</span></div>
-                    <div class="right">
-                        <div class="baseInput">
-                            <input type="text" name="email" id="email">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="formTit">주소</div>
-                    <div class="right">
-                        <div class="baseInput">
-                            <input type="text" name="address" id="address">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="formTit">제목</div>
-                    <div class="right">
-                        <div class="baseInput">
-                            <input type="text" name="title" id="title">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="formTit">내용</div>
-                    <div class="right">
-                        <div class="baseInput">
-                            <textarea name="content" id="content" cols="30" rows="10"></textarea>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- //formBox -->
-            <div class="btnOrder two mt">
-                <a href="javascript:history.back();" class="btnType1 gray">취소하기</a>
-                <a href="javascript:void(0);" class="btnType1" onclick="if (frmSubmit(document.form1)) { document.form1.submit(); }">신청하기</a>
+
             </div>
         </div>
-    </div>
+        <!-- //subSec -->
+    </form>
 </div>
-
-<script>
-    function frmSubmit(frm){
-        if(frm.name.value.length < 1){
-            alert("이름을 입력해주세요.");
-            frm.name.focus();
-            return false;
-        } else if(frm.contact.value.length < 1){
-            alert("연락처를 입력해주세요.");
-            frm.contact.focus();
-            return false;
-        } else if(frm.email.value.length < 1){
-            alert("이메일을 입력해주세요.");
-            frm.email.focus();
-            return false;
-        } else {
-            return true;
-        }
-    }
-</script>
 <!-- //Container -->
+
 <?php include("../inc/quick.php"); ?>
+
 <?php include("../inc/footer.php"); ?>
+
 </div>
 <!-- //Wrap -->
+<script type="text/javascript">
+    <!--
+    function fnFrmCheck(frm){
+        if(!frm.subject.value){
+            alert('제목을 입력해 주세요.')
+            frm.subject.focus();
+            return;
+        }
+
+        if(!frm.code.value){
+            alert("자동등록방지 보안코드를 입력해 주세요.");
+            frm.code.focus();
+            return;
+        }
+
+        frm.submit();
+    }
+</script>
+
 </body>
 </html>

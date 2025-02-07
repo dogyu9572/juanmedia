@@ -265,7 +265,7 @@ $_SESSION["SEAR_TYPE"] = "member_info";
                             </div>
                         </div>
                         <div class="btnOut">
-                            <a href="/mypage/withdrawal.php">회원탈퇴</a>
+                            <a href="javascript:fncWithdrawal()">회원탈퇴</a>
                         </div>
                         <div class="btnCenter two mini">
                             <a href="javascript:void(0);" class="btnType1 black" onclick="submitForm();">정보수정</a>

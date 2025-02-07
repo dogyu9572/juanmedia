@@ -459,7 +459,7 @@ function doLoad(){
 
                 if (rentalStartDate && rentalEndDate) {
                     const timeDiff = Math.abs(rentalEndDate.getTime() - rentalStartDate.getTime());
-                    const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1; // Include the start date
+                    const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
                     const totalPrice = diffDays * feePerDay;
 
                     document.querySelector('.nameDate').textContent = `<?=stripslashes($arrBoardArticle["list"][0]['subject'])?> / <?=stripslashes($arrBoardArticle["list"][0]['equ_number'])?> / ${diffDays}일`;

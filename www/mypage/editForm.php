@@ -18,6 +18,22 @@ SetDisConn($dblink);
 include $_SERVER['DOCUMENT_ROOT'] . "/_api/_NICE/niceapi_token_inc.php";
 $_SESSION["SEAR_TYPE"] = "member_info";
 
+
+if ($arrMemberInfo['list'][0]['before'] == 'Y') {
+    $user_name = base64_decode($arrMemberInfo['list'][0]['user_name']);
+    $mobile = base64_decode($arrMemberInfo['list'][0]['mobile']);
+    $email = base64_decode($arrMemberInfo['list'][0]['email']);
+    $address_ext = base64_decode($arrMemberInfo['list'][0]['address_ext']);
+    $address = base64_decode($arrMemberInfo['list'][0]['address']);
+
+}
+else {
+    $user_name = $arrMemberInfo['list'][0]['user_name'];
+    $mobile = $arrMemberInfo['list'][0]['mobile'];
+    $email = $arrMemberInfo['list'][0]['email'];
+    $address_ext = $arrMemberInfo['list'][0]['address_ext'];
+    $address = $arrMemberInfo['list'][0]['address'];
+}
 ?>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
@@ -194,7 +210,7 @@ $_SESSION["SEAR_TYPE"] = "member_info";
 									<div class="tit">이름<span>*</span></div>
 									<div class="right">
 										<div class="baseInput">
-											<input type="text" name="user_name" id="user_name"  value="<?=$arrMemberInfo['list'][0]['user_name']?>" readonly class="readonly-input">
+											<input type="text" name="user_name" id="user_name"  value="<?=$user_name?>" readonly class="readonly-input">
 										</div>
 									</div>
 								</div>
@@ -203,7 +219,7 @@ $_SESSION["SEAR_TYPE"] = "member_info";
 									<div class="right">
 										<div class="btnInput">
 											<div class="baseInput">
-												<input type="text" name="mobile"  id="mobile" oninput="checkPhoneNumber(this)" placeholder="010-0000-0000" value="<?=$_SESSION['uMobile']?$_SESSION['uMobile']:$arrMemberInfo["list"][0]['mobile']?>" readonly class="readonly-input">
+												<input type="text" name="mobile"  id="mobile" oninput="checkPhoneNumber(this)" placeholder="010-0000-0000" value="<?=$mobile?>" readonly class="readonly-input">
                                             </div>
 											<a href="javascript:fnPopup();" class="btn sm">변경</a>
 										</div>
@@ -235,7 +251,7 @@ $_SESSION["SEAR_TYPE"] = "member_info";
 									<div class="tit">이메일<span>*</span></div>
 									<div class="right">
 										<div class="baseInput">
-											<input type="text" name="email" id="email"   value="<?=$arrMemberInfo['list'][0]['user_id']?>" readonly class="readonly-input">
+											<input type="text" name="email" id="email"   value="<?=$email?>" readonly class="readonly-input">
 										</div>
 									</div>
 								</div>
@@ -244,12 +260,12 @@ $_SESSION["SEAR_TYPE"] = "member_info";
 									<div class="right">
 										<div class="btnInput">
 											<div class="baseInput">
-												<input type="text" name="address" id="address" value="<?=$arrMemberInfo["list"][0]['address']?>">
+												<input type="text" name="address" id="address" value="<?=$address?>">
 											</div>
 											<a href="javascript:execDaumPostcode('zip','address','address_ext');" class="btn">주소검색</a>
 										</div>
 										<div class="baseInput">
-											<input type="text" name="address_ext" id="address_ext" value="<?=$arrMemberInfo["list"][0]['address_ext']?>">
+											<input type="text" name="address_ext" id="address_ext" value="<?=$address_ext?>">
 										</div>
 									</div>
 								</div>
@@ -280,7 +296,7 @@ $_SESSION["SEAR_TYPE"] = "member_info";
 								</div>
 							</div>
 							<div class="btnOut">
-								<a href="javascript:fncWithdrawal()">회원탈퇴</a>
+                                <a href="/mypage/withdrawal.php">회원탈퇴</a>
 							</div>
 							<div class="btnCenter two mini">
                                 <a href="javascript:void(0);" class="btnType1 black" onclick="submitForm();">정보수정</a>

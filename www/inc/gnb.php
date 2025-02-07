@@ -35,8 +35,9 @@ SetDisConn($dblink);
                                        <?php if ($arrVal["cat_engname"] == "/edu/info.php") { ?>
                                            <ul>
                                                <li class="on"><a href="/edu/info.php">교육신청 안내</a></li>
-                                               <li><a href="/edu/list.php?cat_no=115">상설교육</a></li>
-                                               <li><a href="/edu/list.php?cat_no=116">공동체교육</a></li>
+											   <li><a href="/edu/list.php">교육신청</a></li>
+                                               <!-- <li><a href="/edu/list.php">상설교육</a></li>
+                                               <li><a href="/edu/list.php?cat_no=116">공동체교육</a></li> -->
                                                <li><a href="/edu/teacher.php">강사지원</a></li>
                                            </ul>
                                        <?php } elseif ($arrVal["cat_engname"] == "/equ/info.php") { ?>

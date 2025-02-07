@@ -367,11 +367,13 @@ if(isset($_GET["offset"])){
                             $listNum = '<span class="tag noti">공지</span>';
                         }
 
-                        $arrBoardArticle = getBoardArticleView($arrBoardInfo["list"][0]["boardid"], "", $arrBoardList["list"][$i]['idx'], "list");
 
                         $fileLinks = '';
-                        if ($arrBoardArticle["files"][$i]['re_name'] && substr($arrBoardArticle["files"][$i]['re_name'], 0, 2) != "l_" && substr($arrBoardArticle["files"][$i]['re_name'], 0, 2) != "v_") {
-                            $fileLinks = '<a href="javascript:void(0);" class="ico_file" onclick="fileDownload(\'' . $arrBoardArticle["files"][$i]['boardid'] . '\', \'' . $arrBoardArticle["files"][$i]['b_idx'] . '\', \'' . $arrBoardArticle["files"][$i]['idx'] . '\');">' . $arrBoardArticle["files"][$i]['ori_name'] . '</a>';
+                        $arrBoardArticle = getBoardArticleView($arrBoardInfo["list"][0]["boardid"], "", $arrBoardList["list"][$i]['idx'], "list");
+                        for($j=0;$j<$arrBoardArticle["total_files"];$j++){
+                            if(substr($arrBoardArticle["files"][$j]['re_name'],0,2) != "l_"){
+                                $fileLinks = '<a href="javascript:void(0);" class="ico_file" onclick="fileDownload(\'' . $arrBoardArticle["files"][$j]['boardid'] . '\', \'' . $arrBoardArticle["files"][$j]['b_idx'] . '\', \'' . $arrBoardArticle["files"][$j]['idx'] . '\');">' . $arrBoardArticle["files"][$j]['ori_name'] . '</a>';
+                            }
                         }
                         ?>
                     <ul>

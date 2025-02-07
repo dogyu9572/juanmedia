@@ -252,7 +252,7 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                                 &nbsp;<div id="finalAmountDisplay" style="display: flex; align-items: center;">
                                     결제금액 : <?= number_format($arrBoardArticle["list"][0]['finalamount']) ?>원
                                 </div>
-                                <input type="hidden" id="discountText" name="discount_text" value="">
+                                <input type="hidden" id="discountText" name="discount_text" value="<?=$arrBoardArticle["list"][0]['discount_text'] ?>" >
                             </div>
                         </td>
                     </tr>
@@ -265,7 +265,6 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                                     (할인전 금액: <span><?= number_format($arrBoardArticle["list"][0]['totalamount']) ?></span>원 /
                                     할인금액 : <span id="displayDiscountAmount"><?= number_format($arrBoardArticle["list"][0]['discountamount']) ?></span>원 )
                                 </div>
-                                <input type="hidden" id="discountText" name="discount_text" value="">
                             </div>
                         </td>
                     </tr>

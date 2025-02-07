@@ -16,6 +16,7 @@ $arrNoticeList = getBoardListBaseNFile("notice", "", "", "", 4, 0,'', "user");
 $arrYoutubeList = getBoardListBaseNFile("youtube", "", "", "", 2, 0,'', "user");
 $arrPCBannerList = getDeviceBannerList(1,"1");
 $arrMOBannerList = getDeviceBannerList(1,"2");
+$arrBottomPCBannerList = getDeviceBannerList(2,"3");
 
 //DB해제
 SetDisConn($dblink);
@@ -81,13 +82,13 @@ SetDisConn($dblink);
         <!-- mainIcon -->
         <div class="mainIcon">
             <ul>
-                <li><a href="/edu/list.php?cat_no=115"> <span class="img"><img src="/images/ico_main01.svg"
+                <li><a href="/edu/list.php"> <span class="img"><img src="/images/ico_main01.svg"
                                                                               alt="교육신청"></span> <span class="tit">교육신청</span> </a></li>
                 <li><a href="/equ/list.php"> <span class="img"><img src="/images/ico_main02.svg" alt="장비대여"></span>
                         <span class="tit">장비대여</span> </a></li>
                 <li><a href="/place/list.php"> <span class="img"><img src="/images/ico_main03.svg" alt="공간대관"></span>
                         <span class="tit">공간대관</span> </a></li>
-                <li><a href="/media/list.php"> <span class="img"><img src="/images/ico_main04.svg" alt="체험신청"></span>
+                <li><a href="/media/order.php"> <span class="img"><img src="/images/ico_main04.svg" alt="체험신청"></span>
                         <span class="tit">체험신청</span> </a></li>
                 <li><a href="/mypage/orderList.php"> <span class="img"><img src="/images/ico_main05.svg"
                                                                             alt="신청확인"></span> <span class="tit">신청확인</span> </a></li>
@@ -104,7 +105,7 @@ SetDisConn($dblink);
                     <a href="javascript:void(0)" data-name="ready">교육중</a>
                     <a href="javascript:void(0)" data-name="end">종료</a>
                 </div>
-                <a href="/edu/list.php?cat_no=115" class="btnMore">More</a>
+                <a href="/edu/list.php" class="btnMore">More</a>
             </div>
             <div class="tabCont">
                 <div id="cont" class="all">
@@ -187,9 +188,12 @@ SetDisConn($dblink);
             <div class="mainEq">
                 <div class="mainTit">
                     <div class="tit">장비·공간대여</div>
-                    <div class="tabList"><a href="javascript:void(0)" class="active" data-name="eq">장비대여</a> <a
-                                href="javascript:void(0)" data-name="place">공간대관</a></div>
-                    <a href="/equ/list.php" class="btnMore">More</a>
+                    <div class="tabList">
+                        <a href="javascript:void(0)" class="active" data-name="eq">장비대여</a>
+                        <a href="javascript:void(0)" data-name="place">공간대관</a>
+                    </div>
+                        <a href="/place/list.php" class="btnMore place">More</a>
+                        <a href="/equ/list.php" class="btnMore eq">More</a>
                 </div>
                 <div class="tabCont">
                     <div id="contEq" class="eq">
@@ -210,6 +214,10 @@ SetDisConn($dblink);
                                     </a>
                                 </li>
                             <?php } ?>
+                        </ul>
+                    </div>
+                    <div id="contEq" class="place">
+                        <ul class="swiper-wrapper">
                             <?php for($i=0;$i<$arrPlaceList["list"]["total"];$i++){ ?>
                                 <li class="place">
                                     <a href="/place/list.php?boardid=place&mode=view&idx=<?=$arrPlaceList["list"][$i]["idx"]?>">
@@ -221,7 +229,7 @@ SetDisConn($dblink);
                                         </div>
                                         <div class="box">
                                             <span class="tit"><?=$arrPlaceList["list"][$i]["subject"]?></span>
-                                            <span class="txt"><?=number_format($arrPlaceList["list"][$i]["fee"])?>원(1일)</span>
+                                            <span class="txt"><?=number_format($arrPlaceList["list"][$i]["fee"])?>원(1시간)</span>
                                         </div>
                                     </a>
                                 </li>
@@ -350,9 +358,41 @@ SetDisConn($dblink);
                 </div>
                 <div class="videoSwiper">
                     <div class="swiper-wrapper">
-                        <div class="swiper-slide"><a href="#;"> <img src="/images/thumb2_1.png" alt="슬라이드"> </a></div>
-                        <div class="swiper-slide"><a href="#;"> <img src="/images/thumb2_2.png" alt="슬라이드"> </a></div>
-                        <div class="swiper-slide"><a href="#;"> <img src="/images/thumb2_3.png" alt="슬라이드"> </a></div>
+                        <?php
+                        if (!empty($arrBottomPCBannerList["list"]) || !empty($arrBottomMOBannerList["list"])) {
+                            $total = max($arrBottomPCBannerList["list"]["total"], $arrBottomMOBannerList["list"]["total"]);
+                            for ($i = 0; $i < $total; $i++) {
+                                $pc_image = "/pub/images/mvisual01.png";
+                                $mo_image = "/pub/images/mvisual01.png";
+                                $url = "#this";
+                                $target = "";
+
+                                if (!empty($arrBottomPCBannerList["list"][$i]["b_image"])) {
+                                    $pc_image = "/uploaded/banner/" . $arrBottomPCBannerList["list"][$i]["b_image"];
+                                }
+                                if (!empty($arrBottomMOBannerList["list"][$i]["b_image"])) {
+                                    $mo_image = "/uploaded/banner/" . $arrBottomMOBannerList["list"][$i]["b_image"];
+                                }
+
+                                if (!empty($arrBottomPCBannerList["list"][$i]["b_url"])) {
+                                    $url = $arrBottomPCBannerList["list"][$i]["b_url"];
+                                    $target = " target='" . $arrBottomPCBannerList["list"][$i]["b_target"] . "' ";
+                                } elseif (!empty($arrBottomMOBannerList["list"][$i]["b_url"])) {
+                                    $url = $arrBottomMOBannerList["list"][$i]["b_url"];
+                                    $target = " target='" . $arrBottomMOBannerList["list"][$i]["b_target"] . "' ";
+                                }
+                                ?>
+                                <div class="swiper-slide"><a href="<?=$url?>" <?=$target?>><img src="<?=$pc_image?>" alt="슬라이드"> </a></div>
+                                <?php
+                            }
+                        } else {
+                            ?>
+                            <div class="swiper-slide"><a href="#;"> <img src="/images/thumb2_1.png" alt="슬라이드"> </a></div>
+                            <div class="swiper-slide"><a href="#;"> <img src="/images/thumb2_2.png" alt="슬라이드"> </a></div>
+                            <div class="swiper-slide"><a href="#;"> <img src="/images/thumb2_3.png" alt="슬라이드"> </a></div>
+                            <?php
+                        }
+                        ?>
                     </div>
                 </div>
             </div> <!-- //mainVideo -->
@@ -394,6 +434,7 @@ SetDisConn($dblink);
         </div> <!-- //snsIntro --->
     </div> <!-- //mainSec -->
 </div> <!-- //Container -->
+<script src="/js/calendar.js"></script>
 <?php
 include_once $_SERVER["DOCUMENT_ROOT"]."/module/popup/popup.inc.php";
 ?>

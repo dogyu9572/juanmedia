@@ -1,5 +1,19 @@
 <?php include("../inc/header.php"); ?>
+<?
+include_once $_SERVER['DOCUMENT_ROOT']."/module/member/auth.php";
 
+include_once $_SERVER['DOCUMENT_ROOT']."/module/board/board.lib.php";
+include_once $_SERVER['DOCUMENT_ROOT'] . "/module/category/category.lib.php";
+
+//DB연결
+$dblink = SetConn($_conf_db["main_db"]);
+
+$boardid = "video_applicants";
+$arrBoardInfo = getBoardInfo($_conf_tbl['board_info'], $boardid );
+
+$arrBoardList	= getBoardListBaseNFile($arrBoardInfo["list"][0]["boardid"], "", $_GET['sw'], $_GET['sk'], $arrBoardInfo["list"][0]["scale"], $_GET['offset'] , "and w_user = '" . $_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"] . "'");
+
+?>
 
 		<!-- Container -->
 		<div class="container sub" id="container">
@@ -82,23 +96,26 @@
 						<!-- searchForm -->
 						<div class="searchForm">
 							<div class="count">
-								전체 <span>100건</span>
+								전체 <span><?=number_format($arrBoardList["total"])?>건</span>
 							</div>
-							<div class="rightForm">
-								<div class="baseSel">
-									<select>
-										<option value="">전체</option>
-										<option value="">전체</option>
-										<option value="">전체</option>
-									</select>
-								</div>
-								<div class="search">
-									<div class="baseInput">
-										<input type="text">
-									</div>
-									<a href="#;"><img src="/images/ico_search.svg" alt="검색"></a>
-								</div>
-							</div>
+                            <form name="form1" method="get" action="<?=$_SERVER["PHP_SELF"]?>">
+                                <div class="rightForm">
+                                    <div class="baseSel">
+                                        <select name="sw">
+                                            <option value="">선택</option>
+                                            <option value='app_no' <?=$_GET["sw"] == "app_no"?"selected":""?>>접수번호</option>
+                                            <option value="subject" <?=$_GET["sw"] == "s"?"selected":""?>>상영회명</option>
+                                            <option value='status' <?=$_GET["sw"] == "status"?"selected":""?>>신청상태</option>
+                                        </select>
+                                    </div>
+                                    <div class="search">
+                                        <div class="baseInput">
+                                            <input type="text" name="sk" id="sk" value="<?=$_GET["sk"]?>" class="text" placeholder="검색어를 입력하세요.">
+                                        </div>
+                                        <a href="javascript:void(0);" onclick="document.form1.submit();"><img src="/images/ico_search.svg" alt="검색"></a>
+                                    </div>
+                                </div>
+                            </form>
 						</div>
 						<!-- //searchForm -->
 
@@ -108,142 +125,57 @@
 								<div class="tableType2 order">
 									<table>
 										<colgroup>
-											<col class="no1" />
-											<col class="no2" />
-											<col class="no3" />
-											<col class="no4" />
-											<col class="no5" />
-											<col class="no6" />
-											<col class="no7" />
+                                            <col class="w90" />
+                                            <col class="w90" />
+                                            <col class="wauto" />
+                                            <col class="w120" />
+                                            <col class="w90" />
+                                            <col class="w90" />
+                                            <col class="w100" />
+                                            <col class="w100" />
 										</colgroup>
 										<thead>
 											<tr>
 												<th>NO.</th>
-												<th>접수번호</th>
 												<th>카테고리</th>
-												<th>교육분류</th>
-												<th>교육명</th>
-												<th>교육기간</th>
-												<th>결제금액</th>
-												<th>등록일</th>
+												<th>상영회명</th>
+												<th>상영일</th>
+												<th>상영회시간</th>
+												<th>신청일</th>
 												<th>신청상태</th>
 												<th>상세보기</th>
 											</tr>
 										</thead>
 										<tbody>
-											<tr>
-												<td>1</td>
-												<td>123343556</td>
-												<td>상설교육</td>
-												<td>영상이론</td>
-												<td class="name"><a href="detail.php">교육명이 들어가는 공간입니다교육명이 들어가는 공간입니다 들어가는 공간입니다들어가는 공간입니다들어가는 공간입니다</a></td>
-												<td>2024-08-21 ~<br />2024-08-28</td>
-												<td>10,000원</td>
-												<td>2024.08.28</td>
-												<td>취소</td>
-												<td>
-													<a href="detail.php" class="btnTypeSm">상세보기</a>
-												</td>
-											</tr>
-											<tr>
-												<td>1</td>
-												<td>123343556</td>
-												<td>상설교육</td>
-												<td>영상이론</td>
-												<td class="name"><a href="detail.php">교육명이 들어가는 공간입니다</td>
-												<td>2024-08-21 ~<br />2024-08-28</td>
-												<td>10,000원</td>
-												<td>2024.08.28</td>
-												<td>취소</td>
-												<td>
-													<a href="detail.php" class="btnTypeSm">상세보기</a>
-												</td>
-											</tr>
-											<tr>
-												<td>1</td>
-												<td>123343556</td>
-												<td>상설교육</td>
-												<td>영상이론</td>
-												<td class="name"><a href="detail.php">교육명이 들어가는 공간입니다교육명이 들어가는 공간입니다 들어가는 공간입니다들어가는 공간입니다들어가는 공간입니다</a></td>
-												<td>2024-08-21 ~<br />2024-08-28</td>
-												<td>10,000원</td>
-												<td>2024.08.28</td>
-												<td>취소</td>
-												<td>
-													<a href="detail.php" class="btnTypeSm">상세보기</a>
-												</td>
-											</tr>
-											<tr>
-												<td>1</td>
-												<td>123343556</td>
-												<td>상설교육</td>
-												<td>영상이론</td>
-												<td class="name"><a href="detail.php">교육명이 들어가는 공간입니다</td>
-												<td>2024-08-21 ~<br />2024-08-28</td>
-												<td>10,000원</td>
-												<td>2024.08.28</td>
-												<td>취소</td>
-												<td>
-													<a href="detail.php" class="btnTypeSm">상세보기</a>
-												</td>
-											</tr>
-											<tr>
-												<td>1</td>
-												<td>123343556</td>
-												<td>상설교육</td>
-												<td>영상이론</td>
-												<td class="name"><a href="detail.php">교육명이 들어가는 공간입니다교육명이 들어가는 공간입니다 들어가는 공간입니다들어가는 공간입니다들어가는 공간입니다</a></td>
-												<td>2024-08-21 ~<br />2024-08-28</td>
-												<td>10,000원</td>
-												<td>2024.08.28</td>
-												<td>취소</td>
-												<td>
-													<a href="detail.php" class="btnTypeSm">상세보기</a>
-												</td>
-											</tr>
-											<tr>
-												<td>1</td>
-												<td>123343556</td>
-												<td>상설교육</td>
-												<td>영상이론</td>
-												<td class="name"><a href="detail.php">교육명이 들어가는 공간입니다</td>
-												<td>2024-08-21 ~<br />2024-08-28</td>
-												<td>10,000원</td>
-												<td>2024.08.28</td>
-												<td>취소</td>
-												<td>
-													<a href="detail.php" class="btnTypeSm">상세보기</a>
-												</td>
-											</tr>
-											<tr>
-												<td>1</td>
-												<td>123343556</td>
-												<td>상설교육</td>
-												<td>영상이론</td>
-												<td class="name"><a href="detail.php">교육명이 들어가는 공간입니다교육명이 들어가는 공간입니다 들어가는 공간입니다들어가는 공간입니다들어가는 공간입니다</a></td>
-												<td>2024-08-21 ~<br />2024-08-28</td>
-												<td>10,000원</td>
-												<td>2024.08.28</td>
-												<td>취소</td>
-												<td>
-													<a href="detail.php" class="btnTypeSm">상세보기</a>
-												</td>
-											</tr>
-											<tr>
-												<td>1</td>
-												<td>123343556</td>
-												<td>상설교육</td>
-												<td>영상이론</td>
-												<td class="name"><a href="detail.php">교육명이 들어가는 공간입니다</td>
-												<td>2024-08-21 ~<br />2024-08-28</td>
-												<td>10,000원</td>
-												<td>2024.08.28</td>
-												<td>취소</td>
-												<td>
-													<a href="detail.php" class="btnTypeSm">상세보기</a>
-												</td>
-											</tr>
-										</tbody>
+                                        <?
+                                        if($arrBoardList["list"]["total"] > 0){
+                                        for($i=0; $i < $arrBoardList["list"]["total"]; $i++){
+                                        //공지
+                                        $categoryTitle = $arrBoardList["total"]-$i-(int)$_GET['offset'];
+
+                                        $arrBoardArticle = getBoardArticleView("video", "", $arrBoardList["list"][$i]['video_idx'],"list");
+
+                                        ?>
+                                            <tr data-order="<?=$arrBoardList['list'][$i]['idx']?>">
+                                                <td><?=$arrBoardList["list"][$i]['app_no']?></td>
+                                                <td><?=getCategoryName($arrBoardList["list"][$i]['category1']);?></td>
+                                                <td><?=$arrBoardList["list"][$i]['subject']?></td>
+                                                <td><?=$arrBoardArticle["list"][0]['screening_date']?></td>
+                                                <td><?=$arrBoardArticle["list"][$i]['start_hour']?>:<?=$arrBoardArticle["list"][$i]['start_minute']?> ~ <?=$arrBoardArticle["list"][$i]['end_hour']?>:<?=$arrBoardArticle["list"][$i]['end_minute']?></td>
+                                                <td><?=date("Y-m-d",strtotime($arrBoardList["list"][$i]['wdate']))?></td>
+                                                <td><?=$arrBoardList["list"][$i]['status'];?></td>                                                    <td>
+                                                    <a href="detailVideo.php?idx=<?=$arrBoardList["list"][$i]['idx'];?>" class="btnTypeSm">상세보기</a>
+                                                </td>
+                                            </tr>
+                                            <?
+                                        }
+                                        }else{
+                                            ?>
+                                            <tr height="100">
+                                                <td colspan="13">등록된 데이터가 없습니다.</td>
+                                            </tr>
+                                        <?}?>
+                                        </tbody>
 									</table>
 								</div>
 							</div>
@@ -262,26 +194,25 @@
 							</div>
 						</div>
 
-						<!-- pagingWrap -->
-						<div class="pagingWrap">
-							<a href="#;"><img src="/images/ico_paging1.svg" alt="처음"></a>
-							<a href="#;"><img src="/images/ico_paging2.svg" alt="이전"></a>
-							<div class="num">
-								<a href="#;" class="active">1</a>
-								<a href="#;">2</a>
-								<a href="#;">3</a>
-								<a href="#;">4</a>
-								<a href="#;">5</a>
-							</div>
-							<a href="#;"><img src="/images/ico_paging3.svg" alt="다음"></a>
-							<a href="#;"><img src="/images/ico_paging4.svg" alt="마지막"></a>
-						</div>
-						<!-- //pagingWrap -->
-
-
+                        <!-- pagingWrap -->
+                        <div class="pagingWrap">
+                            <?
+                            ############### paging ############### ST
+                            $queryString = explode("&",$_SERVER['QUERY_STRING']);
+                            $reQueryString = "";
+                            $comma = "";
+                            for($i=0;$i<count($queryString);$i++){
+                                if(strpos($queryString[$i],"offset=")===false){
+                                    $reQueryString .= $comma.$queryString[$i];
+                                    $comma = "&";
+                                }
+                            }
+                            echo pageNavigationUser($arrBoardList["total"],$arrBoardInfo["list"][0]["scale"],$arrBoardInfo["list"][0]["pagescale"],$_GET['offset'],$reQueryString);
+                            ############### paging ############### ED
+                            ?>
+                        </div>
+                        <!-- //pagingWrap -->
 					</div>
-
-
 				</div>
 			</div>
 			<!-- //subSec -->

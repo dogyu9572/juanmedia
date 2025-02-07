@@ -92,49 +92,110 @@
 						<div class="tableScroll">
 							
 							<div class="scroll">
-								<div class="tableType2 stop">
-									<table>
-										<colgroup>
-											<col class="no1" />
-											<col class="no2" />
-											<col class="no3" />
-											<col class="no4" />
-										</colgroup>
-										<thead>
-											<tr>
-												<th>NO.</th>
-												<th>위반내용</th>
-												<th>정지구분</th>
-												<th>등록일</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>123</td>
-												<td class="name"><a href="/cm/detailFree.php">텍스트가 표시됩니다. 텍스트가 표시됩니다.</a></td>
-												<td>텍스트가 표시됩니다.</td>
-												<td>2024.08.28</td>
-											</tr>
-											<tr>
-												<td>123</td>
-												<td class="name"><a href="/cm/detailFree.php">텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다.</a></td>
-												<td>텍스트가 표시됩니다.</td>
-												<td>2024.08.28</td>
-											</tr>
-											<tr>
-												<td>123</td>
-												<td class="name"><a href="/cm/detailFree.php">텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다.</a></td>
-												<td>텍스트가 표시됩니다.</td>
-												<td>2024.08.28</td>
-											</tr>
-											<tr>
-												<td>123</td>
-												<td class="name"><a href="/cm/detailFree.php">텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다.</a></td>
-												<td>텍스트가 표시됩니다.</td>
-												<td>2024.08.28</td>
-											</tr>
-										</tbody>
-									</table>
+								<div class="noticeTable">
+									<ul class="thead">
+										<li class="no1">NO</li>
+										<li class="no2">제목</li>
+										<li class="no3">첨부파일</li>
+										<li class="no4">작성자</li>
+										<li class="no5">조회수</li>
+										<li class="no6">등록일</li>
+									</ul>
+									<div class="tbody">
+										<ul>
+											<li class="no1">4</li>
+											<li class="no2">
+												<div class="titleFile">
+													<div class="title"><a href="/cm/free.php?boardid=free&amp;mode=view&amp;idx=4" class="row ">첨부파일 첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일</a></div>
+													<div class="mob"><a href="javascript:void(0);" class="ico_file" onclick="fileDownload('free', '4', '6152');">[양식] 교육이수증(2025) (1).hwpx</a></div>
+												</div>
+												<div class="info mob">
+													<div class="box">
+														<div class="tit">작성자</div>
+														<div class="text"></div>
+													</div>
+													<div class="box">
+														<div class="tit">등록일</div>
+														<div class="text">첨부파일 첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일</div>
+													</div>
+												</div>
+											</li>
+											<li class="no3">
+												<a href="javascript:void(0);" class="ico_file" onclick="fileDownload('free', '4', '6152');">[양식] 교육이수증(2025) (1).hwpx</a></li>
+											<li class="no4"></li>
+											<li class="no5">3</li>
+											<li class="no6">2025.02.05</li>
+										</ul>
+										<ul>
+											<li class="no1">3</li>
+											<li class="no2">
+												<div class="titleFile">
+													<div class="title"><a href="/cm/free.php?boardid=free&amp;mode=view&amp;idx=3" class="row ">제목 테스트 제목 테스트 제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트</a></div>
+													<div class="mob"></div>
+												</div>
+												<div class="info mob">
+													<div class="box">
+														<div class="tit">작성자</div>
+														<div class="text"></div>
+													</div>
+													<div class="box">
+														<div class="tit">등록일</div>
+														<div class="text">제목 테스트 제목 테스트 제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트</div>
+													</div>
+												</div>
+											</li>
+											<li class="no3"></li>
+											<li class="no4"></li>
+											<li class="no5">5</li>
+											<li class="no6">2025.02.05</li>
+										</ul>
+										<ul>
+											<li class="no1">2</li>
+											<li class="no2">
+												<div class="titleFile">
+													<div class="title"><a href="/cm/free.php?boardid=free&amp;mode=view&amp;idx=2" class="row ">자유</a></div>
+													<div class="mob"></div>
+												</div>
+												<div class="info mob">
+													<div class="box">
+														<div class="tit">작성자</div>
+														<div class="text"></div>
+													</div>
+													<div class="box">
+														<div class="tit">등록일</div>
+														<div class="text">자유</div>
+													</div>
+												</div>
+											</li>
+											<li class="no3"></li>
+											<li class="no4"></li>
+											<li class="no5">15</li>
+											<li class="no6">2025.01.26</li>
+										</ul>
+										<ul>
+											<li class="no1">1</li>
+											<li class="no2">
+												<div class="titleFile">
+													<div class="title"><a href="/cm/free.php?boardid=free&amp;mode=view&amp;idx=1" class="row ">test</a></div>
+													<div class="mob"></div>
+												</div>
+												<div class="info mob">
+													<div class="box">
+														<div class="tit">작성자</div>
+														<div class="text">관리자</div>
+													</div>
+													<div class="box">
+														<div class="tit">등록일</div>
+														<div class="text">test</div>
+													</div>
+												</div>
+											</li>
+											<li class="no3"></li>
+											<li class="no4">관리자</li>
+											<li class="no5">13</li>
+											<li class="no6">2025.01.26</li>
+										</ul>
+									</div>
 								</div>
 							</div>
 

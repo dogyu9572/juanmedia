@@ -67,19 +67,18 @@
             </div>
             <div class="rightCont">
 				<div class="bigTit">회원탈퇴</div>
-
 				<div class="withdrawal">
 					<div class="tit">회원 비밀번호 확인</div>
 					<p>비밀번호를 한번더 이력해주세요.<br>비밀번호를 입력하시면 회원탈퇴가 완료됩니다.</p>
 					<dl class="inputs">
 						<dt>비밀번호</dt>
-						<dd><input type="text" class="text" placeholder="비밀번호를 입력하세요."></dd>
+                        <dd><input type="password" class="text" id="pw" name="pw" placeholder="비밀번호를 입력하세요."></dd>
 					</dl>
-
 					<div class="btnCenter two mini">
 						<a href="javascript:fncWithdrawal()" class="btnType1 black">확인</a>
 					</div>
 				</div>
+
             </div>
         </div>
     </div>
@@ -91,7 +90,23 @@
 <?php include("../inc/footer.php"); ?>
 </div>
 <!-- //Wrap -->
-
+<script>
+    function fncWithdrawal(){
+        var password = document.getElementById('pw').value;
+        if (confirm("정말 탈퇴하시겠습니까?")) {
+            $.get("/module/member/ajax_member_withdrawal.php", { pw: password }, function(result){
+                if(result == "1"){
+                    alert("정상적으로 탈퇴되었습니다.");
+                    location.href='/';
+                }else{
+                    alert(result);
+                    alert("탈퇴에 실패했습니다. 비빌번호를 확인해 주세요.");
+                    location.reload();
+                }
+            });
+        }
+    }
+</script>
 </body>
 </html>
 
