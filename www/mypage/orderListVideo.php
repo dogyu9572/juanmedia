@@ -160,7 +160,7 @@ $arrBoardList	= getBoardListBaseNFile($arrBoardInfo["list"][0]["boardid"], "", $
                                                 <td><?=$arrBoardList["list"][$i]['app_no']?></td>
                                                 <td><?=getCategoryName($arrBoardList["list"][$i]['category1']);?></td>
                                                 <td><?=$arrBoardList["list"][$i]['subject']?></td>
-                                                <td><?=$arrBoardArticle["list"][0]['screening_date']?></td>
+                                                <td><?=$arrBoardArticle["list"][$i]['screening_date']?></td>
                                                 <td><?=$arrBoardArticle["list"][$i]['start_hour']?>:<?=$arrBoardArticle["list"][$i]['start_minute']?> ~ <?=$arrBoardArticle["list"][$i]['end_hour']?>:<?=$arrBoardArticle["list"][$i]['end_minute']?></td>
                                                 <td><?=date("Y-m-d",strtotime($arrBoardList["list"][$i]['wdate']))?></td>
                                                 <td><?=$arrBoardList["list"][$i]['status'];?></td>                                                    <td>

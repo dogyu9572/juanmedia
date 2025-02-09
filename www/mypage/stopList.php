@@ -1,4 +1,17 @@
 <?php include("../inc/header.php"); ?>
+<?php
+include_once $_SERVER['DOCUMENT_ROOT'] . "/module/member/member.lib.php";
+
+$dblink = SetConn($_conf_db["main_db"]);
+$arrInfo = getUserInfo(mysqli_real_escape_string($GLOBALS['dblink'], $_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]));
+
+$arrLevel = getArticleList ( $_conf_tbl ["member_level"], 0, 0, "order by level_no desc " );
+
+for($i = 0; $i < $arrLevel["total"]; $i ++) {
+    $arrayLevel[$arrLevel["list"][$i]['level_no']] = $arrLevel["list"][$i]['level_name'];
+}
+
+?>
 
 
 		<!-- Container -->
@@ -78,13 +91,12 @@
 						</div>
 
 						<div class="stateMember">
-							홍길동님의 현재 회원 상태는 <strong>정상</strong> 입니다.
+							홍길동님의 현재 회원 상태는 <strong><?=$arrayLevel[$arrInfo['list'][0]['user_level']]?></strong> 입니다.
 						</div>
-
 						<!-- searchForm -->
 						<div class="searchForm one">
 							<div class="count">
-								전체 <span>100건</span>
+								전체 <span><?=number_format($arrInfo["total"])?>건</span>
 							</div>
 						</div>
 						<!-- //searchForm -->
@@ -93,49 +105,51 @@
 							
 							<div class="scroll">
 								<div class="tableType2 stop">
-									<table>
-										<colgroup>
-											<col class="no1" />
-											<col class="no2" />
-											<col class="no3" />
-											<col class="no4" />
-										</colgroup>
-										<thead>
-											<tr>
-												<th>NO.</th>
-												<th>위반내용</th>
-												<th>정지구분</th>
-												<th>등록일</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>123</td>
-												<td class="name"><a href="#;" onclick="contentPop('.stopPop');">텍스트가 표시됩니다. 텍스트가 표시됩니다.</a></td>
-												<td>텍스트가 표시됩니다.</td>
-												<td>2024.08.28</td>
-											</tr>
-											<tr>
-												<td>123</td>
-												<td class="name"><a href="#;" onclick="contentPop('.stopPop');">텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다.</a></td>
-												<td>텍스트가 표시됩니다.</td>
-												<td>2024.08.28</td>
-											</tr>
-											<tr>
-												<td>123</td>
-												<td class="name"><a href="#;" onclick="contentPop('.stopPop');">텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다.</a></td>
-												<td>텍스트가 표시됩니다.</td>
-												<td>2024.08.28</td>
-											</tr>
-											<tr>
-												<td>123</td>
-												<td class="name"><a href="#;" onclick="contentPop('.stopPop');">텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다. 텍스트가 표시됩니다.</a></td>
-												<td>텍스트가 표시됩니다.</td>
-												<td>2024.08.28</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
+                                    <table>
+                                        <colgroup>
+                                            <col class="no1" />
+                                            <col class="no2" />
+                                            <col class="no3" />
+                                            <col class="no4" />
+                                        </colgroup>
+                                        <thead>
+                                        <tr>
+                                            <th>NO.</th>
+                                            <th>위반내용</th>
+                                            <th>정지구분</th>
+                                            <th>등록일</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <?php
+                                        $arrChildViolation = explode("||", $arrInfo["list"][0]['child_violation']);
+                                        $arrChildCategory = explode("||", $arrInfo["list"][0]['child_category']);
+                                        $arrChildViolationWdate = explode("||", $arrInfo["list"][0]['child_violation_wdate']);
+
+                                        if ($arrInfo["list"][0]['child_violation_wdate']) {
+                                            for ($i = 0; $i < count($arrChildViolationWdate); $i++) {
+                                                ?>
+                                                <tr>
+                                                    <td><?= ($i + 1) ?></td>
+<!--                                                    <td class="name"><a href="#;" onclick="contentPop('.stopPop');">--><?php //= $arrChildViolation[$i] ?><!--</a></td>-->
+                                                    <td class="name"><a href="#;"><?= $arrChildViolation[$i] ?></a></td>
+                                                    <td><?= $arrChildCategory[$i] ?></td>
+                                                    <td><?= $arrChildViolationWdate[$i] ?></td>
+                                                </tr>
+                                                <?php
+                                            }
+                                        } else {
+                                            ?>
+                                            <tr>
+                                                <td colspan="4">등록된 내역이 없습니다.</td>
+                                            </tr>
+                                            <?php
+                                        }
+                                        ?>
+                                        </tbody>
+                                    </table>
+
+                                </div>
 							</div>
 
 							<div class="infoPop">
@@ -153,22 +167,30 @@
 
 						</div>
 
-					
-						<!-- pagingWrap -->
-						<div class="pagingWrap">
-							<a href="#;"><img src="/images/ico_paging1.svg" alt="처음"></a>
-							<a href="#;"><img src="/images/ico_paging2.svg" alt="이전"></a>
-							<div class="num">
-								<a href="#;" class="active">1</a>
-								<a href="#;">2</a>
-								<a href="#;">3</a>
-								<a href="#;">4</a>
-								<a href="#;">5</a>
-							</div>
-							<a href="#;"><img src="/images/ico_paging3.svg" alt="다음"></a>
-							<a href="#;"><img src="/images/ico_paging4.svg" alt="마지막"></a>
-						</div>
-						<!-- //pagingWrap -->
+
+                        <!-- btnPagingWrap -->
+                        <div class="btnPagingWrap">
+                            <!-- pagingWrap -->
+                            <div class="pagingWrap">
+                                <?
+                                ############### paging ############### ST
+                                $queryString = explode("&",$_SERVER['QUERY_STRING']);
+                                $reQueryString = "";
+                                $comma = "";
+                                for($i=0;$i<count($queryString);$i++){
+                                    if(strpos($queryString[$i],"offset=")===false){
+                                        $reQueryString .= $comma.$queryString[$i];
+                                        $comma = "&";
+                                    }
+                                }
+                                echo pageNavigationUser($arrInfo["total"],10,10,$_GET['offset'],$reQueryString);
+                                ############### paging ############### ED
+                                ?>
+                            </div>
+                            <!-- //pagingWrap -->
+
+                        </div>
+                        <!-- //btnPagingWrap -->
 
 
 					</div>

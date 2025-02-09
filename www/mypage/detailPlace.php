@@ -161,7 +161,7 @@ $imgsrc = "/uploaded/board/place/".$arrBoardPlaceArticle["files"][0]['re_name'];
 
                 <div class="btnCenter">
                     <a href="orderListPlace.php" class="btnType1 black list">목록</a>
-					<a href="#this" class="btnType1 gray list">수정</a>
+                    <a href="/place/list.php?boardid=place&mode=order&&idx=<?=$arrBoardPlaceArticle["list"][0]["idx"]?>&applicants_idx=<?=$arrBoardArticle["list"][0]["idx"]?>" class="btnType1 gray list">수정</a>
                 </div>
 
             </div>

@@ -9,9 +9,9 @@ include_once $_SERVER['DOCUMENT_ROOT'] . "/module/category/category.lib.php";
 $dblink = SetConn($_conf_db["main_db"]);
 
 $arrBoardInfo = getBoardInfo($_conf_tbl['board_info'], "edu_applicants");
-
 $arrBoardArticle = getBoardArticleView($arrBoardInfo["list"][0]["boardid"], $_GET["category"], $_GET["idx"],"read");
 $arrBoardEduArticle = getBoardArticleView("edu", $_GET["category"], $arrBoardArticle["list"][0]["edu_idx"],"read");
+$arrBoardCertificatesArticle = getBoardArticleView("edu_certificates", $_GET["category"], "","read" , "w_user = '".$arrBoardArticle["list"][0]["w_user"]."' and edu_idx = ".$arrBoardArticle["list"][0]["edu_idx"]);
 $imgsrc = "/uploaded/board/edu/".$arrBoardEduArticle["files"][0]['re_name'];
 
 ?>
@@ -84,7 +84,11 @@ $imgsrc = "/uploaded/board/edu/".$arrBoardEduArticle["files"][0]['re_name'];
 						<div class="bigTit">교육신청 상세</div>
 
 						<div class="myDetail">
-							<div class="detailTit">신청정보 <a href="/mypage/print.php" target="_blank" class="more">수료증 확인</a></div>
+							<div class="detailTit">신청정보
+                                <?php if (!empty($arrBoardCertificatesArticle["list"])): ?>
+                                    <a href="/mypage/print.php?name=<?= urlencode($arrBoardCertificatesArticle["list"][0]['name']) ?>&birthdate=<?= urlencode($arrBoardCertificatesArticle["list"][0]['birthdate']) ?>&subject=<?= urlencode($arrBoardCertificatesArticle["list"][0]['subject']) ?>&wdate=<?= urlencode(date("Y-m-d", strtotime($arrBoardCertificatesArticle["list"][0]['wdate']))) ?>&e_start_date=<?= urlencode($arrBoardCertificatesArticle['list'][0]['e_start_date']) ?>&e_end_date=<?= urlencode($arrBoardCertificatesArticle['list'][0]['e_end_date']) ?>&total_days=<?= urlencode($arrBoardCertificatesArticle['list'][0]['total_days']) ?>&total_hours=<?= urlencode($arrBoardCertificatesArticle['list'][0]['total_hours']) ?>" class="more" target="_blank">수료증 확인</a>
+                            <?php endif; ?>
+                            </div>
 							<div class="detailTable">
 								<div class="line">
 									<div class="th">NO</div>
@@ -169,17 +173,12 @@ $imgsrc = "/uploaded/board/edu/".$arrBoardEduArticle["files"][0]['re_name'];
 									</div>
 								</div>
 							</div>
-
 						</div>
-
 						<div class="btnCenter">
 							<a href="orderList.php" class="btnType1 black list">목록</a>
-							<a href="#this" class="btnType1 gray list">수정</a>
+							<a href="/edu/list.php?boardid=edu&mode=order&&idx=<?=$arrBoardEduArticle["list"][0]["idx"]?>&applicants_idx=<?=$arrBoardArticle["list"][0]["idx"]?>" class="btnType1 gray list">수정</a>
 						</div>
-
-					</div> 
-
-
+					</div>
 				</div>
 			</div>
 			<!-- //subSec -->

@@ -371,7 +371,8 @@ if(isset($_GET["offset"])){
                         $arrBoardArticle = getBoardArticleView($arrBoardInfo["list"][0]["boardid"], "", $arrBoardList["list"][$i]['idx'], "list");
                         for($j=0;$j<$arrBoardArticle["total_files"];$j++){
                             if(substr($arrBoardArticle["files"][$j]['re_name'],0,2) != "l_"){
-                                $fileLinks = '<a href="javascript:void(0);" class="ico_file" onclick="fileDownload(\'' . $arrBoardArticle["files"][$j]['boardid'] . '\', \'' . $arrBoardArticle["files"][$j]['b_idx'] . '\', \'' . $arrBoardArticle["files"][$j]['idx'] . '\');">' . $arrBoardArticle["files"][$j]['ori_name'] . '</a>';
+//                                $fileLinks = '<a href="javascript:void(0);" class="ico_file" onclick="fileDownload(\'' . $arrBoardArticle["files"][$j]['boardid'] . '\', \'' . $arrBoardArticle["files"][$j]['b_idx'] . '\', \'' . $arrBoardArticle["files"][$j]['idx'] . '\');">' . $arrBoardArticle["files"][$j]['ori_name'] . '</a>';
+                                $fileLinks = '<a href="javascript:void(0);" class="ico_file" >' . $arrBoardArticle["files"][$j]['ori_name'] . '</a>';
                             }
                         }
                         ?>

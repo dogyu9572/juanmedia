@@ -42,7 +42,7 @@
             <input type="hidden" name="returnURL" value="/cm/free.php">
             <input type="hidden" name="usehtml" value="Y">
             <input type="hidden" name="evnMode" value="write">
-            <input type="hidden" name="w_user" value="<?=$userNumber?>">
+            <input type="hidden" name="w_user" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]?>">
 			<!-- subSec -->
 			<div class="subSec pt0 last">
 				<div class="inner">
@@ -53,6 +53,14 @@
 					<div class="writeForm">
 						<!-- formBox -->
 						<div class="formBox">
+							<div class="row">
+								<div class="formTit">작성자<span>*</span></div>
+								<div class="right">
+									<div class="baseInput">
+										<input type="text" name="name" id=name>
+									</div>
+								</div>
+							</div>
 							<div class="row">
 								<div class="formTit">제목<span>*</span></div>
 								<div class="right">
@@ -79,6 +87,14 @@
                                             </div>
 											<input type="text" id="fileName" class="fileInputTextbox" readonly="readonly" value="">
 										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="formTit">비밀번호</div>
+								<div class="right">
+									<div class="baseInput">
+										<input type="password" name="pass" id="pass">
 									</div>
 								</div>
 							</div>
@@ -122,9 +138,21 @@
 <script type="text/javascript">
     <!--
     function fnFrmCheck(frm){
+        if (!frm.name.value) {
+            alert('작성자를 입력해 주세요.');
+            frm.name.focus();
+            return;
+        }
+
         if(!frm.subject.value){
             alert('제목을 입력해 주세요.')
             frm.subject.focus();
+            return;
+        }
+
+        if (!frm.pass.value) {
+            alert('비밀번호를 입력해 주세요.');
+            frm.pass.focus();
             return;
         }
 

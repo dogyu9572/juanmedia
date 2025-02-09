@@ -5,22 +5,56 @@ include_once $_SERVER['DOCUMENT_ROOT'] . "/module/board/board.lib.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/module/banner/banner.lib.php";
 
 $dblink = SetConn($_conf_db["main_db"]);
-$arrEduListAll = getBoardListBaseNFile("edu", "", "", "", 4, 0,'', "user");
-$arrEduList1 = getBoardListBaseNFile("edu", "", "", "", 4, 0,'and reception_status="접수중"', "user");
-$arrEduList2 = getBoardListBaseNFile("edu", "", "", "", 4, 0,'and reception_status="대기접수"', "user");
-$arrEduList3 = getBoardListBaseNFile("edu", "", "", "", 4, 0,'and reception_status="교육중"', "user");
-$arrEduList4 = getBoardListBaseNFile("edu", "", "", "", 4, 0,'and reception_status="종료"', "user");
-$arrEquList = getBoardListBaseNFile("equ", "", "", "", 3, 0,'', "user");
-$arrPlaceList = getBoardListBaseNFile("place", "", "", "", 3, 0,'', "user");
-$arrNoticeList = getBoardListBaseNFile("notice", "", "", "", 4, 0,'', "user");
-$arrYoutubeList = getBoardListBaseNFile("youtube", "", "", "", 2, 0,'', "user");
-$arrPCBannerList = getDeviceBannerList(1,"1");
-$arrMOBannerList = getDeviceBannerList(1,"2");
-$arrBottomPCBannerList = getDeviceBannerList(2,"3");
+$arrEduListAll = getBoardListBaseNFile("edu", "", "", "", 4, 0,'', "user"); // 전체 교육 리스트 가져오기
+$arrEduList1 = getBoardListBaseNFile("edu", "", "", "", 4, 0,'and reception_status="접수중"', "user"); // 접수중인 교육 리스트 가져오기
+$arrEduList2 = getBoardListBaseNFile("edu", "", "", "", 4, 0,'and reception_status="대기접수"', "user"); // 대기접수중인 교육 리스트 가져오기
+$arrEduList3 = getBoardListBaseNFile("edu", "", "", "", 4, 0,'and reception_status="교육중"', "user"); // 교육중인 교육 리스트 가져오기
+$arrEduList4 = getBoardListBaseNFile("edu", "", "", "", 4, 0,'and reception_status="종료"', "user"); // 종료된 교육 리스트 가져오기
+$arrEquList = getBoardListBaseNFile("equ", "", "", "", 3, 0,'', "user"); // 장비 대여 리스트 가져오기
+$arrPlaceList = getBoardListBaseNFile("place", "", "", "", 3, 0,'', "user"); // 공간 대관 리스트 가져오기
+$arrNoticeList = getBoardListBaseNFile("notice", "", "", "", 4, 0,'', "user"); // 공지사항 리스트 가져오기
+$arrYoutubeList = getBoardListBaseNFile("youtube", "", "", "", 2, 0,'', "user"); // 유튜브 리스트 가져오기
+$arrPCBannerList = getDeviceBannerList(1,"1"); // PC 배너 리스트 가져오기
+$arrMOBannerList = getDeviceBannerList(1,"2"); // 모바일 배너 리스트 가져오기
+$arrBottomPCBannerList = getDeviceBannerList(2,"3"); // 하단 PC 배너 리스트 가져오기
+$arrBoardHolidayList = getBoardListBaseNFile("holiday", $_GET["category"], $_GET['sw'], $_GET['sk'], $arrBoardInfo["list"][0]["scale"], $_GET['offset'], $_GET['reply']); // 휴관일 리스트 가져오기
+$holidayWeekdays = [];
+$specificHolidayDates = [];
+
+foreach ($arrBoardHolidayList['list'] as $holiday) {
+    // 요일 정보 처리
+    if (!empty($holiday['weekdays'])) {
+        $weekdays = explode('|', $holiday['weekdays']);
+        $holidayWeekdays = array_merge($holidayWeekdays, $weekdays);
+    }
+
+    // 특정 날짜 범위 처리
+    if (!empty($holiday['holly_start_date']) && !empty($holiday['holly_end_date'])) {
+        $startDate = strtotime($holiday['holly_start_date']);
+        $endDate = strtotime($holiday['holly_end_date']);
+
+        for ($date = $startDate; $date <= $endDate; $date = strtotime('+1 day', $date)) {
+            $specificHolidayDates[] = date('Y-m-d', $date);
+        }
+    }
+}
+
+// 중복 제거
+$holidayWeekdays = array_unique($holidayWeekdays);
+$specificHolidayDates = array_unique($specificHolidayDates);
+
+// JavaScript 배열로 변환
+$holidayWeekdaysJson = json_encode($holidayWeekdays);
+$specificHolidayDatesJson = json_encode($specificHolidayDates);
 
 //DB해제
 SetDisConn($dblink);
 ?>
+<script>
+    const holidayWeekdaysJson = <?= json_encode($holidayWeekdays) ?>;
+    const specificHolidayDatesJson = <?= json_encode($specificHolidayDates) ?>;
+</script>
+<script src="/js/calendar.js"></script>
 <!-- Container -->
 <div class="container" id="container">
     <!-- mainSec -->
@@ -82,16 +116,11 @@ SetDisConn($dblink);
         <!-- mainIcon -->
         <div class="mainIcon">
             <ul>
-                <li><a href="/edu/list.php"> <span class="img"><img src="/images/ico_main01.svg"
-                                                                              alt="교육신청"></span> <span class="tit">교육신청</span> </a></li>
-                <li><a href="/equ/list.php"> <span class="img"><img src="/images/ico_main02.svg" alt="장비대여"></span>
-                        <span class="tit">장비대여</span> </a></li>
-                <li><a href="/place/list.php"> <span class="img"><img src="/images/ico_main03.svg" alt="공간대관"></span>
-                        <span class="tit">공간대관</span> </a></li>
-                <li><a href="/media/order.php"> <span class="img"><img src="/images/ico_main04.svg" alt="체험신청"></span>
-                        <span class="tit">체험신청</span> </a></li>
-                <li><a href="/mypage/orderList.php"> <span class="img"><img src="/images/ico_main05.svg"
-                                                                            alt="신청확인"></span> <span class="tit">신청확인</span> </a></li>
+                <li><a href="/edu/list.php"> <span class="img"><img src="/images/ico_main01.svg" alt="교육신청"></span> <span class="tit">교육신청</span> </a></li>
+                <li><a href="/equ/list.php"> <span class="img"><img src="/images/ico_main02.svg" alt="장비대여"></span> <span class="tit">장비대여</span> </a></li>
+                <li><a href="/place/list.php"> <span class="img"><img src="/images/ico_main03.svg" alt="공간대관"></span> <span class="tit">공간대관</span> </a></li>
+                <li><a href="/media/order.php"> <span class="img"><img src="/images/ico_main04.svg" alt="체험신청"></span> <span class="tit">체험신청</span> </a></li>
+                <li><a href="/mypage/orderList.php"> <span class="img"><img src="/images/ico_main05.svg" alt="신청확인"></span> <span class="tit">신청확인</span> </a></li>
             </ul>
         </div> <!-- //mainIcon -->
         <!-- mainMedia -->
@@ -254,62 +283,62 @@ SetDisConn($dblink);
                     </div>
                     <table class="tableCal">
                         <thead>
-                        <tr>
-                            <th>일</th>
-                            <th>월</th>
-                            <th>화</th>
-                            <th>수</th>
-                            <th>목</th>
-                            <th>금</th>
-                            <th>토</th>
-                        </tr>
+							<tr>
+								<th>일</th>
+								<th>월</th>
+								<th>화</th>
+								<th>수</th>
+								<th>목</th>
+								<th>금</th>
+								<th>토</th>
+							</tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td class="holiday"><span>1</span></td>
-                            <td class="holiday"><span>2</span></td>
-                            <td><span>3</span></td>
-                            <td><span>4</span></td>
-                            <td class="today"><span>5</span></td>
-                            <td><span>6</span></td>
-                            <td><span>7</span></td>
-                        </tr>
-                        <tr>
-                            <td class="holiday"><span>8</span></td>
-                            <td class="holiday"><span>9</span></td>
-                            <td><span>10</span></td>
-                            <td><span>11</span></td>
-                            <td><span>12</span></td>
-                            <td><span>13</span></td>
-                            <td><span>14</span></td>
-                        </tr>
-                        <tr>
-                            <td class="holiday"><span>15</span></td>
-                            <td class="holiday"><span>16</span></td>
-                            <td><span>17</span></td>
-                            <td><span>18</span></td>
-                            <td><span>19</span></td>
-                            <td><span>20</span></td>
-                            <td><span>21</span></td>
-                        </tr>
-                        <tr>
-                            <td class="holiday"><span>22</span></td>
-                            <td class="holiday"><span>23</span></td>
-                            <td><span>24</span></td>
-                            <td><span>25</span></td>
-                            <td><span>26</span></td>
-                            <td><span>27</span></td>
-                            <td><span>28</span></td>
-                        </tr>
-                        <tr>
-                            <td class="holiday"><span>29</span></td>
-                            <td class="holiday"><span>30</span></td>
-                            <td><span>31</span></td>
-                            <td><span>1</span></td>
-                            <td><span>2</span></td>
-                            <td><span>3</span></td>
-                            <td><span>4</span></td>
-                        </tr>
+							<tr>
+								<td class="holiday"><span>1</span></td>
+								<td class="holiday"><span>2</span></td>
+								<td><span>3</span></td>
+								<td><span>4</span></td>
+								<td class="today"><span>5</span></td>
+								<td><span>6</span></td>
+								<td><span>7</span></td>
+							</tr>
+							<tr>
+								<td class="holiday"><span>8</span></td>
+								<td class="holiday"><span>9</span></td>
+								<td><span>10</span></td>
+								<td><span>11</span></td>
+								<td><span>12</span></td>
+								<td><span>13</span></td>
+								<td><span>14</span></td>
+							</tr>
+							<tr>
+								<td class="holiday"><span>15</span></td>
+								<td class="holiday"><span>16</span></td>
+								<td><span>17</span></td>
+								<td><span>18</span></td>
+								<td><span>19</span></td>
+								<td><span>20</span></td>
+								<td><span>21</span></td>
+							</tr>
+							<tr>
+								<td class="holiday"><span>22</span></td>
+								<td class="holiday"><span>23</span></td>
+								<td><span>24</span></td>
+								<td><span>25</span></td>
+								<td><span>26</span></td>
+								<td><span>27</span></td>
+								<td><span>28</span></td>
+							</tr>
+							<tr>
+								<td class="holiday"><span>29</span></td>
+								<td class="holiday"><span>30</span></td>
+								<td><span>31</span></td>
+								<td><span>1</span></td>
+								<td><span>2</span></td>
+								<td><span>3</span></td>
+								<td><span>4</span></td>
+							</tr>
                         </tbody>
                     </table>
                 </div>
@@ -320,7 +349,7 @@ SetDisConn($dblink);
             <!-- mainNotice -->
             <div class="mainNotice">
                 <div class="mainTit">
-                    <div class="tit">공지사항</div>
+                    <div class="tit">공지&뉴스</div>
                     <a href="/cm/notice.php" class="btnMore">More</a>
                 </div>
                 <div class="noticeList">
@@ -336,7 +365,6 @@ SetDisConn($dblink);
             <div class="mainYoutube">
                 <div class="mainTit">
                     <div class="tit">주영미 유튜브</div>
-                    <a href="#;" class="btnMore">More</a>
                 </div>
                 <div class="youtubeList">
                     <ul>
@@ -434,7 +462,6 @@ SetDisConn($dblink);
         </div> <!-- //snsIntro --->
     </div> <!-- //mainSec -->
 </div> <!-- //Container -->
-<script src="/js/calendar.js"></script>
 <?php
 include_once $_SERVER["DOCUMENT_ROOT"]."/module/popup/popup.inc.php";
 ?>

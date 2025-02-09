@@ -16,7 +16,6 @@ $dblink = SetConn($_conf_db["main_db"]);
 
 $arrInfo = getUserInfo(mysqli_real_escape_string($GLOBALS['dblink'], $_REQUEST["user_id"]));
 
-echo "echo:"; print_r($arrInfo); echo "<br>" ;
 $arrLevel = getArticleList($_conf_tbl["member_level"], $scale, $_REQUEST['offset'], "order by level_no desc ");
 for($i = 0; $i < $arrLevel["total"]; $i ++) {
 	$arrayLevel[$arrLevel["list"][$i]['level_no']] = $arrLevel["list"][$i]['level_name'];

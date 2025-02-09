@@ -370,8 +370,12 @@ if(isset($_GET["offset"])){
                         $arrBoardArticle = getBoardArticleView($arrBoardInfo["list"][0]["boardid"], "", $arrBoardList["list"][$i]['idx'], "list");
 
                         $fileLinks = '';
-                        if ($arrBoardArticle["files"][$i]['re_name'] && substr($arrBoardArticle["files"][$i]['re_name'], 0, 2) != "l_" && substr($arrBoardArticle["files"][$i]['re_name'], 0, 2) != "v_") {
-                            $fileLinks = '<a href="javascript:void(0);" class="ico_file" onclick="fileDownload(\'' . $arrBoardArticle["files"][$i]['boardid'] . '\', \'' . $arrBoardArticle["files"][$i]['b_idx'] . '\', \'' . $arrBoardArticle["files"][$i]['idx'] . '\');">' . $arrBoardArticle["files"][$i]['ori_name'] . '</a>';
+                        $arrBoardArticle = getBoardArticleView($arrBoardInfo["list"][0]["boardid"], "", $arrBoardList["list"][$i]['idx'], "list");
+                        for($j=0;$j<$arrBoardArticle["total_files"];$j++){
+                            if(substr($arrBoardArticle["files"][$j]['re_name'],0,2) != "l_"){
+//                                $fileLinks = '<a href="javascript:void(0);" class="ico_file" onclick="fileDownload(\'' . $arrBoardArticle["files"][$j]['boardid'] . '\', \'' . $arrBoardArticle["files"][$j]['b_idx'] . '\', \'' . $arrBoardArticle["files"][$j]['idx'] . '\');">' . $arrBoardArticle["files"][$j]['ori_name'] . '</a>';
+                                $fileLinks = '<a href="javascript:void(0);" class="ico_file" >' . $arrBoardArticle["files"][$j]['ori_name'] . '</a>';
+                            }
                         }
                         ?>
                     <ul>
@@ -380,8 +384,8 @@ if(isset($_GET["offset"])){
                         </li>
                         <li class="no2">
                             <div class="titleFile">
-                                <div class="title"><a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=view&idx=<?=$arrBoardList["list"][$i]['idx']?>" class="row <?=$addClass?>"><?=$arrBoardList["list"][$i]['subject']?></a></div>
-								<!-- <div class="title"><a href="javascript:void(0);" onclick="contentPop('.pop_password');" class="btn_lock row <?=$addClass?>"><?=$arrBoardList["list"][$i]['subject']?></a></div> -->
+<!--                                <div class="title"><a href="--><?php //=$_SERVER["PHP_SELF"]?><!--?boardid=--><?php //=$arrBoardInfo["list"][0]["boardid"]?><!--&mode=view&idx=--><?php //=$arrBoardList["list"][$i]['idx']?><!--" class="row --><?php //=$addClass?><!--">--><?php //=$arrBoardList["list"][$i]['subject']?><!--</a></div>-->
+								 <div class="title"><a href="javascript:void(0);" onclick="contentPop('.pop_password');" class="btn_lock row <?=$addClass?>" data-idx="<?=$arrBoardList["list"][$i]['idx']?>"><?=$arrBoardList["list"][$i]['subject']?></a></div>
                                 <div class="mob">
                                     <?=$fileLinks?>
                                 </div>
@@ -449,23 +453,58 @@ if(isset($_GET["offset"])){
     </div>
     <!-- //subSec -->
 
-	<div class="contentPop paymentPop pop_password">
-		<div class="bg"></div>
-		<div class="popIn">
-			<div class="content">
-				<div class="popTit">비밀번호 입력</div>
-				<div class="cancelBox">
-					<dl>
-						<dt>비밀번호</dt>
-						<dd><input type="password"></dd>
-				</div>
-				<div class="btnCenter">
-					<a href="javascript:void(0);" class="btnType1 black list" onclick="">확인</a>
-				</div>
-				<div class="closePop">
-					<a href="javascript:void(0);" onclick="contentClose()">팝업닫기</a>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="contentPop paymentPop pop_password" style="display:none;">
+        <div class="bg"></div>
+        <div class="popIn">
+            <div class="content">
+                <div class="popTit">비밀번호 입력</div>
+                <div class="cancelBox">
+                    <dl>
+                        <dt>비밀번호</dt>
+                        <dd><input type="password" name="password"></dd>
+                    </dl>
+                </div>
+                <div class="btnCenter">
+                    <a href="javascript:void(0);" class="btnType1 black list" onclick="validatePassword()">확인</a>
+                </div>
+                <div class="closePop">
+                    <a href="javascript:void(0);" onclick="$('.pop_password').hide()">팝업닫기</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.btn_lock').click(function() {
+                var idx = $(this).data('idx');
+                console.log(idx); // Check if idx is correctly retrieved
+                $('.pop_password').data('idx', idx).show();
+            });
+        });
+
+        function validatePassword() {
+            var password = $('input[name="password"]').val();
+            var idx = $('.pop_password').data('idx');
+            var boardid = '<?=$arrBoardInfo["list"][0]["boardid"]?>';
+
+            $.ajax({
+                type: 'POST',
+                url: '/module/board/ajax_board_password.php',
+                data: { password: password, idx: idx, boardid: boardid },
+                success: function(response) {
+                    if (response.trim() === "true") {
+                        window.location.href = '<?=$_SERVER["PHP_SELF"]?>?boardid=' + boardid + '&mode=view&idx=' + idx;
+                    } else {
+                        alert('비밀번호가 틀렸습니다.');
+                        $('.pop_password').hide();
+                        $('input[name="password"]').val('');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error: ' + status + error);
+                }
+            });
+        }
+    </script>
 <?}?>

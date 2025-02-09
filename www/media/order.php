@@ -1,12 +1,47 @@
 <?php include("../inc/header.php"); ?>
-<?php $gNum = "04"; $sNum = "02"; $gName = "미디어체험"; $sName = "체험신청";
-echo "echo:"; print_r($arrSetInfo["list"][0]["tv_broadcasting"]); echo "<br>" ;
-echo "echo:"; print_r($arrSetInfo["list"][0]["radio_broadcasting"]); echo "<br>" ;
-echo "echo:"; print_r($arrSetInfo["list"][0]["weather_forecaster"]); echo "<br>" ;
-echo "echo:"; print_r($arrSetInfo["list"][0]["drone"]); echo "<br>" ;
-echo "echo:"; print_r($arrSetInfo["list"][0]["vr"]); echo "<br>" ;
-?>
+<?php $gNum = "04"; $sNum = "02"; $gName = "미디어체험"; $sName = "체험신청";?>
+<?php
+    include_once $_SERVER['DOCUMENT_ROOT'] . "/module/board/board.lib.php";
+    $dblink = SetConn($_conf_db["main_db"]);
 
+    $arrBoardHolidayList = getBoardListBaseNFile("holiday", $_GET["category"], $_GET['sw'], $_GET['sk'], $arrBoardInfo["list"][0]["scale"], $_GET['offset'], $_GET['reply']); // 휴관일 리스트 가져오기
+    $holidayWeekdays = [];
+    $specificHolidayDates = [];
+
+    foreach ($arrBoardHolidayList['list'] as $holiday) {
+        // 요일 정보 처리
+        if (!empty($holiday['weekdays'])) {
+            $weekdays = explode('|', $holiday['weekdays']);
+            $holidayWeekdays = array_merge($holidayWeekdays, $weekdays);
+        }
+
+        // 특정 날짜 범위 처리
+        if (!empty($holiday['holly_start_date']) && !empty($holiday['holly_end_date'])) {
+            $startDate = strtotime($holiday['holly_start_date']);
+            $endDate = strtotime($holiday['holly_end_date']);
+
+            for ($date = $startDate; $date <= $endDate; $date = strtotime('+1 day', $date)) {
+                $specificHolidayDates[] = date('Y-m-d', $date);
+            }
+        }
+    }
+
+    // 중복 제거
+    $holidayWeekdays = array_unique($holidayWeekdays);
+    $specificHolidayDates = array_unique($specificHolidayDates);
+
+    // JavaScript 배열로 변환
+    $holidayWeekdaysJson = json_encode($holidayWeekdays);
+    $specificHolidayDatesJson = json_encode($specificHolidayDates);
+
+    //DB해제
+    SetDisConn($dblink);
+?>
+<script>
+    const holidayWeekdaysJson = <?= json_encode($holidayWeekdays) ?>;
+    const specificHolidayDatesJson = <?= json_encode($specificHolidayDates) ?>;
+</script>
+<script src="/js/calendar_sub.js"></script>
 <!-- Container -->
 <div class="container sub" id="container">
 
@@ -509,144 +544,6 @@ echo "echo:"; print_r($arrSetInfo["list"][0]["vr"]); echo "<br>" ;
 </div>
 <!-- //Wrap -->
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // 달력 관련 상수 및 변수 설정
-        const currentDate = new Date();
-        let selectedYear = currentDate.getFullYear();
-        let selectedMonth = currentDate.getMonth();
-
-        // DOM 요소 선택
-        const calendarTitle = document.querySelector(".year .num");
-        const prevButton = document.querySelector(".year a:first-child");
-        const nextButton = document.querySelector(".year a:last-child");
-        const calendarContainer = document.querySelector(".contScroll ul");
-
-        // 날짜 포맷팅 헬퍼 함수
-        const formatMonth = (month) => String(month + 1).padStart(2, '0');
-
-        // 달력 설정 객체
-        const calendarConfig = {
-            // 예약 가능한 날짜 설정 (매월 반복)
-            availableDays: [],
-
-            // 예약 불가능한 날짜 설정 (매월 반복)
-            unavailableDays: [],
-
-            // 특정 날짜 예약 상태 설정 (연/월/일 específico)
-            specificDates: {
-                // 'YYYY-MM-DD': 'available' | 'unavailable'
-                '2024-10-20': 'unavailable',
-                '2025-02-12': 'available'
-            },
-
-            // 요일별 예약 상태 설정 (0: 일요일, 6: 토요일)
-            weekdaySettings: {
-                0: 'unavailable', // 일요일
-                1: 'unavailable', // 월요일
-                //6: 'available'    // 토요일
-            }
-        };
-
-        // 날짜의 예약 가능 여부 확인
-        function checkDateAvailability(date) {
-            const year = date.getFullYear();
-            const month = date.getMonth() + 1;
-            const day = date.getDate();
-            const weekday = date.getDay();
-
-            // 특정 날짜 체크
-            const specificDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-            if (calendarConfig.specificDates[specificDate]) {
-                return calendarConfig.specificDates[specificDate] === 'available' ? 'able' : 'disable';
-            }
-
-            // 요일별 설정 체크
-            if (calendarConfig.weekdaySettings[weekday]) {
-                return calendarConfig.weekdaySettings[weekday] === 'available' ? 'able' : 'disable';
-            }
-
-            // 매월 반복되는 날짜 체크
-            if (calendarConfig.availableDays.includes(day)) return 'able';
-            if (calendarConfig.unavailableDays.includes(day)) return 'disable';
-
-            return ''; // 기본 상태 (특별한 스타일 없음)
-        }
-
-        // 달력 렌더링 함수
-        function renderCalendar(year, month) {
-            // 타이틀 업데이트
-            calendarTitle.textContent = `${year}.${formatMonth(month)}`;
-            calendarContainer.innerHTML = '';
-
-            // 해당 월의 첫날과 마지막 날 구하기
-            const firstDate = new Date(year, month, 1);
-            const lastDate = new Date(year, month + 1, 0);
-
-            // 달력 생성
-            for (let date = 1; date <= lastDate.getDate(); date++) {
-                const currentDate = new Date(year, month, date);
-                const dayOfWeek = currentDate.getDay();
-                const weekLabel = ['일', '월', '화', '수', '목', '금', '토'][dayOfWeek];
-
-                // 날짜 요소 생성
-                const li = document.createElement('li');
-                const a = document.createElement('a');
-                // a.href = '#';
-
-                // 예약 가능 여부 클래스 추가
-                const availabilityClass = checkDateAvailability(currentDate);
-                if (availabilityClass) {
-                    a.classList.add(availabilityClass);
-                }
-
-                // 날짜 정보 추가
-                a.innerHTML = `
-                <span class="week">${weekLabel}</span>
-                <span class="day">${date}</span>
-            `;
-
-                // 클릭 이벤트 추가
-                a.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    if (a.classList.contains('able')) {
-                        const selectedDate = `${year}-${formatMonth(month)}-${String(date).padStart(2, '0')}`;
-                        // 날짜 선택 시 처리 (예: 폼에 날짜 입력)
-                        document.querySelector('#st1').value = selectedDate;
-                    }
-                });
-
-                li.appendChild(a);
-                calendarContainer.appendChild(li);
-            }
-        }
-
-        // 이전 달 이동
-        prevButton.addEventListener("click", function(e) {
-            e.preventDefault();
-            if (selectedMonth === 0) {
-                selectedYear--;
-                selectedMonth = 11;
-            } else {
-                selectedMonth--;
-            }
-            renderCalendar(selectedYear, selectedMonth);
-        });
-
-        // 다음 달 이동
-        nextButton.addEventListener("click", function(e) {
-            e.preventDefault();
-            if (selectedMonth === 11) {
-                selectedYear++;
-                selectedMonth = 0;
-            } else {
-                selectedMonth++;
-            }
-            renderCalendar(selectedYear, selectedMonth);
-        });
-
-        // 초기 달력 렌더링
-        renderCalendar(selectedYear, selectedMonth);
-    });
 
     function toggleReferralOther(checkbox) {
         var referralOther = document.getElementById('referral_other');
@@ -668,12 +565,12 @@ echo "echo:"; print_r($arrSetInfo["list"][0]["vr"]); echo "<br>" ;
             return false;
         }
 
-        const email = document.querySelector('[name="email"]');
+      /*  const email = document.querySelector('[name="email"]');
         if (!email.value) {
             alert('이메일을 입력하지 않았습니다.');
             email.focus();
             return false;
-        }
+        }*/
 
         const totalMembers = document.querySelector('[name="total_members"]');
         if (!totalMembers.value) {
@@ -736,7 +633,14 @@ echo "echo:"; print_r($arrSetInfo["list"][0]["vr"]); echo "<br>" ;
     }
 
     function checkMembers() {
-        const totalMembers = parseInt(document.getElementById('total_members').value, 10) || 0;
+        const totalMembersInput = document.getElementById('total_members');
+        const totalMembers = parseInt(totalMembersInput.value, 10) || 0;
+
+        if (totalMembers > 30) {
+            alert('최대 인원은 30명 입니다.');
+            totalMembersInput.value = 0;
+        }
+
         const tvBroadcasting = <?= $arrSetInfo["list"][0]["tv_broadcasting"] ?>;
         const radioBroadcasting = <?= $arrSetInfo["list"][0]["radio_broadcasting"] ?>;
         const weatherForecaster = <?= $arrSetInfo["list"][0]["weather_forecaster"] ?>;
@@ -749,7 +653,7 @@ echo "echo:"; print_r($arrSetInfo["list"][0]["vr"]); echo "<br>" ;
         document.getElementById('exp2').disabled = totalMembers < radioBroadcasting;
         document.getElementById('exp3').disabled = totalMembers < weatherForecaster;
         document.getElementById('exp4').disabled = totalMembers < drone;
-        document.getElementById('exp5').disabled = totalMembers < vr;
+        document.getElementById('exp5').disabled = totalMembers < 8 || totalMembers > 9;
 
         const allowedChecks = Math.floor(totalMembers / totalRequired * 5);
 

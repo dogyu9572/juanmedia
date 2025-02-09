@@ -156,6 +156,7 @@ $imgsrc = "/uploaded/board/video/".$arrBoardvideoArticle["files"][0]['re_name'];
 
                 <div class="btnCenter">
                     <a href="orderListVideo.php" class="btnType1 black list">목록</a>
+                    <a href="/media/list.php?boardid=video&mode=order&&idx=<?=$arrBoardvideoArticle["list"][0]["idx"]?>&applicants_idx=<?=$arrBoardArticle["list"][0]["idx"]?>" class="btnType1 gray list">수정</a>
                 </div>
 
             </div>

@@ -392,6 +392,7 @@ function joinMember(){
 			job = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['job'])."',
 			duty = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['duty'])."',
 			join_type = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['join_type'])."',
+			gender = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['gender'])."',
 			phone = '".$phone."',
 			mobile = '".$mobile."',
 			login_last = now(),
@@ -539,6 +540,7 @@ function joinSocialMember(){
 			job = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['job'])."',
 			duty = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['duty'])."',
 			join_type = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['join_type'])."',
+			gender = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['gender'])."',
 			phone = '".$phone."',
 			mobile = '".$mobile."',
 			login_last = now(),
@@ -1012,6 +1014,7 @@ function editMember($id){
 		address = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['address'])."',
 		address_ext = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['address_ext'])."',
 		etc_1 = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['etc_1'])."',
+		gender = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['gender'])."',
 		udate = now()
 		WHERE user_id='$id'
 	";
@@ -1225,6 +1228,7 @@ function editMemberAdmin_($id){
 		etc_8 = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['etc_8'])."',
 		etc_9 = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['etc_9'])."',
 		etc_10 = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['etc_10'])."',
+		gender = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['gender'])."',
 		udate = now()
 		WHERE user_id='$id'
 	";

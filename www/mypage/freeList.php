@@ -1,5 +1,10 @@
 <?php include("../inc/header.php"); ?>
+<?php
+include_once $_SERVER['DOCUMENT_ROOT'] . "/module/board/board.lib.php";
+$dblink = SetConn($_conf_db["main_db"]);
+$arrBoardList	= getBoardListBaseNFile("free", "", $_GET['sw'], $_GET['sk'], $arrBoardInfo["list"][0]["scale"], $_GET['offset'] , "and A.w_user = '" . $_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"] . "'");
 
+?>
 
 		<!-- Container -->
 		<div class="container sub" id="container">
@@ -77,14 +82,14 @@
 							</div>
 						</div>
 
-						<div class="stateMember">
+					<!--	<div class="stateMember">
 							홍길동님의 현재 회원 상태는 <strong>정상</strong> 입니다.
-						</div>
+						</div>-->
 
 						<!-- searchForm -->
 						<div class="searchForm one">
 							<div class="count">
-								전체 <span>100건</span>
+								전체 <span><?=number_format($arrBoardList["total"])?>건</span>
 							</div>
 						</div>
 						<!-- //searchForm -->
@@ -101,141 +106,158 @@
 										<li class="no5">조회수</li>
 										<li class="no6">등록일</li>
 									</ul>
-									<div class="tbody">
-										<ul>
-											<li class="no1">4</li>
-											<li class="no2">
-												<div class="titleFile">
-													<div class="title"><a href="/cm/free.php?boardid=free&amp;mode=view&amp;idx=4" class="row ">첨부파일 첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일</a></div>
-													<div class="mob"><a href="javascript:void(0);" class="ico_file" onclick="fileDownload('free', '4', '6152');">[양식] 교육이수증(2025) (1).hwpx</a></div>
-												</div>
-												<div class="info mob">
-													<div class="box">
-														<div class="tit">작성자</div>
-														<div class="text"></div>
-													</div>
-													<div class="box">
-														<div class="tit">등록일</div>
-														<div class="text">첨부파일 첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일첨부파일</div>
-													</div>
-												</div>
-											</li>
-											<li class="no3">
-												<a href="javascript:void(0);" class="ico_file" onclick="fileDownload('free', '4', '6152');">[양식] 교육이수증(2025) (1).hwpx</a></li>
-											<li class="no4"></li>
-											<li class="no5">3</li>
-											<li class="no6">2025.02.05</li>
-										</ul>
-										<ul>
-											<li class="no1">3</li>
-											<li class="no2">
-												<div class="titleFile">
-													<div class="title"><a href="/cm/free.php?boardid=free&amp;mode=view&amp;idx=3" class="row ">제목 테스트 제목 테스트 제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트</a></div>
-													<div class="mob"></div>
-												</div>
-												<div class="info mob">
-													<div class="box">
-														<div class="tit">작성자</div>
-														<div class="text"></div>
-													</div>
-													<div class="box">
-														<div class="tit">등록일</div>
-														<div class="text">제목 테스트 제목 테스트 제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트제목 테스트 제목 테스트</div>
-													</div>
-												</div>
-											</li>
-											<li class="no3"></li>
-											<li class="no4"></li>
-											<li class="no5">5</li>
-											<li class="no6">2025.02.05</li>
-										</ul>
-										<ul>
-											<li class="no1">2</li>
-											<li class="no2">
-												<div class="titleFile">
-													<div class="title"><a href="/cm/free.php?boardid=free&amp;mode=view&amp;idx=2" class="row ">자유</a></div>
-													<div class="mob"></div>
-												</div>
-												<div class="info mob">
-													<div class="box">
-														<div class="tit">작성자</div>
-														<div class="text"></div>
-													</div>
-													<div class="box">
-														<div class="tit">등록일</div>
-														<div class="text">자유</div>
-													</div>
-												</div>
-											</li>
-											<li class="no3"></li>
-											<li class="no4"></li>
-											<li class="no5">15</li>
-											<li class="no6">2025.01.26</li>
-										</ul>
-										<ul>
-											<li class="no1">1</li>
-											<li class="no2">
-												<div class="titleFile">
-													<div class="title"><a href="/cm/free.php?boardid=free&amp;mode=view&amp;idx=1" class="row ">test</a></div>
-													<div class="mob"></div>
-												</div>
-												<div class="info mob">
-													<div class="box">
-														<div class="tit">작성자</div>
-														<div class="text">관리자</div>
-													</div>
-													<div class="box">
-														<div class="tit">등록일</div>
-														<div class="text">test</div>
-													</div>
-												</div>
-											</li>
-											<li class="no3"></li>
-											<li class="no4">관리자</li>
-											<li class="no5">13</li>
-											<li class="no6">2025.01.26</li>
-										</ul>
-									</div>
-								</div>
-							</div>
+                                    <div class="tbody">
+                                        <?
+                                        if($arrBoardList["list"]["total"] > 0){
+                                            for($i=0; $i < $arrBoardList["list"]["total"]; $i++){
+                                                //순번 & 공지 & 신규표시
+                                                $listNum = $arrBoardList["total"]-$i-$offset;
+                                                //공지
+                                                if($arrBoardList["list"][$i]['no']=="0"){
+                                                    $categoryTitle = 'class="notice"';
+                                                    $listNum = '<span class="tag noti">공지</span>';
+                                                }
 
-							<div class="infoPop">
-								<div class="in">
-									<div>
-										<div class="ico">
-											<span class="arrow prev"><img src="/images/ico_hand1.svg" alt="좌"></span>
-											<span class="hand"><img src="/images/ico_hand.svg" alt="손"></span>
-											<span class="arrow next"><img src="/images/ico_hand2.svg" alt="우"></span>
-										</div>
-										<p>좌우로 스크롤 하셔서<br />내용을 확인해주세요.</p>
-									</div>
-								</div>
-							</div>
+                                                $arrBoardArticle = getBoardArticleView($arrBoardInfo["list"][0]["boardid"], "", $arrBoardList["list"][$i]['idx'], "list");
 
-						</div>
+                                                $fileLinks = '';
+                                                $arrBoardArticle = getBoardArticleView($arrBoardInfo["list"][0]["boardid"], "", $arrBoardList["list"][$i]['idx'], "list");
+                                                for($j=0;$j<$arrBoardArticle["total_files"];$j++){
+                                                    if(substr($arrBoardArticle["files"][$j]['re_name'],0,2) != "l_"){
+//                                $fileLinks = '<a href="javascript:void(0);" class="ico_file" onclick="fileDownload(\'' . $arrBoardArticle["files"][$j]['boardid'] . '\', \'' . $arrBoardArticle["files"][$j]['b_idx'] . '\', \'' . $arrBoardArticle["files"][$j]['idx'] . '\');">' . $arrBoardArticle["files"][$j]['ori_name'] . '</a>';
+                                                        $fileLinks = '<a href="javascript:void(0);" class="ico_file" >' . $arrBoardArticle["files"][$j]['ori_name'] . '</a>';
+                                                    }
+                                                }
+                                                ?>
+                                                <ul>
+                                                    <li class="no1">
+                                                        <?=$listNum?>
+                                                    </li>
+                                                    <li class="no2">
+                                                        <div class="titleFile">
+                                                            <div class="title"><a href="/cm/free.php?boardid=free&mode=view&idx=<?=$arrBoardList["list"][$i]['idx']?>" class="row <?=$addClass?>"><?=$arrBoardList["list"][$i]['subject']?></a></div>
+<!--                                                            <div class="title"><a href="javascript:void(0);" onclick="contentPop('.pop_password');" class="btn_lock row --><?php //=$addClass?><!--" data-idx="--><?php //=$arrBoardList["list"][$i]['idx']?><!--">--><?php //=$arrBoardList["list"][$i]['subject']?><!--</a></div>-->
+                                                            <div class="mob">
+                                                                <?=$fileLinks?>
+                                                            </div>
+                                                        </div>
+                                                        <div class="info mob">
+                                                            <div class="box">
+                                                                <div class="tit">작성자</div>
+                                                                <div class="text"><?=$arrBoardList["list"][$i]['name']?></div>
+                                                            </div>
+                                                            <div class="box">
+                                                                <div class="tit">등록일</div>
+                                                                <div class="text"><?=$arrBoardList["list"][$i]['subject']?></div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    <li class="no3">
+                                                        <?=$fileLinks?>
+                                                    </li>
+                                                    <li class="no4">
+                                                        <?=$arrBoardList["list"][$i]['name']?>
+                                                    </li>
+                                                    <li class="no5">
+                                                        <?=$arrBoardList["list"][$i]['hit']?>
+                                                    </li>
+                                                    <li class="no6">
+                                                        <?=date('Y.m.d', strtotime($arrBoardList["list"][$i]['wdate']))?>
+                                                    </li>
+                                                </ul>
+                                                <?
+                                            }
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                                <!-- //noticeTable -->
 
-					
-						<!-- pagingWrap -->
-						<div class="pagingWrap">
-							<a href="#;"><img src="/images/ico_paging1.svg" alt="처음"></a>
-							<a href="#;"><img src="/images/ico_paging2.svg" alt="이전"></a>
-							<div class="num">
-								<a href="#;" class="active">1</a>
-								<a href="#;">2</a>
-								<a href="#;">3</a>
-								<a href="#;">4</a>
-								<a href="#;">5</a>
-							</div>
-							<a href="#;"><img src="/images/ico_paging3.svg" alt="다음"></a>
-							<a href="#;"><img src="/images/ico_paging4.svg" alt="마지막"></a>
-						</div>
-						<!-- //pagingWrap -->
+                                <!-- btnPagingWrap -->
+                                <div class="btnPagingWrap">
+                                    <!-- pagingWrap -->
+                                    <div class="pagingWrap">
+                                        <?
+                                        ############### paging ############### ST
+                                        $queryString = explode("&",$_SERVER['QUERY_STRING']);
+                                        $reQueryString = "";
+                                        $comma = "";
+                                        for($i=0;$i<count($queryString);$i++){
+                                            if(strpos($queryString[$i],"offset=")===false){
+                                                $reQueryString .= $comma.$queryString[$i];
+                                                $comma = "&";
+                                            }
+                                        }
+                                        echo pageNavigationUser($arrBoardList["total"],10,10,$_GET['offset'],$reQueryString);
+                                        ############### paging ############### ED
+                                        ?>
+                                    </div>
+                                    <!-- //pagingWrap -->
 
+                                    <!--<div class="btn">
+                                        <a href="write.php" class="btnWrite"><span>글쓰기</span></a>
+                                    </div>-->
+                                </div>
+                                <!-- //btnPagingWrap -->
 
-					</div>
+                            </div>
+                        </div>
+                        <!-- //subSec -->
 
+                        <div class="contentPop paymentPop pop_password" style="display:none;">
+                            <div class="bg"></div>
+                            <div class="popIn">
+                                <div class="content">
+                                    <div class="popTit">비밀번호 입력</div>
+                                    <div class="cancelBox">
+                                        <dl>
+                                            <dt>비밀번호</dt>
+                                            <dd><input type="password" name="password"></dd>
+                                        </dl>
+                                    </div>
+                                    <div class="btnCenter">
+                                        <a href="javascript:void(0);" class="btnType1 black list" onclick="validatePassword()">확인</a>
+                                    </div>
+                                    <div class="closePop">
+                                        <a href="javascript:void(0);" onclick="$('.pop_password').hide()">팝업닫기</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-				</div>
+                        <script type="text/javascript">
+                            $(document).ready(function() {
+                                $('.btn_lock').click(function() {
+                                    var idx = $(this).data('idx');
+                                    console.log(idx); // Check if idx is correctly retrieved
+                                    $('.pop_password').data('idx', idx).show();
+                                });
+                            });
+
+                            function validatePassword() {
+                                var password = $('input[name="password"]').val();
+                                var idx = $('.pop_password').data('idx');
+                                var boardid = '<?=$arrBoardInfo["list"][0]["boardid"]?>';
+
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '/module/board/ajax_board_password.php',
+                                    data: { password: password, idx: idx, boardid: boardid },
+                                    success: function(response) {
+                                        if (response.trim() === "true") {
+                                            window.location.href = '<?=$_SERVER["PHP_SELF"]?>?boardid=' + boardid + '&mode=view&idx=' + idx;
+                                        } else {
+                                            alert('비밀번호가 틀렸습니다.');
+                                            $('.pop_password').hide();
+                                            $('input[name="password"]').val('');
+                                        }
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.error('AJAX Error: ' + status + error);
+                                    }
+                                });
+                            }
+                        </script>
 			</div>
 			<!-- //subSec -->
 

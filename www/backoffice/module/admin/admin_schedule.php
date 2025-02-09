@@ -266,6 +266,9 @@ $arrCategory = array(
 																<?=$val['name']?> /
 															<?php endif; ?>
 															<?=$val['subject']?>
+                                                            <?php if (in_array($scheduleType, [ 'place_applicants'])): ?>
+                                                               /  <?=$val['rental_start_time']?> ~ <?=$val['rental_end_time']?>
+                                                            <?php endif; ?>
                                                         </a>
                                                     </div>
 												<?php endforeach; ?>

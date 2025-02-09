@@ -253,20 +253,6 @@ function fnCopyEst(eidx){
             </dd>
         </dl>
         <dl>
-            <dt>&nbsp;</dt>
-            <dd id="cat_02">
-                <select name="cat2" id="cat2" class="text" onchange="fnCat2(this.value);" style="width:120px;">
-                    <option value="">전체</option>
-                    <?
-                    for($i=0;$i<$arrCategory2["total"];$i++){
-
-                        ?>
-                        <option value="<?=$arrCategory2["list"][$i]['cat_no']?>"<?=$arrCatCode[3]==$arrCategory2["list"][$i]['cat_no']?" selected":""?>><?=$arrCategory2["list"][$i]['cat_name']?></option>
-                    <?}?>
-                </select>
-            </dd>
-        </dl>
-        <dl>
             <dt>등록일</dt>
             <dd>
                 <input type="text" class="datepicker" name="sdate" value="<?=$_GET['sdate']?>" autocomplete="off"/><em>~</em><input type="text" class="datepicker" name="edate" value="<?=$_GET['edate']?>" autocomplete="off"/>
@@ -573,7 +559,7 @@ $(document).ready(function(){
 
     <!-- tabType1 -->
     <div class="tabType1">
-        <ul>
+        <ul class="inner">
             <li class="<?= $_GET['cat_no'] == '' ? 'active' : '' ?>"><a href="/equ/list.php">전체</a></li>
             <?php
             for($i=0; $i<$arrCategory1["total"]; $i++):

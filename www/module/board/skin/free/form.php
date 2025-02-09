@@ -118,13 +118,13 @@ function fileDownload(boardid,b_idx,idx){
 
 		<div class="tit"><?=$arrBoardInfo["list"][0]["boardname"]?> 정보 <i>*</i></div>
 		<table>
+            <tr>
+                <th>작성자*</th>
+                <td><div class="inputs"><input type="text" class="w4" name="name" name="id" maxlength="100" value="<?=$arrBoardArticle["list"][0]['name']?>"></div></td>
+            </tr>
 			<tr>
 				<th>제목</th>
 				<td><div class="inputs"><input type="text" class="w4" name="subject" maxlength="100" value="<?=stripslashes($arrBoardArticle["list"][0]['subject'])?>"></div></td>
-			</tr>
-			<tr style="display:none;">
-				<th>작성자명</th>
-				<td><div class="inputs"><input type="text" class="w2" name="name" maxlength="100" value="<?if($_REQUEST['mode']=="modify"):?><?=$arrBoardArticle["list"][0]['name']?><?else:?><?=$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"]?$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["NAME"]:$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["NAME"]?><?endif;?>"></div></td>
 			</tr>
 			<tr style="display:none;">
 				<th>조회수</th>

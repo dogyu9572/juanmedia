@@ -214,6 +214,19 @@ else {
 										</div>
 									</div>
 								</div>
+                                <div class="line">
+                                    <div class="tit">성별<span>*</span></div>
+                                    <div class="baseInput flex_half">
+                                        <div class="baseRadio">
+                                            <input type="radio" name="gender" id="gnd1" value="M" <?= $arrMemberInfo['list'][0]['gender'] == 'M' ? 'checked' : '' ?>>
+                                            <label for="gnd1">남</label>
+                                        </div>
+                                        <div class="baseRadio">
+                                            <input type="radio" name="gender" id="gnd2" value="F" <?= $arrMemberInfo['list'][0]['gender'] == 'F' ? 'checked' : '' ?>>
+                                            <label for="gnd2">여</label>
+                                        </div>
+                                    </div>
+                                </div>
 								<div class="line">
 									<div class="tit">연락처<span>*</span></div>
 									<div class="right">

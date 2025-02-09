@@ -277,7 +277,7 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                                     <option value="신청대기" <?= $arrBoardArticle["list"][0]['status'] == '신청대기' ? 'selected' : '' ?>>신청대기</option>
                                     <option value="거부" <?= $arrBoardArticle["list"][0]['status'] == '거부' ? 'selected' : '' ?>>거부</option>
                                     <option value="승인" <?= $arrBoardArticle["list"][0]['status'] == '승인' ? 'selected' : '' ?>>승인</option>
-                                    <option value="신청완료" <?= $arrBoardArticle["list"][0]['status'] == '신청완료' ? 'selected' : '' ?>>신청완료</option>
+                                    <option value="결제완료" <?= $arrBoardArticle["list"][0]['status'] == '결제완료' ? 'selected' : '' ?>>결제완료</option>
                                     <option value="취소" <?= $arrBoardArticle["list"][0]['status'] == '취소' ? 'selected' : '' ?>>취소</option>
                                 </select>
                             </div>

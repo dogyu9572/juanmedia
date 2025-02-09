@@ -109,12 +109,11 @@
 <?}else{###################################################### 사용자 페이지 ######################################################?>
     <?php
 	include_once ($_SERVER['DOCUMENT_ROOT'] . "/module/member/auth.php");
-    $dayTypeMap = [
-        'weekly' => '매주',
-        'biweekly' => '격주',
-        'other' => '기타'
-    ];
+    if (empty($_POST) && !isset($_GET['applicants_idx'])) { //
+        jsGo("/place/list.php?boardid=place&mode=view&idx=".$_GET['idx']);
+    }
     $imgsrc = "/uploaded/board/".$arrBoardInfo["list"][0]["boardid"]."/".$arrBoardArticle["files"][0]['re_name'];
+    $referralArray = explode('|', $arrBoardApplicantsArticle["list"][0]['referral']);
     $capacity = $arrBoardArticle["list"][0]['capacity'];
     ?>
     <!-- pageTitle -->
@@ -135,15 +134,22 @@
                                 <div class="title"><?=stripslashes($arrBoardArticle["list"][0]['subject'])?></div>
                                 <div class="info">
                                     <div class="tit">대관일</div>
-                                    <div class="txt"><?=$_POST["rental_date"]?></div>
+                                    <div class="txt">
+                                        <?= isset($arrBoardApplicantsArticle["list"][0]["rental_date"]) ? $arrBoardApplicantsArticle["list"][0]["rental_date"] : $_POST["rental_date"] ?>
+                                    </div>
                                 </div>
                                 <div class="info">
-                                    <div class="tit">대관 시간</div>
-                                    <div class="txt"><?=$_POST["rental_start_time"]?> ~ <?=$_POST["rental_end_time"]?></div>
+                                    <div class="tit">대여 시간</div>
+                                    <div class="txt">
+                                        <?= isset($arrBoardApplicantsArticle["list"][0]["rental_start_time"]) ? $arrBoardApplicantsArticle["list"][0]["rental_start_time"] : $_POST["rental_start_time"] ?> ~
+                                        <?= isset($arrBoardApplicantsArticle["list"][0]["rental_end_time"]) ? $arrBoardApplicantsArticle["list"][0]["rental_end_time"] : $_POST["rental_end_time"] ?>
+                                    </div>
                                 </div>
                                 <div class="info">
-                                    <div class="tit">대관금액</div>
-                                    <div class="txt"><?=number_format($_POST["totalamount"])?>원</div>
+                                    <div class="tit">대여금액</div>
+                                    <div class="txt">
+                                        <?= isset($arrBoardApplicantsArticle["list"][0]["totalamount"]) ? number_format($arrBoardApplicantsArticle["list"][0]["totalamount"]) : number_format($_POST["totalamount"]) ?>원
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -155,13 +161,13 @@
                         <!--                        <input type="hidden" name="returnURL" value="--><?php //=$_SERVER["PHP_SELF"]?><!--?boardid=--><?php //=$arrBoardInfo["list"][0]["boardid"]?><!--&mode=list&category=--><?php //=$_GET['category']?><!--&offset=--><?php //=$_GET['offset']??""?><!--">-->
                         <input type="hidden" name="returnURL" value="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=list&cat_no=<?=$arrBoardArticle["list"][0]['category1']?>&offset=<?=$_GET['offset']??""?>">
                         <input type="hidden" name="idx" value="<?=$arrBoardArticle["list"][0]["idx"]?>">
-                        <input type="hidden" id="totalamountInput" name="totalamount" value="<?=$_POST["totalamount"]?>">
-                        <input type="hidden" id="discountamountInput" name="discountamount" value="0">
-                        <input type="hidden" id="finalamountInput" name="finalamount" value="<?=$_POST["totalamount"]?>">
+                        <input type="hidden" id="totalamountInput" name="totalamount" value="<?= isset($arrBoardApplicantsArticle["list"][0]['totalamount']) ? $arrBoardApplicantsArticle["list"][0]['totalamount'] : $_POST["totalamount"] ?>">
+                        <input type="hidden" id="discountamountInput" name="discountamount" value="<?= isset($arrBoardApplicantsArticle["list"][0]['discountamount']) ? $arrBoardApplicantsArticle["list"][0]['discountamount'] : '0' ?>">
+                        <input type="hidden" id="finalamountInput" name="finalamount" value="<?= isset($arrBoardApplicantsArticle["list"][0]['finalamount']) ? $arrBoardApplicantsArticle["list"][0]['finalamount'] : $_POST["totalamount"] ?>">
                         <input type="hidden" id="subject" name="subject" value="<?=$arrBoardArticle["list"][0]['subject']?>">
-                        <input type="hidden" id="rental_date" name="rental_date" value="<?=$_POST["rental_date"]?>">
-                        <input type="hidden" id="rental_start_time" name="rental_start_time" value="<?=$_POST["rental_start_time"]?>">
-                        <input type="hidden" id="rental_end_time" name="rental_end_time" value="<?=$_POST["rental_end_time"]?>">
+                        <input type="hidden" id="rental_date" name="rental_date" value="<?= isset($arrBoardApplicantsArticle["list"][0]["rental_date"]) ? $arrBoardApplicantsArticle["list"][0]["rental_date"] : $_POST["rental_date"] ?>">
+                        <input type="hidden" id="rental_start_time" name="rental_start_time" value="<?= isset($arrBoardApplicantsArticle["list"][0]["rental_start_time"]) ? $arrBoardApplicantsArticle["list"][0]["rental_start_time"] : $_POST["rental_start_time"] ?>">
+                        <input type="hidden" id="rental_end_time" name="rental_end_time" value="<?= isset($arrBoardApplicantsArticle["list"][0]["rental_end_time"]) ? $arrBoardApplicantsArticle["list"][0]["rental_end_time"] : $_POST["rental_end_time"] ?>">
                         <input type="hidden" id="usage_time" name="usage_time" value="<?=$_POST["usage_time"]?>">
                         <input type="hidden" id="capacity" name="capacity" value="<?=$arrBoardArticle["list"][0]['capacity']?>">
                         <input type="hidden" id="place_idx" name="place_idx" value="<?=$arrBoardArticle["list"][0]['idx']?>">
@@ -175,6 +181,10 @@
                             <input type="hidden" name="evnMode" value="reply">
                         <?php elseif($_REQUEST['mode']=="modify"):?>
                             <input type="hidden" name="evnMode" value="modify">
+                        <?php elseif($_GET['applicants_idx']):?>
+                            <input type="hidden" name="evnMode" value="modify">
+                            <input type="hidden" name="idx" value="<?=$_GET['applicants_idx']?>">
+                            <input type="hidden" name="status" value="<?=$arrBoardApplicantsArticle["list"][0]["status"]?>">
                         <?php else:?>
                             <input type="hidden" name="evnMode" value="write">
                         <?php endif;?>
@@ -210,7 +220,7 @@
                                 <div class="formTit">생년월일</div>
                                 <div class="right">
                                     <div class="baseInput">
-                                        <input type="text" name="birthdate" class="datepicker">
+                                        <input type="text" name="birthdate"  value="<?=$arrBoardApplicantsArticle["list"][0]["birthdate"]?>" class="datepicker">
                                     </div>
                                 </div>
                             </div>
@@ -242,18 +252,17 @@
                                                 '공익 지원(공문)' => 'place_discount18',
                                                 '미추홀구민 할인' => 'place_discount19',
                                             ];
-                                            
-                                            if (strpos($arrDiscountInfo['list'][0]["items"], '공간') !== false) {
-                                                foreach ($discounts as $label => $name) {
-                                                    if ($arrDiscountInfo['list'][0][$name] == 'Y') {
-                                                        $value = $arrDiscountInfo['list'][0][$name . '_value'];
-                                                        echo "<option value='{$value}' data-label='{$label}'>{$label}</option>";
-                                                    }
+
+                                            foreach ($discounts as $label => $name) {
+                                                if ($arrDiscountInfo['list'][0][$name] == 'Y') {
+                                                    $value = $arrDiscountInfo['list'][0][$name . '_value'];
+                                                    $selected = ($arrBoardApplicantsArticle["list"][0]['discount_text'] == $label) ? 'selected' : '';
+                                                    echo "<option value='{$value}' data-label='{$label}' {$selected}>{$label}</option>";
                                                 }
                                             }
                                             ?>
                                         </select>
-                                        <input type="hidden" id="discountText" name="discount_text" value="">
+                                        <input type="hidden" id="discountText" name="discount_text" value="<?=$arrBoardApplicantsArticle["list"][0]['discount_text']?>">
                                     </div>
                                 </div>
                             </div>
@@ -263,8 +272,9 @@
                                     <div class="baseSel">
                                         <select name="certificate">
                                             <option value="">선택</option>
-                                            <option value="온라인 제출">온라인 제출</option>
-                                            <option value="현장 제출">현장 제출</option>
+                                            <option value="해당 사항 없음" <?= $arrBoardApplicantsArticle["list"][0]['certificate'] == '해당 사항 없음' ? 'selected' : '' ?>>해당 사항 없음</option>
+                                            <option value="온라인 제출" <?= $arrBoardApplicantsArticle["list"][0]['certificate'] == '온라인 제출' ? 'selected' : '' ?>>온라인 제출</option>
+                                            <option value="현장 제출" <?= $arrBoardApplicantsArticle["list"][0]['certificate'] == '현장 제출' ? 'selected' : '' ?>>현장 제출</option>
                                         </select>
                                     </div>
                                     <div class="fileAddWrap" id="fileAddWrap" style="display: none;">
@@ -276,6 +286,26 @@
                                             <input type="text" id="fileName" class="fileInputTextbox" readonly="readonly" value="">
                                         </div>
                                     </div>
+                                    <?
+                                    if($arrBoardApplicantsArticle["total_files"]>0 ){
+                                        ?>
+                                        <table id="files_list" border="0" cellpadding="3" cellspacing="1" width="100%" style="padding:1%">
+                                            <tbody>
+                                            <?
+                                            for($i=0;$i<$arrBoardApplicantsArticle["total_files"];$i++){
+                                                if(substr($arrBoardApplicantsArticle["files"][$i]['re_name'],0,2) != "l_" && substr($arrBoardApplicantsArticle["files"][$i]['re_name'],0,2) != "v_") {
+                                                    ?>
+                                                    <tr>
+                                                        <td><label class="check"><input type="checkbox" name="filedel[]" value="<?=$arrBoardApplicantsArticle["files"][$i]['idx']?>"><i></i>삭제</label>
+                                                            file :  <a href="javascript:void(0);" onclick="fileDownload('<?=$arrBoardApplicantsArticle["files"][$i]['boardid']?>','<?=$arrBoardApplicantsArticle["files"][$i]['b_idx']?>','<?=$arrBoardApplicantsArticle["files"][$i]['idx']?>');"><?=$arrBoardApplicantsArticle["files"][$i]['ori_name']?></a>
+                                                        </td>
+                                                    </tr>
+                                                    <?
+                                                }
+                                            }?>
+                                            </tbody>
+                                        </table>
+                                    <?}?>
                                 </div>
                             </div>
                             <div class="row">
@@ -285,7 +315,7 @@
                                         <select name="usage_people">
                                             <option value="">선택</option>
                                             <?php for ($i = 1; $i <= $capacity; $i++): ?>
-                                                <option value="<?= $i ?>"><?= $i ?>명</option>
+                                                <option value="<?= $i ?>" <?= $arrBoardApplicantsArticle["list"][0]["usage_people"] == $i ? 'selected' : '' ?>><?= $i ?>명</option>
                                             <?php endfor; ?>
                                         </select>
                                     </div>
@@ -295,7 +325,7 @@
                             <div class="formTit">사용목적</div>
                             <div class="right">
                                 <div class="baseInput">
-                                    <input type="text" name="usage_purpose">
+                                    <input type="text" name="usage_purpose"  value="<?=$arrBoardApplicantsArticle["list"][0]["usage_purpose"]?>">
                                 </div>
                             </div>
                         </div>
@@ -303,7 +333,7 @@
                             <div class="formTit">비고</div>
                             <div class="right">
                                 <div class="baseInput">
-                                    <textarea name="contents" id="" cols="30" rows="10" class="text w100p" placeholder="내용을 입력해주세요."></textarea>
+                                    <textarea name="contents" id="" cols="30" rows="10" class="text w100p" placeholder="내용을 입력해주세요."><?=$arrBoardApplicantsArticle["list"][0]["contents"]?></textarea>
                                 </div>
                             </div>
                         </div>
@@ -337,15 +367,21 @@
                     <div class="detailTit">결제 정보</div>
                     <div class="info">
                         <div class="tit">총 대관금액</div>
-                        <div class="txt" id="totalamount" name="totalamount"><?=number_format($_POST["totalamount"])?>원</div>
+                        <div class="txt" id="totalamount" name="totalamount">
+                            <?= isset($arrBoardApplicantsArticle["list"][0]['totalamount']) ? number_format($arrBoardApplicantsArticle["list"][0]['totalamount']) : number_format($arrBoardArticle["list"][0]['fee']) ?>원
+                        </div>
                     </div>
                     <div class="info">
                         <div class="tit">할인금액</div>
-                        <div class="txt" id="discountamount" name="discountamount">0원</div>
+                        <div class="txt" id="discountamount" name="discountamount">
+                            <?= isset($arrBoardApplicantsArticle["list"][0]['discountamount']) ? number_format($arrBoardApplicantsArticle["list"][0]['discountamount']) : '0' ?>원
+                        </div>
                     </div>
                     <div class="info last">
                         <div class="tit">최종금액</div>
-                        <div class="txt" id="finalamount" name="finalamount"><?=number_format($_POST["totalamount"])?>원</div>
+                        <div class="txt" id="finalamount" name="finalamount">
+                            <?= isset($arrBoardApplicantsArticle["list"][0]['finalamount']) ? number_format($arrBoardApplicantsArticle["list"][0]['finalamount']) : number_format($arrBoardArticle["list"][0]['fee']) ?>원
+                        </div>
                     </div>
                     <a href="javascript:void(0);" class="btnType1" onclick="if (validateForm()) { document.getElementById('enrollmentForm').submit(); }">대관 신청</a>
                 </div>
@@ -375,7 +411,7 @@
             document.getElementById('discountText').value = discountText;
         });
         function calculateDiscount() {
-            var totalamount = <?=$_POST["totalamount"]?>;
+            var totalamount = <?= isset($_POST["totalamount"]) ? $_POST["totalamount"] : (isset($arrBoardApplicantsArticle["list"][0]["totalamount"]) ? $arrBoardApplicantsArticle["list"][0]["totalamount"] : 0) ?>;
             var discountSelect = document.getElementById('discountSelect');
             var discountValue = discountSelect.value;
             var discountamount = 0;
@@ -410,10 +446,38 @@
         //]]>
         function validateForm() {
             const birthdate = document.querySelector('input[name="birthdate"]');
+            const discountSelect = document.getElementById('discountSelect');
+            const certificateSelect = document.querySelector('select[name="certificate"]');
+            const usagePeopleSelect = document.querySelector('select[name="usage_people"]');
+            const usagePurposeInput = document.querySelector('input[name="usage_purpose"]');
 
             if (!birthdate.value) {
                 alert('생년월일을 입력하지 않았습니다.');
                 birthdate.focus();
+                return false;
+            }
+
+            if (!discountSelect.value) {
+                alert('할인적용을 선택하지 않았습니다.');
+                discountSelect.focus();
+                return false;
+            }
+
+            if (!certificateSelect.value) {
+                alert('증명서 제출 방법을 선택하지 않았습니다.');
+                certificateSelect.focus();
+                return false;
+            }
+
+            if (!usagePeopleSelect.value) {
+                alert('사용인원을 선택하지 않았습니다.');
+                usagePeopleSelect.focus();
+                return false;
+            }
+
+            if (!usagePurposeInput.value) {
+                alert('사용목적을 입력하지 않았습니다.');
+                usagePurposeInput.focus();
                 return false;
             }
 

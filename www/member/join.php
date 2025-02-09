@@ -3,8 +3,8 @@
 include_once $_SERVER['DOCUMENT_ROOT'] . "/module/member/member.lib.php";
 
 if(!$_SESSION['uName']){
-    jsGo("/member/agree.php","","본인인증 후 회원가입을 진행해 주세요.");
-    exit();
+//    jsGo("/member/agree.php","","본인인증 후 회원가입을 진행해 주세요.");
+//    exit();
 }else{
     $userName	= $_SESSION['uName'];
     $userBirth	= $_SESSION['uBirth'];
@@ -177,48 +177,19 @@ if(!$_SESSION['uName']){
                 });
         }
     }
-    function check_nick(uid){
-        if(uid==""){
-            alert('닉네임을 입력하신후 클릭해 주세요.');
-            document.memberForm.nick_name.focus();
-        } else {
-            $.get("/module/member/ajax_check_nick.php", {nick_name: uid},
-                function(data){
-                    if(data=="0"){
-                        alert('사용가능한 닉네임 입니다.');
-                        document.memberForm.nickcheck.value = uid;
-                    }else if(data=="1"){
-                        alert('이미 사용중인 닉네임 입니다.');
-                    }else{
-                        alert('오류가 발생하였습니다. 다시 시도해 주세요.');
-                    }
-                    document.memberForm.nick_name.focus();
-                });
-        }
-    }
-    function info_nick(uid){
-        if(uid.length < 10){
-            alert('사업자등록번호를 입력하신 후 클릭해 주세요.');
-            document.memberForm.etc_2.focus();
-        } else {
-            $.get("/module/member/ajax_check_info.php", {info_value: uid},
-                function(data){
-                    if(data=="0"){
-                        alert('사용가능한 사업자등록번호 입니다.');
-                        document.memberForm.infocheck.value = uid;
-                    }else if(data=="1"){
-                        alert('이미 사용중인 사업자등록번호 입니다.');
-                    }else{
-                        alert('오류가 발생하였습니다. 다시 시도해 주세요.');
-                    }
-                    document.memberForm.etc_2.focus();
-                });
-        }
-    }
     function frmCheck(frm){
         if (frm.user_id.value.length < 4){
             alert("아이디는 4자 이상 입력해 주세요.");
             frm.user_id.focus();
+            return ;
+        }
+        if(frm.user_name.value.length < 1){ //이름
+            alert('이름을 입력해 주세요.');
+            frm.user_name.focus();
+            return ;
+        }
+        if(!frm.gender.value){ //성별
+            alert('성별을 선택해 주세요.');
             return ;
         }
         if (frm.user_id.value != frm.dupcheck.value){
@@ -239,11 +210,6 @@ if(!$_SESSION['uName']){
             frm.user_pw1.focus();
             return ;
         }
-        if(frm.user_name.value.length < 1){ //이름
-            alert('이름을 입력해 주세요.');
-            frm.user_name.focus();
-            return ;
-        }
         if(frm.mobile.value.length < 1){	// 휴대폰 번호
             alert('연락처를 입력해 주세요.');
             frm.mobile.focus();
@@ -259,6 +225,7 @@ if(!$_SESSION['uName']){
             frm.address_ext.focus();
             return false;
         }
+
         /*if(frm.email.value.length < 1){		//
             alert('이메일을 입력해 주세요.');
             frm.email.focus();
@@ -384,6 +351,13 @@ if(!$_SESSION['uName']){
                             <div class="tit">이름<span>*</span></div>
                             <div class="baseInput">
                                 <input type="text" name="user_name" value="<?=$userName?>" readonly>
+                            </div>
+                        </div>
+                        <div class="line">
+                            <div class="tit">성별<span>*</span></div>
+                            <div class="baseInput flex_half">
+                                <div class="baseRadio"><input type="radio" name="gender" id="gnd1" value="M"><label for="gnd1">남</label></div>
+                                <div class="baseRadio"><input type="radio" name="gender" id="gnd2" value="F"><label for="gnd2">여</label></div>
                             </div>
                         </div>
                         <div class="line">

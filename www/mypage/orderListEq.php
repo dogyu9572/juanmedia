@@ -182,7 +182,7 @@ for($i = 0; $i < $arrLevel["total"]; $i ++) {
                                                     <!-- <td><?=$user_level?></td> -->
                                                     <td><?=$arrBoardList["list"][$i]['app_no']?></td>
 													<td><?=getCategoryName($arrBoardList["list"][$i]['category1']);?></td>
-                                                    <td><?=$arrBoardList["list"][0]['rental_start_date']?> ~<br /><?=$arrBoardList["list"][0]['rental_end_date']?></td>
+                                                    <td><?=$arrBoardList["list"][$i]['rental_start_date']?> ~<br /><?=$arrBoardList["list"][$i]['rental_end_date']?></td>
                                                     <td><?=$arrBoardList["list"][$i]['usage_day']?></td>
                                                     <td><?=$arrBoardList["list"][$i]['subject']?></td>
                                                     <td><?=$arrBoardList["list"][$i]['usage_people']?></td>

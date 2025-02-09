@@ -562,7 +562,7 @@ $(document).ready(function(){
 
     <!-- tabType1 -->
     <div class="tabType1">
-        <ul>
+        <ul class="inner">
             <li class="<?= $_GET['cat_no'] == '' ? 'active' : '' ?>"><a href="/place/list.php">전체</a></li>
             <?php
             for($i=0; $i<$arrCategory1["total"]; $i++):

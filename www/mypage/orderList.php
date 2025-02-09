@@ -143,7 +143,7 @@ $arrBoardList	= getBoardListBaseNFile($arrBoardInfo["list"][0]["boardid"], "", $
 												<th>카테고리</th>
 												<th>교육명</th>
 												<th>교육기간</th>
-												<th>교육시간</th>
+												<th>교육 요일/시간</th>
 												<th>결제금액</th>
 												<th>신청일</th>
 												<th>신청상태</th>
@@ -180,10 +180,13 @@ $arrBoardList	= getBoardListBaseNFile($arrBoardInfo["list"][0]["boardid"], "", $
 											<tr data-order="<?=$arrBoardList['list'][$i]['idx']?>">
 												<!-- <td><?=$arrBoardList["list"][$i]['no']=="0"?"공지":$categoryTitle?></td> -->
 												<td><?=$arrBoardList["list"][$i]['app_no']?></td>
-												<td><?=getCategoryName($arrBoardList["list"][$i]['category1']);?></td>
+												<td><?=getCategoryName($arrBoardList["list"][$i]['category1']);?>/<?=getCategoryName($arrBoardList["list"][$i]['category2']);?></td>
 												<td><a href="/edu/list.php?boardid=edu&mode=view&idx=<?=$arrBoardArticle["list"][0]['idx']?>"><?=$arrBoardList["list"][$i]['subject']?></a></td>
 												<td><?=$arrBoardArticle["list"][0]['e_start_date']?> ~<br /><?=$arrBoardArticle["list"][0]['e_end_date']?></td>
-												<td><?=$dayType?><br/><?=$days?></td>
+												<td>
+                                                    <?=$dayType?><?=$days?>
+                                                    <?=$arrBoardArticle["list"][$i]['start_hour']?>:<?=$arrBoardArticle["list"][$i]['start_minute']?> ~ <?=$arrBoardArticle["list"][$i]['end_hour']?>:<?=$arrBoardArticle["list"][$i]['end_minute']?>
+                                                </td>
 												<td><?= number_format($arrBoardList["list"][$i]['finalamount']) ?>원</td>
 												<td><?=date("Y-m-d",strtotime($arrBoardList["list"][$i]['wdate']))?></td>
 												<td><?=$arrBoardList["list"][$i]['status'];?></td>

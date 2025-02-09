@@ -59,7 +59,7 @@ for ($i = 0; $i < $arrList["total"]; $i++) {
         <td>" . htmlspecialchars($arrList["list"][$i]['name'], ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars($user_level, ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars($arrList["list"][$i]['email'], ENT_QUOTES, 'UTF-8') . "</td>
-        <td>" . htmlspecialchars($arrList["list"][$i]['tel'], ENT_QUOTES, 'UTF-8') . "</td>
+        <td>" . htmlspecialchars('="' . $arrList["list"][$i]['tel'] . '"', ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars($arrList["list"][$i]['birthdate'], ENT_QUOTES, 'UTF-8') . "</td>        
         <td>" . htmlspecialchars($arrList["list"][$i]['subject'], ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars(substr($arrList["list"][$i]['wdate'], 0, 10), ENT_QUOTES, 'UTF-8') . "</td>

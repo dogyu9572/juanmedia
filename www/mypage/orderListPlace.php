@@ -184,7 +184,7 @@ for($i = 0; $i < $arrLevel["total"]; $i ++) {
                                             <td><?=$arrBoardList["list"][$i]['app_no']?></td>
                                             <td><?=getCategoryName($arrBoardList["list"][$i]['category1']);?></td>
                                             <td><?=$arrBoardList["list"][$i]['rental_date']?></td>
-                                            <td><?=$arrBoardList["list"][0]['rental_start_time']?> ~<br /><?=$arrBoardList["list"][0]['rental_end_time']?></td>
+                                            <td><?=$arrBoardList["list"][$i]['rental_start_time']?> ~<br /><?=$arrBoardList["list"][$i]['rental_end_time']?></td>
 											<td><?=$arrBoardList["list"][$i]['usage_people']?></td>
                                             <td><?=$arrBoardList["list"][$i]['subject']?></td>
 											<td><?= number_format($arrBoardList["list"][$i]['finalamount']) ?></td>

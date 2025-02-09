@@ -74,7 +74,7 @@ for ($i = 0; $i < $arrList["total"]; $i++) {
     <td>" . htmlspecialchars($arrList["list"][$i]['app_no'], ENT_QUOTES, 'UTF-8') . "</td>
     <td>" . htmlspecialchars($arrList["list"][$i]['w_user'], ENT_QUOTES, 'UTF-8') . "</td>
     <td>" . htmlspecialchars($arrList["list"][$i]['name'], ENT_QUOTES, 'UTF-8') . "</td>
-    <td>" . htmlspecialchars($arrList["list"][$i]['tel'], ENT_QUOTES, 'UTF-8') . "</td>
+    <td>" . htmlspecialchars('="' . $arrList["list"][$i]['tel'] . '"', ENT_QUOTES, 'UTF-8') . "</td>
     <td>" . htmlspecialchars($boardTypeMap[$arrList["list"][$i]['board_type']], ENT_QUOTES, 'UTF-8') . "</td>
     <td>" . htmlspecialchars($arrList["list"][$i]['subject'], ENT_QUOTES, 'UTF-8') . "</td>
     <td>" . htmlspecialchars($arrList["list"][$i]['finalamount'], ENT_QUOTES, 'UTF-8') . "원</td>
