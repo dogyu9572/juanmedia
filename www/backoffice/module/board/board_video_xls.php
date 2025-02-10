@@ -18,7 +18,7 @@ $arrList = getXlsList($_GET['boardid'],  $_GET['sw'], $_GET['sk'], "", 0);
 
 $arrAllCategory = getCategoryAll();
 
-$filename = $_SITE['NAME'] . "_교육목록_" . date('mdHi') . ".xls";
+$filename = $_SITE['NAME'] . "_상영회목록_" . date('mdHi') . ".xls";
 header("Content-Type: application/vnd.ms-excel; charset=UTF-8");
 header("Content-Disposition: attachment; filename=\"$filename\"");
 header("Content-Description: PHP4 Generated Data");
@@ -32,6 +32,7 @@ $EXCEL_TXT = "
 <table border='1'>
 <tr>
     <td>No</td>
+    <td>카테고리</td>
     <td>상태</td>
     <td>상영회명</td>
     <td>접수기간</td>
@@ -46,6 +47,7 @@ for ($i = 0; $i < $arrList["total"]; $i++) {
     $EXCEL_TXT .= "
     <tr>
         <td>" . ($i + 1) . "</td>
+        <td>" . htmlspecialchars(getCategoryName($arrList["list"][$i]['category1']), ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars($arrList["list"][$i]['reception_status'], ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars($arrList["list"][$i]['subject'], ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars($arrList["list"][$i]['r_start_date'], ENT_QUOTES, 'UTF-8') . " ~ " . htmlspecialchars($arrList["list"][$i]['r_end_date'], ENT_QUOTES, 'UTF-8') . "</td>

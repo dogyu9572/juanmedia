@@ -48,9 +48,7 @@ $EXCEL_TXT = "
     <th>할인</th>
     <th>결제상태(결제일)</th>
     <th>환불현황(환불완료일)</th>
-    <th>영수증</th>
     <th>비고</th>
-    <th>관리</th>
 ";
 
 for ($i = 0; $i < $arrList["total"]; $i++) {
@@ -71,7 +69,7 @@ for ($i = 0; $i < $arrList["total"]; $i++) {
     $EXCEL_TXT .= "
     <tr>
     <td>" . ($i + 1) . "</td>
-    <td>" . htmlspecialchars($arrList["list"][$i]['app_no'], ENT_QUOTES, 'UTF-8') . "</td>
+    <td>" . (htmlspecialchars($arrList["list"][$i]['app_no'], ENT_QUOTES, 'UTF-8') ? "'" . htmlspecialchars($arrList["list"][$i]['app_no'], ENT_QUOTES, 'UTF-8') : '') . "</td>
     <td>" . htmlspecialchars($arrList["list"][$i]['w_user'], ENT_QUOTES, 'UTF-8') . "</td>
     <td>" . htmlspecialchars($arrList["list"][$i]['name'], ENT_QUOTES, 'UTF-8') . "</td>
     <td>" . htmlspecialchars('="' . $arrList["list"][$i]['tel'] . '"', ENT_QUOTES, 'UTF-8') . "</td>
@@ -82,7 +80,6 @@ for ($i = 0; $i < $arrList["total"]; $i++) {
     <td>" . htmlspecialchars($arrList["list"][$i]['deposit_status'], ENT_QUOTES, 'UTF-8') .
         ($arrList["list"][$i]['deposit_status'] != '입금대기' ? " (" . htmlspecialchars(date("Y-m-d", strtotime($arrList["list"][$i]['deposit_date'])), ENT_QUOTES, 'UTF-8') . ")" : "") . "</td>
     <td>" . ($arrList["list"][$i]['refund_status'] == "환불완료" ? htmlspecialchars($arrList["list"][$i]['refund_status'], ENT_QUOTES, 'UTF-8') . " (" . htmlspecialchars(date("Y-m-d", strtotime($arrList["list"][$i]['refund_complete_date'])), ENT_QUOTES, 'UTF-8') . ")" : "") . "</td>
-    <td></td>
     <td>" . htmlspecialchars($arrList["list"][$i]['contents'], ENT_QUOTES, 'UTF-8') . "</td>
 </tr>
     ";

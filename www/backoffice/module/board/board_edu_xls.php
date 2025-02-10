@@ -56,7 +56,7 @@ for ($i = 0; $i < $arrList["total"]; $i++) {
     $EXCEL_TXT .= "
     <tr>
         <td>" . ($i + 1) . "</td>
-        <td>" . htmlspecialchars(getCategoryName($arrList["list"][$i]['category1']), ENT_QUOTES, 'UTF-8') . "</td>
+        <td>" . htmlspecialchars(getCategoryName($arrList["list"][$i]['category1']), ENT_QUOTES, 'UTF-8') . " / " . htmlspecialchars(getCategoryName($arrList["list"][$i]['category2']), ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars($arrList["list"][$i]['reception_status'], ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars($arrList["list"][$i]['subject'], ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . $dayType . "<br/>" . $days . "</td>

@@ -101,8 +101,8 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
     <?
 //    $arrCategory01 = getCategoryList("62","Y");	// 분류
 	$arrCategory01 = [
-		63 => '상설교육',
-        64=> '공동체교육',
+		115 => '상설',
+        116=> '공동체',
 		37 => '미디어 체험',
 	];
 

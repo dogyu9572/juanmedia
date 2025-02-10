@@ -39,6 +39,7 @@ $EXCEL_TXT = "
 <tr>
     <th>No.</th>
     <td>구분</td>
+    <td>접수번호</td>
     <td>증빙구분</td>
     <th>금액</th>
     <th>이름</th>
@@ -53,6 +54,7 @@ for ($i = 0; $i < $arrList["total"]; $i++) {
     <tr>
         <td>" . ($i + 1) . "</td>
         <td>" . htmlspecialchars($boardTypeMap[$arrList["list"][$i]['board_type']], ENT_QUOTES, 'UTF-8') . "</td>
+        <td>" . (htmlspecialchars($arrList["list"][$i]['app_no'], ENT_QUOTES, 'UTF-8') ? "'" . htmlspecialchars($arrList["list"][$i]['app_no'], ENT_QUOTES, 'UTF-8') : '') . "</td>
         <td>" . htmlspecialchars($arrList["list"][$i]['proof_type'], ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars($arrList["list"][$i]['finalamount'], ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars($arrList["list"][$i]['name'], ENT_QUOTES, 'UTF-8') . "</td>

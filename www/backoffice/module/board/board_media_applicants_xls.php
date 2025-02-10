@@ -23,7 +23,7 @@ for($i = 0; $i < $arrLevel["total"]; $i ++) {
     $arrayLevel[$arrLevel["list"][$i]['level_no']] = $arrLevel["list"][$i]['level_name'];
 }
 
-$filename = $_SITE['NAME'] . "_교육신청리스트_" . date('mdHi') . ".xls";
+$filename = $_SITE['NAME'] . "_미디어체험신청리스트_" . date('mdHi') . ".xls";
 header("Content-Type: application/vnd.ms-excel; charset=UTF-8");
 header("Content-Disposition: attachment; filename=\"$filename\"");
 header("Content-Description: PHP4 Generated Data");
@@ -46,7 +46,7 @@ $EXCEL_TXT = "
     <td>인원</td>
     <td>희망날짜</td>
     <td>희망 이용시간</td>
-    <td>등록일</td>
+    <td>신청일</td>
     <td>비고</td>
 </tr>
 ";

@@ -189,7 +189,7 @@ function getMemberList($jb, $sw, $sk, $scale, $offset=0, $subQuery="", $orderBy=
 
     $sql = "SELECT * FROM $tbl WHERE 1=1 ";
 
-	if($_GET['level'] == "90") {
+	if($_GET['level'] == "90" || $_GET['user_level'] == "90") {
 		$sql .= " AND user_level = '90' ";
 	} else if($_GET['level'] == "80") {
 		$sql .= " AND user_level = '80' ";
@@ -203,6 +203,7 @@ function getMemberList($jb, $sw, $sk, $scale, $offset=0, $subQuery="", $orderBy=
 	if($jb){
 		$sql .= " AND job = '$jb' ";
 	}
+
 	if($sw == "id"){
 		$encoded_sk = base64_encode($sk);
 		$sql .= " AND (user_id like '%$sk%' OR user_id like '%$encoded_sk%') ";

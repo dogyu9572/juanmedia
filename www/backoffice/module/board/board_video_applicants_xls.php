@@ -23,7 +23,7 @@ for($i = 0; $i < $arrLevel["total"]; $i ++) {
     $arrayLevel[$arrLevel["list"][$i]['level_no']] = $arrLevel["list"][$i]['level_name'];
 }
 
-$filename = $_SITE['NAME'] . "_교육신청리스트_" . date('mdHi') . ".xls";
+$filename = $_SITE['NAME'] . "_상영회신청리스트_" . date('mdHi') . ".xls";
 header("Content-Type: application/vnd.ms-excel; charset=UTF-8");
 header("Content-Disposition: attachment; filename=\"$filename\"");
 header("Content-Description: PHP4 Generated Data");
@@ -43,8 +43,9 @@ $EXCEL_TXT = "
     <td>이메일(아이디)</td>
     <td>연락처</td>
     <td>생년월일</td>
+    <td>카테고리</td>
     <td>상영회명</td>
-    <td>등록일</td>
+    <td>신청일</td>
     <td>신청상태</td>
     <td>비고</td>
 </tr>
@@ -54,13 +55,14 @@ for ($i = 0; $i < $arrList["total"]; $i++) {
     $user_level = $arrayLevel[$arrList["list"][$i]['user_level']];
     $EXCEL_TXT .= "
     <tr>
-        <td>" . ($i + 1) . "</td>
+        <td>" . (htmlspecialchars($arrList["list"][$i]['app_no'], ENT_QUOTES, 'UTF-8') ? "'" . htmlspecialchars($arrList["list"][$i]['app_no'], ENT_QUOTES, 'UTF-8') : '') . "</td>
         <td>" . htmlspecialchars($arrList["list"][$i]['video_no'], ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars($arrList["list"][$i]['name'], ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars($user_level, ENT_QUOTES, 'UTF-8') . "</td>
-        <td>" . htmlspecialchars($arrList["list"][$i]['email'], ENT_QUOTES, 'UTF-8') . "</td>
+        <td>" . htmlspecialchars($arrList["list"][$i]['w_user'], ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars('="' . $arrList["list"][$i]['tel'] . '"', ENT_QUOTES, 'UTF-8') . "</td>
-        <td>" . htmlspecialchars($arrList["list"][$i]['birthdate'], ENT_QUOTES, 'UTF-8') . "</td>        
+        <td>" . htmlspecialchars($arrList["list"][$i]['birthdate'], ENT_QUOTES, 'UTF-8') . "</td>     
+        <td>" . htmlspecialchars(getCategoryName($arrList["list"][$i]['category1']), ENT_QUOTES, 'UTF-8') . "</td>   
         <td>" . htmlspecialchars($arrList["list"][$i]['subject'], ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars(substr($arrList["list"][$i]['wdate'], 0, 10), ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars($arrList["list"][$i]['status'], ENT_QUOTES, 'UTF-8') . "</td>
