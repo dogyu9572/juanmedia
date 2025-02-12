@@ -217,6 +217,7 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                             <div class="inputs">
                                 <select id="discountSelect" name="discount" onchange="calculateDiscount()" class="w3">
                                     <option value="">선택</option>
+                                    <option value="0%" data-label='해당없음' <?= $arrBoardArticle["list"][0]['discount_text'] == '해당없음' ? 'selected' : '' ?>>해당없음</option>
 									<?php
 									$discounts = [
 										'토요일' => 'place_discount1',
@@ -342,6 +343,14 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
 
                             </div>
                         </td>
+                        <tr>
+                            <th>취소사유</th>
+                            <td>
+                                <div class="inputs">
+                                    <?=$arrBoardArticle["list"][0]['etc_1']?>
+                                </div>
+                            </td>
+                        </tr>
                     </tr>
                     <tr>
                         <th>비고</th>
@@ -689,10 +698,14 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                 var finalAmountDisplay = document.getElementById('finalAmountDisplay');
                 var totalAmount = parseFloat(document.getElementById('totalamount').value) || 0;
 
+                // Update total amount display elements
+                document.getElementById('totalAmountDisplay').querySelector('span:nth-child(2)').innerText =
+                    totalAmount.toLocaleString();
+
                 if (rentalType === '지원' || rentalType === '교육') {
                     discountSelect.style.display = 'none';
-                    finalAmountDisplay.innerText = '결제금액 : 0원';
                     document.getElementById('finalamount').value = 0;
+                    document.getElementById('discountamount').value = totalAmount;
                     document.getElementById('displayDiscountAmount').innerText = totalAmount.toLocaleString();
                     document.getElementById('displayFinalAmount').innerText = '0';
                     document.getElementById('finalAmountDisplay').innerText = '결제금액 : 0원';
@@ -710,14 +723,30 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                     document.getElementById('displayDiscountAmount').innerText = discountAmount.toLocaleString();
                     document.getElementById('displayFinalAmount').innerText = finalAmount.toLocaleString();
                     document.getElementById('finalAmountDisplay').innerText = '결제금액 : ' + finalAmount.toLocaleString() + '원';
+
+                    // Update total amount display
+                    document.getElementById('totalAmountDisplay').innerHTML = `
+            <span id="displayFinalAmount">${finalAmount.toLocaleString()}</span>원
+            (할인전 금액: <span>${totalAmount.toLocaleString()}</span>원 /
+            할인금액 : <span id="displayDiscountAmount">${discountAmount.toLocaleString()}</span>원 )
+        `;
                 } else {
                     discountSelect.style.display = 'none';
                     document.getElementById('finalamount').value = totalAmount;
+                    document.getElementById('discountamount').value = 0;
                     document.getElementById('displayDiscountAmount').innerText = '0';
                     document.getElementById('displayFinalAmount').innerText = totalAmount.toLocaleString();
                     document.getElementById('finalAmountDisplay').innerText = '결제금액 : ' + totalAmount.toLocaleString() + '원';
+
+                    // Update total amount display
+                    document.getElementById('totalAmountDisplay').innerHTML = `
+            <span id="displayFinalAmount">${totalAmount.toLocaleString()}</span>원
+            (할인전 금액: <span>${totalAmount.toLocaleString()}</span>원 /
+            할인금액 : <span id="displayDiscountAmount">0</span>원 )
+        `;
                 }
             }
+
 
             function calculateDiscount() {
                 if (!spaceNameInput.value) {

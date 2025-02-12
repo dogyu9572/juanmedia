@@ -96,6 +96,7 @@ $imgsrc = "/uploaded/board/video/".$arrBoardvideoArticle["files"][0]['re_name'];
                             <div class="th">신청상태</div>
                             <div class="td">
                                 <?=$arrBoardArticle["list"][0]["status"]?>
+                                <?=$arrBoardArticle["list"][0]["status"] == "신청완료" || $arrBoardArticle["list"][0]["status"] == "신청대기"   || $arrBoardArticle["list"][0]["status"] == "승인"   ? '<a href="#;" class="btnTypeSm" onclick="contentPop(\'.cancelPop\');">신청 취소</a>' : "" ?>
                             </div>
                         </div>
                     </div>

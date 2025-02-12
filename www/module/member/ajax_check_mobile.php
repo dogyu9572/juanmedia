@@ -19,7 +19,7 @@ SetDisConn($dblink);
 
 if($arrList["total"] > 0){
 	
-	$str = "1234567890";
+	/*$str = "1234567890";
 	$acode = substr(str_shuffle($str),0,4);
 
 	$sms_to = mysqli_real_escape_string($GLOBALS['dblink'], $_REQUEST[mobile]);
@@ -30,10 +30,10 @@ if($arrList["total"] > 0){
 
 	$sms = new EmmaSMS();
 	$sms->login($sms_id, $sms_passwd);
-	$ret = $sms->send($sms_to, $sms_from, $sms_msg, $sms_date, $sms_type);
+	$ret = $sms->send($sms_to, $sms_from, $sms_msg, $sms_date, $sms_type);*/
 
-	echo $acode;
+	echo 1;
 }else{
-	echo "";
+	echo "0";
 }
 ?>

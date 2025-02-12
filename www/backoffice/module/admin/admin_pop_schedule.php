@@ -1,11 +1,5 @@
 <?php
-include $_SERVER['DOCUMENT_ROOT'] . "/backoffice/pub/inc/admin_top.php";
-include "./menu.php";
-
-if(!in_array("homepage_manage",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTH"]) && $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]!="ROOT"):
-//	jsMsg("권한이 없습니다.");
-//	jsHistory("-1");
-endif;
+include $_SERVER['DOCUMENT_ROOT'] . "/backoffice/pub/inc/pop_top.php";
 
 include_once $_SERVER['DOCUMENT_ROOT'] . "/module/board/board.lib.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/module/calendar/calendar.lib.php";
@@ -182,12 +176,12 @@ $arrCategory = array(
 ?>
     <div class="container">
         <div class="title">전체일정</div>
-        <div class="tab_div">
-            <div class='tab_menu <?=$_GET["tab"] == ""?"on":""?>' onclick="location.href='<?=$_SERVER["PHP_SELF"]?>'">전체</div>
-            <?php foreach($arrCategory as $key => $val){?>
-                <div class='tab_menu <?=$_GET["tab"] == $key?"on":""?>' onclick="location.href='<?=$_SERVER["PHP_SELF"]?>?tab=<?=$key?>'"><?=$val?></div>
-            <?php } ?>
-        </div>
+        <!--<div class="tab_div">
+            <div class='tab_menu <?php /*=$_GET["tab"] == ""?"on":""*/?>' onclick="location.href='<?php /*=$_SERVER["PHP_SELF"]*/?>'">전체</div>
+            <?php /*foreach($arrCategory as $key => $val){*/?>
+                <div class='tab_menu <?php /*=$_GET["tab"] == $key?"on":""*/?>' onclick="location.href='<?php /*=$_SERVER["PHP_SELF"]*/?>?tab=<?php /*=$key*/?>'"><?php /*=$val*/?></div>
+            <?php /*} */?>
+        </div>-->
 
         <div class="inbox write_tbl schedule_wrap">
             <div class="schedule_area">
@@ -295,7 +289,7 @@ $arrCategory = array(
                                                 <div class="schedule_name"><?=$arrCategory[$scheduleType]?></div>
                                                 <?php foreach($schedules as $val): ?>
                                                     <div>
-                                                        <a href="/backoffice/module/board/board_view.php?boardid=<?=$val['schedule_source']?>&mode=modify&idx=<?=$val['idx']?>">
+                                                        <a href="/backoffice/module/board/board_view.php?boardid=<?=$val['schedule_source']?>&mode=modify&idx=<?=$val['idx']?>" target="_parent">
                                                             <?php if ($boardidMap[$scheduleType] == 'equ_applicants' ||
                                                                 $boardidMap[$scheduleType] == 'place_applicants' ||
                                                                 $boardidMap[$scheduleType] == 'media_applicants'): ?>

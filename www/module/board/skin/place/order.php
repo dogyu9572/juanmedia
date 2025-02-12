@@ -230,6 +230,7 @@
                                     <div class="baseSel">
                                         <select id="discountSelect" name="discount" onchange="calculateDiscount()">
                                             <option value="">선택</option>
+                                            <option value="0%" data-label='해당없음' <?= $arrBoardApplicantsArticle["list"][0]['discount_text'] == '해당없음' ? 'selected' : '' ?>>해당없음</option>
                                             <?php
                                             $discounts = [
                                                 '토요일' => 'place_discount1',

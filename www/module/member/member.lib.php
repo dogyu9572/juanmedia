@@ -915,6 +915,13 @@ function joinMemberAdmin(){
 		$comma = ",";
 	}
 
+	$comma = "";
+	for($i=0;$i<count($_POST['child_admin']);$i++){
+		$child_admin		.= $comma.$_POST['child_admin'][$i];
+		$child_wdate		.= $comma.$_POST['child_wdate'][$i];
+		$comma = "||";
+	}
+
 	if($arrCheck["total"] > 0){
 		return false;
 	}else{
@@ -954,12 +961,19 @@ function joinMemberAdmin(){
 			orderday = '".$orderday."',
 			phone = '".$phone."',
 			mobile = '".$mobile."',
+			`before` = 'N',
+			gender = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['gender']). "',
+			child_admin = '" . mysqli_real_escape_string($GLOBALS['dblink'], $child_admin) . "',
+			child_wdate = '" . mysqli_real_escape_string($GLOBALS['dblink'], $child_wdate) . "',		      
+			child_violation = '" . mysqli_real_escape_string($GLOBALS['dblink'], $child_violation) . "',
+			child_category = '" . mysqli_real_escape_string($GLOBALS['dblink'], $child_category) . "',
+			child_violation_wdate = '" . mysqli_real_escape_string($GLOBALS['dblink'], $child_violation_wdate) . "',
 			login_last = now(),
 			wdate = now(),
 			udate = now()
 		";
-		//echo $sql;
-		//exit;
+//		echo $sql;
+//		exit;
 		$rs = mysqli_query($GLOBALS['dblink'], $sql);
 		$insert_idx = mysqli_insert_id($GLOBALS['dblink']);
 		$total = mysqli_affected_rows($GLOBALS['dblink']);
@@ -1534,8 +1548,7 @@ function getUserInfoNnickname($nick_name){
 	$nick_name_naver = $nick_name . "_naver";
 	$nick_name_kakao = $nick_name . "_kakao";
 
-	$sql  = "SELECT * FROM ".$tbl." WHERE nick_name = '$nick_name_naver' OR nick_name = '$nick_name_kakao'";
-	//echo $sql;
+	$sql  = "SELECT * FROM ".$tbl." WHERE nick_name = '$nick_name' OR nick_name = '$nick_name_naver' OR nick_name = '$nick_name_kakao'";
 
 	$rs = mysqli_query($GLOBALS['dblink'], $sql);
 	$total_rs = mysqli_num_rows($rs);
@@ -1618,7 +1631,8 @@ function getUserFindMobile($mobile){
 
 	$sql  = "SELECT * ";
 	$sql .= "FROM ".$tbl." ";
-	$sql .= "WHERE REPLACE(mobile,'-','')='".$mobile."' where join_type='homepage'";
+	//$sql .= "WHERE REPLACE(mobile,'-','')='".$mobile."' where join_type='homepage'";
+	$sql .= "WHERE REPLACE(mobile,'-','')='".$mobile."'";
 	$rs = mysqli_query($GLOBALS['dblink'], $sql);
 	$total_rs = mysqli_num_rows($rs);
 	//	echo $sql;

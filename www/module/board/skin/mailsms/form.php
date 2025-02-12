@@ -249,11 +249,20 @@ $arrCategory01 = getCategoryList("114","Y");	// 분류
 				<th>순서</th>
 				<td><div class="inputs"><input type="text" class="w2" style="text-align:right;" name="b_sort" maxlength="100" value="<?=$arrBoardArticle["list"][0]['b_sort']?$arrBoardArticle["list"][0]['b_sort']:"0"?>"></div></td>
 			</tr>
+            <tr>
+                <th>메뉴구분</th>
+                <td><div class="inputs">
+                        <label class="radio"><input type="radio" name="etc_3" value="edu" <?if($arrBoardArticle["list"][0]['etc_3'] == "edu" || $arrBoardArticle["list"][0]['etc_3'] == ""){echo " checked";}?>><i></i>교육</label>
+                        <label class="radio"><input type="radio" name="etc_3" value="equ" <?if($arrBoardArticle["list"][0]['etc_3'] == "equ" ){echo " checked";}?>><i></i>장비</label>
+                        <label class="radio"><input type="radio" name="etc_3" value="place" <?if($arrBoardArticle["list"][0]['etc_3'] == "place" ){echo " checked";}?>><i></i>공간</label>
+                        <label class="radio"><input type="radio" name="etc_3" value="video" <?if($arrBoardArticle["list"][0]['etc_3'] == "video" ){echo " checked";}?>><i></i>상영회</label>
+                        <label class="radio"><input type="radio" name="etc_3" value="media" <?if($arrBoardArticle["list"][0]['etc_3'] == "media" ){echo " checked";}?>><i></i>미디어체험</label>
+                    </div></td>
+            </tr>
 			<tr>
 				<th>구분</th>
 				<td><div class="inputs">
 					<label class="radio"><input type="radio" name="category" value="sms" <?if($arrBoardArticle["list"][0]['category'] == "sms" || $arrBoardArticle["list"][0]['category'] == ""){echo " checked";}?>><i></i>SMS</label>
-					<label class="radio"><input type="radio" name="category" value="kakao" <?if($arrBoardArticle["list"][0]['category']=="kakao"){echo " checked";}?>><i></i>알림톡</label> 
 					<label class="radio"><input type="radio" name="category" value="email" <?if($arrBoardArticle["list"][0]['category']=="email"){echo " checked";}?>><i></i>EMAIL</label> 
 				</div></td>
 			</tr>
@@ -304,8 +313,8 @@ $arrCategory01 = getCategoryList("114","Y");	// 분류
 				<th>날짜</th>
 				<td><input type="text" class="w2 datepicker" name="schedule_date" value="<?=$arrBoardArticle["list"][0]['schedule_date']??date("Y-m-d")?>" maxlength="10" /></td>
 			</tr>
-			<tr style="display:none;">
-				<th>썸네일</th>
+			<tr>
+				<th>첨부파일</th>
 				<td>
 					<div class="inputs">
 					<?if($arrBoardArticle["list"][0]["file_l_idx"]){?>
@@ -323,7 +332,7 @@ $arrCategory01 = getCategoryList("114","Y");	// 분류
 					<div><img src="#" onerror="this.style.display='none'" ></div>
 				</td>
 			</tr>			
-			<tr style="display:none;">
+			<tr>
 				<th>작성자</th>
 				<td><div class="inputs"><input type="text" class="w2" name="name" maxlength="100" value="<?if($_REQUEST['mode']=="modify"):?><?=$arrBoardArticle["list"][0]['name']?><?else:?><?=$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"]?$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["NAME"]:$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["NAME"]?><?endif;?>"></div></td>
 			</tr>

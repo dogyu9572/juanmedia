@@ -40,7 +40,7 @@
                     </table>
 
                     <div class="pop_btm">
-                        <label class="time"><i class="fa-regular fa-clock"></i>24시간동안 다시 열럼하지 않습니다.<input type="checkbox" name="no_popup" onclick="popupClose<?=$arrPopupList["list"][$i]['idx']?>();"></label>
+                        <label class="time"><i class="fa-regular fa-clock"></i>24시간동안 다시 열람하지 않습니다.<input type="checkbox" name="no_popup" onclick="popupClose<?=$arrPopupList["list"][$i]['idx']?>();"></label>
                         <a href="javascript:popupClose<?=$arrPopupList["list"][$i]['idx']?>()">[닫기]</a>
                     </div>
 

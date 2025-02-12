@@ -8,8 +8,8 @@ include $_SERVER['DOCUMENT_ROOT'] . "/module/member/member.lib.php";
 include $_SERVER ['DOCUMENT_ROOT'] . "/module/coupon/coupon.lib.php";
 
 if (! in_array ( "member_manage", $_SESSION [$_SITE ["DOMAIN"]] ["ADMIN"] ["AUTH"] ) && $_SESSION [$_SITE ["DOMAIN"]] ["ADMIN"] ["GRADE"] != "ROOT") :
-	jsMsg ( "권한이 없습니다." );
-	jsHistory ( "-1" );
+    jsMsg ( "권한이 없습니다." );
+    jsHistory ( "-1" );
 
 endif;
 
@@ -26,7 +26,7 @@ $arrAllCategory = getCategoryAll();
 $arrLevel = getArticleList ( $_conf_tbl ["member_level"], 0, 0, "order by level_no desc " );
 
 for($i = 0; $i < $arrLevel["total"]; $i ++) {
-	$arrayLevel[$arrLevel["list"][$i]['level_no']] = $arrLevel["list"][$i]['level_name'];
+    $arrayLevel[$arrLevel["list"][$i]['level_no']] = $arrLevel["list"][$i]['level_name'];
 }
 
 
@@ -40,44 +40,40 @@ $EXCEL_TXT = "
 <table border='1'>
 <tr style='background-color:#ffff00;'>
    <td>No</td>  
-   <td>".iconv("UTF-8","EUC-KR","회원상태")."</td>
    <td>".iconv("UTF-8","EUC-KR","가입구분")."</td>
    <td>".iconv("UTF-8","EUC-KR","이름")."</td>
    <td>".iconv("UTF-8","EUC-KR","이메일(아이디)")."</td>
    <td>".iconv("UTF-8","EUC-KR","연락처")."</td>
    <td>".iconv("UTF-8","EUC-KR","메일 수신")."</td>
    <td>".iconv("UTF-8","EUC-KR","SMS 수신")."</td>
-   <td>".iconv("UTF-8","EUC-KR","가입날짜")."</td>
-   <td>".iconv("UTF-8","EUC-KR","최종로그인")."</td>
+   <td>".iconv("UTF-8","EUC-KR","탈퇴날짜")."</td>
    <td>".iconv("UTF-8","EUC-KR","비고")."</td>
 </tr>
 ";
 
 for ($i = 0; $i < $arrList["total"]; $i++) {
-	if ($arrList['list'][$i]['before'] == 'Y') {
-		$user_name = base64_decode($arrList['list'][$i]['user_name']);
-		$mobile = '="' . base64_decode($arrList['list'][$i]['mobile']) . '"';
-		$email = base64_decode($arrList['list'][$i]['email']);
-	} else {
-		$user_name = $arrList['list'][$i]['user_name'];
-		$mobile = '="' . $arrList['list'][$i]['mobile'] . '"';
-		$email = $arrList['list'][$i]['email'];
-	}
+    if ($arrList['list'][$i]['before'] == 'Y') {
+        $user_name = base64_decode($arrList['list'][$i]['user_name']);
+        $mobile = '="' . base64_decode($arrList['list'][$i]['mobile']) . '"';
+        $email = base64_decode($arrList['list'][$i]['email']);
+    } else {
+        $user_name = $arrList['list'][$i]['user_name'];
+        $mobile = '="' . $arrList['list'][$i]['mobile'] . '"';
+        $email = $arrList['list'][$i]['email'];
+    }
 
     $mobile = str_replace('-', '', $mobile);
 
-	$EXCEL_TXT .= "
+    $EXCEL_TXT .= "
     <tr>
         <td>" . ($i + 1) . "</td>
-        <td>" . iconv("UTF-8", "EUC-KR", $arrayLevel[$arrList['list'][$i]['user_level']]) . "</td>
         <td>" . iconv("UTF-8", "EUC-KR", $_SITE["MEMBER_TYPE"][$arrList['list'][$i]['join_type']]) . "</td>
         <td>" . iconv("UTF-8", "EUC-KR", $user_name) . "</td>
         <td>" . iconv("UTF-8", "EUC-KR", $arrList["list"][$i]['user_id']) . "</td>
         <td>" . iconv("UTF-8", "EUC-KR", $mobile) . "</td>
         <td>" . iconv("UTF-8", "EUC-KR", $arrList["list"][$i]['email_accept']) . "</td>
         <td>" . iconv("UTF-8", "EUC-KR", $arrList["list"][$i]['sms_accept']) . "</td>
-        <td>" . iconv("UTF-8", "EUC-KR", $arrList["list"][$i]['wdate']) . "</td>
-        <td>" . iconv("UTF-8", "EUC-KR", $arrList["list"][$i]['login_last']) . "</td>
+        <td>" . iconv("UTF-8", "EUC-KR", $arrList["list"][$i]['outdt']) . "</td>
         <td>" . iconv("UTF-8", "EUC-KR", $arrList["list"][$i]['user_memo']) . "</td>
     </tr>
     ";

@@ -342,6 +342,7 @@
                                 <div class="baseSel">
                                     <select id="discountSelect" name="discount" onchange="calculateDiscount()">
                                         <option value="">선택</option>
+                                        <option value="0%" data-label='해당없음' <?= $arrBoardApplicantsArticle["list"][0]['discount_text'] == '해당없음' ? 'selected' : '' ?>>해당없음</option>
                                         <?php
                                         $discounts = [
                                             '장기대여' => 'equ_discount1',
@@ -465,7 +466,7 @@
                     <div class="info">
                         <div class="tit">총 대여금액</div>
                         <div class="txt" id="totalamount" name="totalamount">
-                            <?= isset($arrBoardApplicantsArticle["list"][0]['totalamount']) ? number_format($arrBoardApplicantsArticle["list"][0]['totalamount']) : number_format($arrBoardArticle["list"][0]['fee']) ?>원
+                            <?= isset($arrBoardApplicantsArticle["list"][0]['totalamount']) ? number_format($arrBoardApplicantsArticle["list"][0]['totalamount']) : number_format($_POST["totalamount"]) ?>원
                         </div>
                     </div>
                     <div class="info">
@@ -477,7 +478,7 @@
                     <div class="info last">
                         <div class="tit">최종금액</div>
                         <div class="txt" id="finalamount" name="finalamount">
-                            <?= isset($arrBoardApplicantsArticle["list"][0]['finalamount']) ? number_format($arrBoardApplicantsArticle["list"][0]['finalamount']) : number_format($arrBoardArticle["list"][0]['fee']) ?>원
+                            <?= isset($arrBoardApplicantsArticle["list"][0]['finalamount']) ? number_format($arrBoardApplicantsArticle["list"][0]['finalamount']) : number_format($_POST["totalamount"]) ?>원
                         </div>
                     </div>
                     <a href="javascript:void(0);" class="btnType1" onclick="if (validateForm()) { document.getElementById('enrollmentForm').submit(); }">대여 신청</a>
@@ -513,7 +514,7 @@
             var discountValue = discountSelect.value;
             var discountamount = 0;
 
-            if (discountValue) {
+            if (discountValue && discountValue !== '0%') {
                 discountamount = totalamount * (parseFloat(discountValue) / 100);
             }
 

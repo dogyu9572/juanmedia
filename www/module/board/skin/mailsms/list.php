@@ -201,6 +201,24 @@ function fnOrderby(rdnm, rdsc){
 			<dt>창립기념일</dt>
 			<dd><input type="text" id="datepicker1" /><em>~</em><input type="text" id="datepicker2" /></dd>
 		</dl>	-->
+
+        <dl>
+            <dt>메뉴구분</dt>
+            <dd><select name="etc_3" class="text" style="width:120px;">
+                    <option value="">전체</option>
+                    <option value="edu" <?=$_GET['etc_3']=="edu"?"selected":""?>>교육</option>
+                    <option value="equ" <?=$_GET['etc_3']=="equ"?"selected":""?>>장비</option>
+                    <option value="place" <?=$_GET['etc_3']=="place"?"selected":""?>>공간</option>
+                </select></dd>
+        </dl>
+        <dl>
+            <dt>구분</dt>
+            <dd><select name="category" class="text" style="width:120px;">
+                    <option value="">전체</option>
+                    <option value="sms" <?=$_GET['category']=="sms"?"selected":""?>>SMS</option>
+                    <option value="email" <?=$_GET['category']=="email"?"selected":""?>>EMAIL</option>
+                </select></dd>
+        </dl>
 		<dl>
 			<dt>등록일</dt>
 			<dd><input type="text" class="datepicker" name="sdate" value="<?=$_GET['sdate']?>" autocomplete="off"/><em>~</em><input type="text" class="datepicker" name="edate" value="<?=$_GET['edate']?>" autocomplete="off"/></dd>
@@ -230,6 +248,9 @@ function fnOrderby(rdnm, rdsc){
 				</div>
 			</div>
 			<div class="bdr_right">
+                <div class="btns">
+                    <a href="./board_<?=$arrBoardInfo["list"][0]["boardid"]?>_xls.php?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&sw=<?=$_REQUEST['sw']?>&sk=<?=$_REQUEST['sk']?>&user_level=<?=$_REQUEST['user_level']?>&s_date=<?=$_REQUEST['s_date']?>&e_date=<?=$_REQUEST['e_date']?>" class="excel" download>엑셀파일로 저장<span class="pc_vw"></span></a>
+                </div>
 				<div class="count">
 					<select name="page_size" onchange="document.form1.submit()"  style="width:60px;">
 						<option value="0" <?if($arrBoardInfo["list"][0]["scale"]=="0"){echo 'selected="selected"';}?>>전체</option>
@@ -248,10 +269,6 @@ function fnOrderby(rdnm, rdsc){
 					</select>
 					개씩 보기
 				</div>
-				<div class="btns">
-					<a href="javascript:void(0);" onclick="getSelections()" class="btn btn_del">선택삭제</a>
-					<a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=write&category=<?=$_GET['category']?>" class="btn">신규등록</a>
-				</div>
 			</div>
 		</div>
 		</form>
@@ -263,7 +280,8 @@ function fnOrderby(rdnm, rdsc){
 					<colgroup class="pc_vw">
 						<col class="check">
 						<col class="w4p">
-						<col class="w6p">
+                        <col class="w6p">
+                        <col class="w6p">
 						<col class="*">
 						<col class="*">
 						<col class="w6p">
@@ -274,7 +292,8 @@ function fnOrderby(rdnm, rdsc){
 						<tr>	
 							<th><label class="check notxt"><input type="checkbox" name="" id="allCheck"><i></i></label></th>
 							<th class="pc_vw">No.</th>
-							<th class="pc_vw">구분</th>
+							<th class="pc_vw">메뉴구분</th>
+                            <th class="pc_vw">구분</th>
 							<th class="pc_vw">제목</th>
 							<th class="pc_vw">발송제목</th>
 							<th class="pc_vw">작성자</th>
@@ -289,6 +308,11 @@ function fnOrderby(rdnm, rdsc){
 						"kakao" => "알림톡",
 						"email" => "EMAIL"
 					);
+                    $arrEtc_3 = array(
+                        "edu" => "교육",
+                        "equ" => "장비",
+                        "place" => "공간",
+                    );
 					if($arrBoardList["list"]["total"] > 0){
 						for($i=0; $i < $arrBoardList["list"]["total"]; $i++){
 							//신규글 표시
@@ -330,8 +354,9 @@ function fnOrderby(rdnm, rdsc){
 					?>
 						<tr data-order="<?=$arrBoardList['list'][$i]['idx']?>">
 							<td style="width:5%;"><label class="check notxt"><input type="checkbox" value="<?=$arrBoardList["list"][$i]['idx']?>" name="chk_list"><i></i></label></td>
-							<td style="width:5%;"><?=$arrBoardList["list"][$i]['no']=="0"?"공지":$categoryTitle?></td>	
-							<td style="width:5%;"><?=$arrCategory[$arrBoardList["list"][$i]['category']]?></td>	
+							<td style="width:5%;"><?=$arrBoardList["list"][$i]['no']=="0"?"공지":$categoryTitle?></td>
+                            <td style="width:5%;"><?=$arrEtc_3[$arrBoardList["list"][$i]['etc_3']]?></td>
+							<td style="width:5%;"><?=$arrCategory[$arrBoardList["list"][$i]['category']]?></td>
 							<td style="width:40%;"><?=$arrBoardList["list"][$i]['subject']?></td>
 							<td style="width:40%;"><?=$arrBoardList["list"][$i]['etc_4']?></td>
 							<td style="width:5%;"><?=$arrBoardList["list"][$i]['name']?></td>
@@ -372,11 +397,11 @@ function fnOrderby(rdnm, rdsc){
 			echo pageNavigationBackoffice($arrBoardList["total"],$arrBoardInfo["list"][0]["scale"],$arrBoardInfo["list"][0]["pagescale"],$_GET['offset'],$reQueryString);
 			############### paging ############### ED
 			?>			
-			</div>	
-<!-- 			<div class="btns">
-				<a href="javascript:void(0);" onclick="getSelections()" class="btn btn_del">선택삭제</a>
-				<a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=write&category=<?=$_GET['category']?>" class="btn">신규등록</a>
-			</div> -->
+			</div>
+            <div class="btns">
+                <a href="javascript:void(0);" onclick="getSelections()" class="btn btn_del">선택삭제</a>
+                <a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=write&category=<?=$_GET['category']?>" class="btn">신규등록</a>
+            </div>
 		</div>
 	</div>
 </div>

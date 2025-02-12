@@ -1,11 +1,11 @@
 <?php
 // 전송해야 할 설정값
-$client_id		= "deaa21e4-f404-4c54-9888-c4fae33291be";
-$client_secret	= "754f263d6c9a62b6da32ef411c11d6517d65325";
+$client_id		= "afc57dad-df5f-449a-9eb4-0591f3ba1d0a";
+$client_secret	= "d491dc855a0fe98c24c6bf7fba661cdf";
 
 $api_server			= "https://svc.niceapi.co.kr:22001";
-$api_url			= "/digital/niceid/api/v1.0/common/crypto/token";	
-$access_token		= "c55fc6a9-9455-4d3e-95c7-b65747b8a4cf";
+$api_url			= "/digital/niceid/api/v1.0/common/crypto/token";
+$access_token		= "58a3a714-c896-4156-ad5f-2b859699bec5";
 $current_timestamp	= time();
 $reqDtim			= date("YmdHis");
 $reqNo				= "111111111122222222223333334333";

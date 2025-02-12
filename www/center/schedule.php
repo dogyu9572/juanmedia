@@ -4,6 +4,10 @@
 include_once $_SERVER['DOCUMENT_ROOT'] . "/module/board/board.lib.php";
 $dblink = SetConn($_conf_db["main_db"]);
 
+if ($_GET['boardid'] == '') {
+    $_GET['boardid'] = 'all';
+}
+
 if($_GET['boardid'] == 'all') {
     // 전체 아이템 수 계산을 위해 먼저 모든 데이터 가져오기
     $allEduList = getBoardListBaseNFile("edu", $_GET["category"], $_GET['sw'], $_GET['sk'], 99999, 0, $_GET['reply']);

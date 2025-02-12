@@ -184,7 +184,7 @@ $arrBoardList	= getBoardListBaseNFile($arrBoardInfo["list"][0]["boardid"], "", $
 												<td><a href="/edu/list.php?boardid=edu&mode=view&idx=<?=$arrBoardArticle["list"][0]['idx']?>"><?=$arrBoardList["list"][$i]['subject']?></a></td>
 												<td><?=$arrBoardArticle["list"][0]['e_start_date']?> ~<br /><?=$arrBoardArticle["list"][0]['e_end_date']?></td>
 												<td>
-                                                    <?=$dayType?><?=$days?>
+                                                    <?=$dayType?> <?=$days?>
                                                     <?=$arrBoardArticle["list"][$i]['start_hour']?>:<?=$arrBoardArticle["list"][$i]['start_minute']?> ~ <?=$arrBoardArticle["list"][$i]['end_hour']?>:<?=$arrBoardArticle["list"][$i]['end_minute']?>
                                                 </td>
 												<td><?= number_format($arrBoardList["list"][$i]['finalamount']) ?>원</td>

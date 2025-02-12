@@ -28,7 +28,7 @@ SetDisConn ( $dblink );
     <!-- //pageTitle -->
     <form name="form1" method="post" action="/module/board/board_evn.php" ENCTYPE="multipart/form-data">
         <input type="hidden" name="boardid" value="teacher">
-        <input type="hidden" name="returnURL" value="<?=$_SERVER["PHP_SELF"]?>">
+        <input type="hidden" name="returnURL" value="/edu/teacher.php">
         <input type="hidden" name="evnMode" value="write">
         <input type="hidden" name="w_user" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]?>">
         <!-- subSec -->

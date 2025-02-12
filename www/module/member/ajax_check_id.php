@@ -1,27 +1,1 @@
-<?
-include_once ($_SERVER['DOCUMENT_ROOT'] . "/common/conf/config.inc.php");
-include ($_SERVER['DOCUMENT_ROOT'] . "/module/member/member.lib.php");
-
-$email = ($_REQUEST['user_id']);
-
-//사용금지 아이디 체크
-if(in_array(strtolower($email),$_SITE["MEMBER"]["DONT_USE_ID"])){
-    echo "1";
-    exit;
-}
-
-//DB연결
-$dblink = SetConn($_conf_db["main_db"]);
-
-
-$arrList = getUserInfo($email);
-
-//DB해제
-SetDisConn($dblink);
-
-if($arrList["total"] > 0){
-    echo "1";
-}else{
-    echo "0";
-}
-?>
+<?include_once ($_SERVER['DOCUMENT_ROOT'] . "/common/conf/config.inc.php");include ($_SERVER['DOCUMENT_ROOT'] . "/module/member/member.lib.php");$email = ($_REQUEST['user_id']);//사용금지 아이디 체크if(in_array(strtolower($email),$_SITE["MEMBER"]["DONT_USE_ID"])){    echo "1";    exit;}//DB연결$dblink = SetConn($_conf_db["main_db"]);$arrList = getUserInfo($email);//DB해제SetDisConn($dblink);if($arrList["total"] > 0){    echo "1";}else{    echo "0";}?>
