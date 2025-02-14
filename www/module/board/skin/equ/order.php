@@ -116,7 +116,6 @@
         jsGo("/equ/list.php?boardid=equ&mode=view&idx=".$_GET['idx']);
     }
 
-
     $subQuery = "AND equ_idx={$_GET["idx"]} AND (rental_start_date <= '{$_POST["rental_end_date"]}' AND rental_end_date >= '{$_POST["rental_start_date"]}')";
     $arrBoardEquList = getBoardListBase("equ_applicants", "", "", "", 100, 0, $subQuery, "", "");
 
@@ -220,6 +219,7 @@
                         <input type="hidden" name="returnURL" value="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=list&cat_no=<?=$arrBoardArticle["list"][0]['category1']?>&offset=<?=$_GET['offset']??""?>">
                         <input type="hidden" id="user_level" name="user_level" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["LEVEL"]?>">
                         <input type="hidden" id="w_user" name="w_user" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]?>">
+                        <input type="hidden" name="birthdate" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["BIRTH"]?>">
                         <input type="hidden" name="usehtml" value="Y">
 
 		                <?php if (isset($_GET["idx"])): ?>
@@ -323,19 +323,19 @@
                             <div class="formTit">이메일주소</div>
                             <div class="right">
                                 <div class="baseInput">
-                                    <input type="text" name="email" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["EMAIL"]?>" disabled>
-                                    <input type="hidden" name="email" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["EMAIL"]?>">
+                                    <input type="text" name="email" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]?>" disabled>
+                                    <input type="hidden" name="email" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]?>">
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <!--<div class="row">
                             <div class="formTit">생년월일</div>
                             <div class="right">
                                 <div class="baseInput">
-                                    <input type="text" name="birthdate"  value="<?=$arrBoardApplicantsArticle["list"][0]["birthdate"]?>" class="datepicker">
+                                    <input type="text" name="birthdate"  value="<?php /*=$arrBoardApplicantsArticle["list"][0]["birthdate"]*/?>" class="datepicker">
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
                         <div class="row">
                             <div class="formTit">할인적용</div>
                             <div class="right">
@@ -625,12 +625,6 @@
             if (!rentalEndTime.value) {
                 alert('반납 방문시간을 선택하지 않았습니다.');
                 rentalEndTime.focus();
-                return false;
-            }
-
-            if (!birthdate.value) {
-                alert('생년월일을 선택하지 않았습니다.');
-                birthdate.focus();
                 return false;
             }
 

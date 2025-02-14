@@ -302,12 +302,21 @@ $arrCategory = array(
                                                                 <?=$val['name']?> /
                                                             <?php endif; ?>
                                                             <?=$val['subject']?>
-                                                            <?php if ($boardidMap[$scheduleType] == 'media_applicants'): ?>
-                                                                <?= str_replace('|', ',', $val['experience']) ?>
-                                                            <?php endif; ?>
-                                                            <?php if ($boardidMap[$scheduleType] == 'place_applicants'): ?>
+	                                                        <?php if ($boardidMap[$scheduleType] == 'edu'): ?>
+                                                                / <?=$val['r_start_date']?> ~ <?=$val['r_end_date']?> / <?=$val['start_hour']?>:<?=$val['start_minute']?> ~ <?=$val['end_hour']?>:<?=$val['end_minute']?>
+	                                                        <?php endif; ?>
+	                                                        <?php if ($boardidMap[$scheduleType] == 'equ_applicants'): ?>
+                                                                / <?=$val['rental_start_date']?> ~ <?=$val['rental_end_date']?> / <?=$val['rental_start_time']?> ~ <?=$val['rental_end_time']?>
+	                                                        <?php endif; ?>
+	                                                        <?php if ($boardidMap[$scheduleType] == 'place_applicants'): ?>
                                                                 / <?=$val['rental_start_time']?> ~ <?=$val['rental_end_time']?>
-                                                            <?php endif; ?>
+	                                                        <?php endif; ?>
+	                                                        <?php if ($boardidMap[$scheduleType] == 'media_applicants'): ?>
+		                                                        <?= str_replace('|', ',', $val['experience']) ?> / <?=$val['start_hour']?>:<?=$val['start_minute']?> ~ <?=$val['end_hour']?>:<?=$val['end_minute']?>
+	                                                        <?php endif; ?>
+	                                                        <?php if ($boardidMap[$scheduleType] == 'video'): ?>
+		                                                       / <?=$val['start_hour']?>:<?=$val['start_minute']?> ~ <?=$val['end_hour']?>:<?=$val['end_minute']?>
+	                                                        <?php endif; ?>
                                                         </a>
                                                     </div>
                                                 <?php endforeach; ?>

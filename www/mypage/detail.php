@@ -12,8 +12,14 @@ $arrBoardInfo = getBoardInfo($_conf_tbl['board_info'], "edu_applicants");
 $arrBoardArticle = getBoardArticleView($arrBoardInfo["list"][0]["boardid"], $_GET["category"], $_GET["idx"],"read");
 $arrBoardEduArticle = getBoardArticleView("edu", $_GET["category"], $arrBoardArticle["list"][0]["edu_idx"],"read");
 $arrBoardCertificatesArticle = getBoardArticleView("edu_certificates", $_GET["category"], "","read" , "w_user = '".$arrBoardArticle["list"][0]["w_user"]."' and edu_idx = ".$arrBoardArticle["list"][0]["edu_idx"]);
+$arrBoardpaymentArticle = getBoardArticleView("payment", $_GET["category"], "","read" , "board_type = 'edu' and w_user = '".$arrBoardArticle["list"][0]["w_user"]."' and type_idx = ".$arrBoardArticle["list"][0]["idx"]);
 $imgsrc = "/uploaded/board/edu/".$arrBoardEduArticle["files"][0]['re_name'];
 
+$dayTypeMap = [
+	'weekly' => '매주',
+	'biweekly' => '격주',
+	'other' => '기타'
+];
 ?>
 
 		<!-- Container -->
@@ -30,7 +36,7 @@ $imgsrc = "/uploaded/board/edu/".$arrBoardEduArticle["files"][0]['re_name'];
 							<div class="tit">마이페이지</div>
 							<ul>
 								<li><a href="/edu/info.php">미디어교육</a></li>
-								<li><a href="/equ/info.php">장비대여</a></li>
+								<a href="/equ/info.php">장비대여</a></li>
 								<li><a href="/place/info.php">공간대관</a></li>
 								<li><a href="/media/info.php">미디어체험</a></li>
 								<li><a href="/center/intro.php">센터안내</a></li>
@@ -38,7 +44,7 @@ $imgsrc = "/uploaded/board/edu/".$arrBoardEduArticle["files"][0]['re_name'];
 							</ul>
 						</div>
 						<div class="lnbSub">
-							<div class="tit">신청 내역</div>
+							<div <li class="tit">신청 내역</div>
 							<ul>
 								<li><a href="freeList.php">나의 활동 관리</a></li>
 								<li><a href="edit.php">나의 정보 관리</a></li>
@@ -104,8 +110,8 @@ $imgsrc = "/uploaded/board/edu/".$arrBoardEduArticle["files"][0]['re_name'];
 								<div class="line">
 									<div class="th">결제금액</div>
 									<div class="td"><?=number_format($arrBoardArticle["list"][0]['finalamount'])?>원
-                                       <?=$arrBoardArticle["list"][0]["status"] !== "결제완료" ?  '<button type="button" class="btnTypeSm" onclick="contentPop(\'.paymentPop\');">입금 확인 요청</button>' : "" ?>
-                                        </div>
+                                       <?=$arrBoardpaymentArticle["total"] > 0 ? '<button type="button" class="btnTypeSm disabled" onclick="">입금 확인 요청</button>' : '<button type="button" class="btnTypeSm" onclick="contentPop(\'.paymentPop\');">입금 확인 요청</button>' ?>
+                                    </div>
 								</div>
                                 <div class="line">
 									<div class="th">할인적용</div>
@@ -149,12 +155,15 @@ $imgsrc = "/uploaded/board/edu/".$arrBoardEduArticle["files"][0]['re_name'];
 												<div class="txt"><?=$arrBoardEduArticle["list"][0]["e_start_date"]?> ~ <?=$arrBoardEduArticle["list"][0]["e_end_date"]?></div>
 											</div>
                                             <div class="info">
-                                                <div class="tit">교육시간</div>
-                                                <div class="txt"><?=$arrBoardEduArticle["list"][0]['start_hour']?>:<?=$arrBoardEduArticle["list"][0]['start_minute']?> ~ <?=$arrBoardEduArticle["list"][0]['end_hour']?>:<?=$arrBoardEduArticle["list"][0]['end_minute']?></div>
+                                                <div class="tit">교육 요일/시간</div>
+                                                <div class="txt">
+	                                                <?=$dayTypeMap[$arrBoardEduArticle["list"][0]["day_type"]] ?> <?= str_replace('|', '/', $arrBoardEduArticle["list"][0]["days"]) ?>
+                                                    <?=$arrBoardEduArticle["list"][0]['start_hour']?>:<?=$arrBoardEduArticle["list"][0]['start_minute']?> ~ <?=$arrBoardEduArticle["list"][0]['end_hour']?>:<?=$arrBoardEduArticle["list"][0]['end_minute']?>
+                                                </div>
                                             </div>
 											<div class="info">
 												<div class="tit">카테고리</div>
-												<div class="txt"><?=getCategoryName($arrBoardEduArticle["list"][0]['category1'])?></div>
+												<div class="txt"><?=getCategoryName($arrBoardEduArticle["list"][0]['category1'])?> / <?=getCategoryName($arrBoardEduArticle["list"][0]['category2'])?></div>
 											</div>
                                             <div class="info">
                                                 <div class="tit">교육장소</div>

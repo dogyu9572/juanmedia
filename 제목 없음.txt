@@ -1,66 +1,27 @@
 
-1. 체험분야 인원 설정은 환경설정에서 인원 수를 선택하면, 사용자페이지에서 인원 수 입력 시 해당 인원 이상일 경우만 아래 체험분야 체크박스가 활성화됩니다. 
-(ex. 환경설정에서 기상캐스터 10명 선택 시, 사용자페이지에서 입력한 인원 수가 10명 이상일 경우 기상캐스터 체험분야 활성화) 
-+ 최대 30명까지 선택 가능하면 됩니다.
-+ 사용자 신청 시 10명 이상 선택 시 체험분야 2개까지 선택 / 20명 이상 선택 시 체험분야 3개까지 선택 가능하다고 합니다. 
 
-VR의 경우만, 8명 이상&10명 미만 신청 가능인데 이 경우 셀렉박스 두개로 범위를 지정하는 게 좋을까요?
+장비 :  재고수를 초과하는경우 겹치는 기간으로 신청을 하게 되면 신청 막기
+기간중 휴관일  껴있을때 금액 합산되지 않게
+대여/반납 시간으로 24시간 기준으로 금액 측정
 
+공간 : 대여 시간에 점심,저녁시간 포함되어도 금액 빠지지 않고 합산되어 계산되기
 
-1. 인풋으로 가능하다면 인풋으로 제작 부탁드립니다.
-사용자에셔 10~19개까지 선택 2개, 20개~30개까지 선택 3개로 하면됩니다. 
-vr은 말씀주신대로 부탁드립니다.
-체험분야 퍼블 추가하도록 하겠습니다.
+체험 : 시간 선택시 고객시트 104번 요청 사항 반영
 
 
-14, 23 추후 개발
-https://docs.google.com/spreadsheets/d/1B2cyNcCHGH6kJLRkKpYkBw0CY73j10i7Qfkjk6MSKo8/edit?pli=1&gid=455950848#gid=455950848
+rkqldk@)25
+
+23,70(문자/메일)
+37,38,126(장비 금액산정)
+
+107 어쩌라는
+
 https://docs.google.com/spreadsheets/d/1cywEAiBAJCbYa0q5o6KBPx3Ph0cIlkfJteQbmMsRZK8/edit?gid=259936737#gid=259936737
 
-1. 환경설정 - 미디어 체험 선택 클릭하면 셀렉박스로 인원수를 정할 수 있는건가요? 인원수 범위는 어떻게 될까요?
-그리고 선택된 수 이상 신청페이지에서  해당분야 체크박스가 비활성화 되면 될까요?
-2. 전체일정 -  휴관일로 등록한 날짜에는 각종 신청 할때 그 날짜는 비활성화가 되어야 하는건가요? ok
-3. 수료증 신청 관리 - 수료증은 퍼블리싱된 양식이 있을꺼라고 했던거 같은데 수료증 등록에서 발급 누르면 양식이 나와야 하는건가요? ok
-4. 상영회 - 정원,대기자는 셀렉박스를 인풋박스로 수정할까요? ok
-5. 미디어 체험 - 사용자 페이지에 캘린더가 아무 기능 없는 html로만 되어 있던데 작동이 어떤식으로 되어야 할까요? 날짜 선택에서 가능,불가능분류는 어떤 기준으로 해야 하고 날짜 선택시 어떤식으로 보여줘야 할까요
-기획사 59p 체험분야 인원 설정 내용 이해가 안가서 설명 부탁 드립니다.
-6. 결제관리 - 기획서에는 교육에 관련된 내역만 보이는데 장비,공간은 어떻게 보여야 할까요?
-7. 매출내역,세부실적 내역 - 기획서에는 리스트 페이지 내용만 있는데 해당내용 등록은은 어떻게 하는걸까요?
-8. 통계에 성별,나이의 통계를 나타내는 부분이 있던데..연령은 생년월일 필수 등록로 으로 받게 하고 그걸로 계산되게 하면 될까요?
-그리고 성별은 따로 받는데가 없는데 이건 어떻게 할까요
+https://docs.google.com/spreadsheets/d/1B2cyNcCHGH6kJLRkKpYkBw0CY73j10i7Qfkjk6MSKo8/edit?pli=1&gid=455950848#gid=455950848
 
 
 2025gabia@)@%
-
-1. 캘린더
-2. 결제관리
-3. 상영회관리
-4. 미디어체험
-
-
-1. 결제관리
-2. 상영회관리
-3. 미디어체험
-4. 통계
-5. 게시판
-6. 홈페이지관리
-
-
-1차 개발 완료 : 1/12
-1차 개발 디버깅 완료 및 고객사 전달(1차 오픈) : 1/20
-클라우드 이관 : 1월 마지막주 중 진행 (수or목 예상)
-2차 개발 완료 : 2/4
-2차 개발 디버깅 완료 및 고객사 전달(2차 오픈) : 논의 필요
-
-캘린더
-https://ihcf.or.kr/news/schedule.php
-
-등록하기
-http://110.10.189.165/customer_service/qna.php
-https://ihcf.or.kr/aboutus/region_write.php?boardid=meal_party&idx=61
-
-http://nicempg.hk-test.co.kr/backoffice/module/payment/estimate.php 
-https://cosmojin2024.hk-test.co.kr/backoffice/module/board/board_view.php?boardid=estimate 
 
 
 등록페이지 메서드 insertBoardArticle
@@ -68,35 +29,5 @@ https://cosmojin2024.hk-test.co.kr/backoffice/module/board/board_view.php?boardi
 뷰 페이지 메서드 getBoardArticleView
 리스트 페이지 getBoardListBaseNFile
 
-
 id : suy1015
 pw : suy1015!!
-
-
-http://kcapg.hk-test.co.kr/backoffice/module/member/member_info.php?user_id=jeejin1122&listURL=%2Fbackoffice%2Fmodule%2Fmember%2Fmember.php
-https://cosmojin2024.cosmojin.com/backoffice/module/board/board_view.php?boardid=member&mode=write&category= 추가
-http://kosinpg.hk-test.co.kr/backoffice/module/board/board_view.php?boardid=staff&mode=write&category= 순번
-
-https://cosmojin2024.hk-test.co.kr/backoffice/module/board/board_view.php?boardid=cdtourist&mode=write&category=
-https://cosmojin2024.hk-test.co.kr/backoffice/module/board/board_view.php?boardid=personqna&mode=write&category=
-https://cosmojin2024.hk-test.co.kr/backoffice/module/board/board_view.php?boardid=counsel&mode=write&category=
-
-
-문자 발송 : 한국 소비자 평가 평가 접수관리- 접수 및 심사내역)
-
-
-33 - 수료증 리스트
-34 - 수료증 신청(교육명 불어오기)
-
-1. 센터 전체일정(캘린더 형식) 5~7 코스모진 투어  가져다 쓰기
-https://cosmojin2024.cosmojin.com/backoffice/module/admin/admin_schedule.php
-https://cosmojin2024.hk-test.co.kr/backoffice/module/board/calculate_schedule.php?sYear=2024&sMonth=12
-
-8. 게시판(64~69) 가져다 쓰기
-9. 메일,문자관리(71~72) 가져다 쓰기
-10. 배너 관리(73~74) 가져다 쓰기
-11. 팝업 관리(75~76) 가져다 쓰기
-12. 패밀리사이트(77) 가져다 쓰기
-13. 매출내역관리(78) 새로 개발
-14. 세부실적내역(79) 새로 개발
-

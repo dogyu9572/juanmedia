@@ -14,22 +14,25 @@ for($i=0;$i<$arrTopMenuList["total"];$i++){
         $arrSubMenu[$arrTopMenuList["list"][$i]["cat_no"]][$arrSubMenuList["list"][$j]["cat_no"]] = $arrSubMenuList["list"][$j];
     }
 }
-
+function getCategoryNameByGNum($arrTopMenu, $gNum) {
+	foreach($arrTopMenu as $key => $arrVal) {
+		if($arrVal["cat_etc_1"] == $gNum) {
+			return $arrVal["cat_name"];
+		}
+	}
+	return '';
+}
 // DB 해제
 SetDisConn($dblink);
 ?>
+<div class="korName">
+	<?= getCategoryNameByGNum($arrTopMenu, $gNum); ?>
+</div>
 <div class="lnb">
     <a href="/"><img src="/images/ico_home.svg" alt="home"></a>
     <div class="lnbSub">
         <div class="tit">
-            <?php
-            foreach($arrTopMenu as $key => $arrVal) {
-                if($arrVal["cat_etc_1"] == $gNum) {
-                    echo $arrVal["cat_name"];
-                    break;
-                }
-            }
-            ?>
+	        <?= getCategoryNameByGNum($arrTopMenu, $gNum); ?>
         </div>
         <ul>
             <?php foreach($arrTopMenu as $key => $arrVal): ?>

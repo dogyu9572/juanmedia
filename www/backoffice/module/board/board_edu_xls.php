@@ -35,6 +35,7 @@ $EXCEL_TXT = "
     <td>카테고리</td>
     <td>상태</td>
     <td>교육명</td>
+    <td>교육기간</td>
     <td>요일</td>
     <td>시간</td>
     <td>신청완료</td>
@@ -59,6 +60,7 @@ for ($i = 0; $i < $arrList["total"]; $i++) {
         <td>" . htmlspecialchars(getCategoryName($arrList["list"][$i]['category1']), ENT_QUOTES, 'UTF-8') . " / " . htmlspecialchars(getCategoryName($arrList["list"][$i]['category2']), ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars($arrList["list"][$i]['reception_status'], ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars($arrList["list"][$i]['subject'], ENT_QUOTES, 'UTF-8') . "</td>
+        <td>" . htmlspecialchars(substr($arrList["list"][$i]['r_start_date'], 0, 10), ENT_QUOTES, 'UTF-8') . " ~ " . htmlspecialchars(substr($arrList["list"][$i]['r_end_date'], 0, 10), ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . $dayType . "<br/>" . $days . "</td>
         <td>" . htmlspecialchars($arrList["list"][$i]['start_hour'], ENT_QUOTES, 'UTF-8') . ":" . htmlspecialchars($arrList["list"][$i]['start_minute'], ENT_QUOTES, 'UTF-8') . " ~ " . htmlspecialchars($arrList["list"][$i]['end_hour'], ENT_QUOTES, 'UTF-8') . ":" . htmlspecialchars($arrList["list"][$i]['end_minute'], ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars($arrList["list"][$i]['complete_count'], ENT_QUOTES, 'UTF-8') . "명</td>

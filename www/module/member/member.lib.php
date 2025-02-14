@@ -365,7 +365,7 @@ function joinMember(){
 			user_status = '0',
 			user_level = '1',
 			a_class = '4',
-			birth = '$birth',
+			birth = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['birth'])."',
 			email = '".$user_email."',
 			email_accept = '$email_accept',
 			email_accept_date = '$email_accept_date',
@@ -513,7 +513,7 @@ function joinSocialMember(){
 			user_status = '0',
 			user_level = '1',
 			a_class = '4',
-			birth = '$birth',
+			birth = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['birth'])."',
 			email = '".$user_email."',
 			email_accept = '$email_accept',
 			email_accept_date = '$email_accept_date',
@@ -1024,6 +1024,7 @@ function editMember($id){
 		kakao_accept_date = '$kakao_accept_date',
 		user_name = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['user_name'])."',
 		nick_name = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['nick_name'])."',
+		birth = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['birth'])."',
 		phone = '".$phone."',
 		mobile = '".$mobile."',
 		address = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['address'])."',
@@ -1156,6 +1157,7 @@ function editMemberAdmin($id){
 		kakao_accept = '$kakao_accept',
 		gender = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['gender'])."',
 		mobile = '".(mysqli_real_escape_string($GLOBALS['dblink'], $_POST['mobile']))."',
+		birth = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['birth'])."',
 		`before` = 'N',
 		child_admin = '" . mysqli_real_escape_string($GLOBALS['dblink'], $child_admin) . "',
 		child_wdate = '" . mysqli_real_escape_string($GLOBALS['dblink'], $child_wdate) . "',		      
@@ -1244,6 +1246,7 @@ function editMemberAdmin_($id){
 		etc_9 = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['etc_9'])."',
 		etc_10 = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['etc_10'])."',
 		gender = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['gender'])."',
+		birth = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['birth'])."',
 		udate = now()
 		WHERE user_id='$id'
 	";

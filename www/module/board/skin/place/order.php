@@ -176,6 +176,7 @@
                         <input type="hidden" id="category2" name="category2" value="<?=$arrBoardArticle["list"][0]['category2']?>">
                         <input type="hidden" id="w_user" name="w_user" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]?>">
                         <input type="hidden" id="gender" name="gender" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["GENDER"]?>">
+                        <input type="hidden" name="birthdate" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["BIRTH"]?>">
                         <input type="hidden" name="usehtml" value="Y">
                         <?php if($_REQUEST['mode']=="reply"):?>
                             <input type="hidden" name="evnMode" value="reply">
@@ -211,19 +212,19 @@
                                 <div class="formTit">이메일주소</div>
                                 <div class="right">
                                     <div class="baseInput">
-                                        <input type="text" name="email" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["EMAIL"]?>" disabled>
-                                        <input type="hidden" name="email" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["EMAIL"]?>">
+                                        <input type="text" name="email" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]?>" disabled>
+                                        <input type="hidden" name="email" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]?>">
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <!--<div class="row">
                                 <div class="formTit">생년월일</div>
                                 <div class="right">
                                     <div class="baseInput">
-                                        <input type="text" name="birthdate"  value="<?=$arrBoardApplicantsArticle["list"][0]["birthdate"]?>" class="datepicker">
+                                        <input type="text" name="birthdate"  value="<?php /*=$arrBoardApplicantsArticle["list"][0]["birthdate"]*/?>" class="datepicker">
                                     </div>
                                 </div>
-                            </div>
+                            </div>-->
                             <div class="row">
                                 <div class="formTit">할인적용</div>
                                 <div class="right">
@@ -451,12 +452,6 @@
             const certificateSelect = document.querySelector('select[name="certificate"]');
             const usagePeopleSelect = document.querySelector('select[name="usage_people"]');
             const usagePurposeInput = document.querySelector('input[name="usage_purpose"]');
-
-            if (!birthdate.value) {
-                alert('생년월일을 입력하지 않았습니다.');
-                birthdate.focus();
-                return false;
-            }
 
             if (!discountSelect.value) {
                 alert('할인적용을 선택하지 않았습니다.');

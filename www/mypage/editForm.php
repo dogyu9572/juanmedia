@@ -269,6 +269,14 @@ else {
 									</div>
 								</div>
 								<div class="line">
+									<div class="tit">생년월일<span>*</span></div>
+									<div class="btnInput">
+										<div class="baseInput">
+											<input type="text" name="user_bearth" id="user_bearth" class="datepicker">
+										</div>
+									</div>
+								</div>
+								<div class="line">
 									<div class="tit">주소<span>*</span></div>
 									<div class="right">
 										<div class="btnInput">
@@ -360,7 +368,7 @@ else {
             dateFormat: 'yy-mm-dd',
             showMonthAfterYear:true,
             showOn: "both",
-            buttonImage: "/images/icon_month.gif",
+            buttonImage: "/images/ico_cal.svg",
             buttonImageOnly: true,
             changeYear: true,
             changeMonth: true,
@@ -501,6 +509,8 @@ else {
 
 	</div>
 	<!-- //Wrap -->
+
+<script src="//code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
 
 </body>
 </html>

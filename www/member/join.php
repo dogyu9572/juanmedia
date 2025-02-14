@@ -3,8 +3,8 @@
 include_once $_SERVER['DOCUMENT_ROOT'] . "/module/member/member.lib.php";
 
 if(!$_SESSION['uName']){
-//    jsGo("/member/agree.php","","본인인증 후 회원가입을 진행해 주세요.");
-//    exit();
+    jsGo("/member/agree.php","","본인인증 후 회원가입을 진행해 주세요.");
+    exit();
 }else{
     $userName	= $_SESSION['uName'];
     $userBirth	= $_SESSION['uBirth'];
@@ -215,6 +215,11 @@ if(!$_SESSION['uName']){
             frm.mobile.focus();
             return ;
         }
+        if(frm.birth.value.length < 1){	// 휴대폰 번호
+            alert('생년월일을 입력해 주세요.');
+            frm.birth.focus();
+            return ;
+        }
         if (frm.address.value.length < 2){
             alert("주소를 입력해 주세요.");
             frm.address.focus();
@@ -376,6 +381,14 @@ if(!$_SESSION['uName']){
                             </div>
                         </div>
                         <div class="line">
+                            <div class="tit">생년월일<span>*</span></div>
+                            <div class="btnInput">
+                                <div class="baseInput">
+                                    <input type="text" name="birth" id="birth" class="datepicker">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="line">
                             <div class="tit">비밀번호<span>*</span></div>
                             <div class="baseInput">
                                 <input type="password" name="user_pw" id="user_pw" maxlength="12" placeholder="8~12자의 영문 대소문자, 숫자, 특수문자 조합">
@@ -445,6 +458,27 @@ if(!$_SESSION['uName']){
 
 </div>
 <!-- //Wrap -->
+
+<script src="//code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+$(document).ready(function(){
+	$(".datepicker").datepicker({
+		dateFormat: 'yy-mm-dd',
+		showMonthAfterYear:true,
+		showOn: "both",
+		buttonImage: "../images/ico_cal.svg",
+        buttonImageOnly: true,
+		changeYear: true,
+		changeMonth: true,
+		yearRange: 'c-100:c+10',
+		yearSuffix: "년 ",
+		monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+		dayNamesMin: ['일','월','화','수','목','금','토']
+	});
+});
+//]]>
+</script>
 
 </body>
 </html>

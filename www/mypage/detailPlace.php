@@ -12,6 +12,7 @@ $arrBoardInfo = getBoardInfo($_conf_tbl['board_info'], "place_applicants");
 
 $arrBoardArticle = getBoardArticleView($arrBoardInfo["list"][0]["boardid"], $_GET["category"], $_GET["idx"],"read");
 $arrBoardPlaceArticle = getBoardArticleView("place", $_GET["category"], $arrBoardArticle["list"][0]["place_idx"],"read");
+$arrBoardpaymentArticle = getBoardArticleView("payment", $_GET["category"], "","read" , "board_type = 'place' and w_user = '".$arrBoardArticle["list"][0]["w_user"]."' and type_idx = ".$arrBoardArticle["list"][0]["idx"]);
 $imgsrc = "/uploaded/board/place/".$arrBoardPlaceArticle["files"][0]['re_name'];
 
 ?>
@@ -97,7 +98,7 @@ $imgsrc = "/uploaded/board/place/".$arrBoardPlaceArticle["files"][0]['re_name'];
                             <div class="th">결제금액</div>
                             <div class="td">
                                 <?=number_format($arrBoardArticle["list"][0]['finalamount'])?>원
-                                <?=$arrBoardArticle["list"][0]["status"] == "승인" ? '<button type="button" class="btnTypeSm" onclick="contentPop(\'.paymentPop\');">입금 확인 요청</button>' : "" ?>
+	                            <?=$arrBoardpaymentArticle["total"] > 0 ? '<button type="button" class="btnTypeSm disabled" onclick="">입금 확인 요청</button>' : '<button type="button" class="btnTypeSm" onclick="contentPop(\'.paymentPop\');">입금 확인 요청</button>' ?>
                             </div>
                         </div>
                         <div class="line">

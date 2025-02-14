@@ -1,4 +1,1 @@
-<?php
-	$writeRS = insertBoardArticle($_GET['boardid'], $arrBoardInfo["list"][0]["thumwidth"]);
-	jsGo($_SERVER["PHP_SELF"]."?boardid=equ_applicants_cart&mode=cart","","");
-?>
+<?php	$subQuery = "AND equ_idx={$_POST["equ_idx"]} AND (rental_start_date <= '{$_POST["rental_end_date"]}' AND rental_end_date >= '{$_POST["rental_start_date"]}')";	$arrBoardEquList = getBoardListBase("equ_applicants", "", "", "", 100, 0, $subQuery, "", "");	if($arrBoardEquList["total"] >= $arrSetInfo["list"][0]["equ_max_rental_count"]){		jsMsg("대여 가능한 장비의 수량을 초과하였습니다.");		jsHistory("-1");	}	$writeRS = insertBoardArticle($_GET['boardid'], $arrBoardInfo["list"][0]["thumwidth"]);	jsGo($_SERVER["PHP_SELF"]."?boardid=equ_applicants_cart&mode=cart","","");?>

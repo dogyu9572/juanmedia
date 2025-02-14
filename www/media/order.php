@@ -282,6 +282,7 @@
             <input type="hidden" id="user_level" name="user_level" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["LEVEL"]?>">
             <input type="hidden" id="w_user" name="w_user" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]?>">
             <input type="hidden" id="media_idx" name="media_idx" value="<?=$arrBoardArticle["list"][0]['idx']?>">
+            <input type="hidden" name="birthdate" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["BIRTH"]?>">
             <input type="hidden" name="usehtml" value="Y">
             <?php if($_REQUEST['mode']=="reply"):?>
                 <input type="hidden" name="evnMode" value="reply">
@@ -411,7 +412,7 @@
                         <div class="right">
                             <div class="cmsDate solo">
                                 <div class="baseInput">
-                                    <input id="st1" name="desired_date" readonly type="text" title="시작날짜" value="" >
+                                    <input name="desired_date" readonly type="text" title="시작날짜" value="" class="datepicker">
                                 </div>
                             </div>
                         </div>
@@ -622,6 +623,11 @@
             return false;
         }
 
+        // 시간 선택 유효성 검사 추가
+        if (!validateTimeSelection()) {
+            return false;
+        }
+
         const agreeCheckbox = document.getElementById('agree');
         if (!agreeCheckbox.checked) {
             alert('개인 정보 활용에 동의하지 않았습니다.');
@@ -639,44 +645,161 @@
         if (totalMembers > 30) {
             alert('최대 인원은 30명 입니다.');
             totalMembersInput.value = 0;
+            return;
         }
 
-        const tvBroadcasting = <?= $arrSetInfo["list"][0]["tv_broadcasting"] ?>;
-        const radioBroadcasting = <?= $arrSetInfo["list"][0]["radio_broadcasting"] ?>;
-        const weatherForecaster = <?= $arrSetInfo["list"][0]["weather_forecaster"] ?>;
-        const drone = <?= $arrSetInfo["list"][0]["drone"] ?>;
-        const vr = <?= $arrSetInfo["list"][0]["vr"] ?>;
-
-        const totalRequired = tvBroadcasting + radioBroadcasting + weatherForecaster + drone + vr;
-
-        document.getElementById('exp1').disabled = totalMembers < tvBroadcasting;
-        document.getElementById('exp2').disabled = totalMembers < radioBroadcasting;
-        document.getElementById('exp3').disabled = totalMembers < weatherForecaster;
-        document.getElementById('exp4').disabled = totalMembers < drone;
-        document.getElementById('exp5').disabled = totalMembers < 8 || totalMembers > 9;
-
-        const allowedChecks = Math.floor(totalMembers / totalRequired * 5);
-
+        // 모든 체험 체크박스 가져오기
         const checkboxes = document.querySelectorAll('input[name="experience[]"]');
+
+        // 모든 체크박스 초기화 및 비활성화
         checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
+            checkbox.checked = false;
+            checkbox.disabled = true;
+            // 기존 이벤트 리스너 제거
+            checkbox.removeEventListener('change', checkboxHandler);
+        });
+
+        // 체크박스 이벤트 핸들러 함수
+        function checkboxHandler() {
+            if (totalMembers >= 6 && totalMembers <= 8) {
                 const checkedCount = document.querySelectorAll('input[name="experience[]"]:checked').length;
-                if (checkedCount >= allowedChecks) {
-                    checkboxes.forEach(box => {
-                        if (!box.checked) {
-                            box.disabled = true;
-                        }
-                    });
-                } else {
-                    checkboxes.forEach(box => {
-                        if (!box.checked) {
-                            box.disabled = false;
-                        }
-                    });
+                if (checkedCount > 1) {
+                    this.checked = false;
+                    alert('VR 체험은 1개만 선택 가능합니다.');
                 }
+            } else if (totalMembers >= 10 && totalMembers <= 19) {
+                const checkedCount = document.querySelectorAll('input[name="experience[]"]:checked').length;
+                if (checkedCount > 2) {
+                    this.checked = false;
+                    alert('최대 2개까지 선택 가능합니다.');
+                }
+            } else if (totalMembers >= 20 && totalMembers <= 30) {
+                const checkedCount = document.querySelectorAll('input[name="experience[]"]:checked').length;
+                if (checkedCount > 3) {
+                    this.checked = false;
+                    alert('최대 3개까지 선택 가능합니다.');
+                }
+            }
+        }
+
+        // 인원수에 따른 체험분야 활성화 로직
+        if (totalMembers >= 6 && totalMembers <= 8) {
+            // VR만 활성화
+            document.getElementById('exp5').disabled = false;
+            document.getElementById('exp5').addEventListener('change', checkboxHandler);
+
+        } else if (totalMembers >= 10 && totalMembers <= 19) {
+            // TV방송제작, 라디오 방송제작, 기상캐스터, 드론 활성화
+            const availableExps = ['exp1', 'exp2', 'exp3', 'exp4'];
+            availableExps.forEach(id => {
+                document.getElementById(id).disabled = false;
+                document.getElementById(id).addEventListener('change', checkboxHandler);
+            });
+
+        } else if (totalMembers >= 20 && totalMembers <= 30) {
+            // TV방송제작, 라디오 방송제작, 기상캐스터, 드론 활성화
+            const availableExps = ['exp1', 'exp2', 'exp3', 'exp4'];
+            availableExps.forEach(id => {
+                document.getElementById(id).disabled = false;
+                document.getElementById(id).addEventListener('change', checkboxHandler);
+            });
+        }
+    }
+
+    function validateTimeSelection() {
+        const startHour = parseInt(document.querySelector('[name="start_hour"]').value);
+        const startMinute = parseInt(document.querySelector('[name="start_minute"]').value);
+        const endHour = parseInt(document.querySelector('[name="end_hour"]').value);
+        const endMinute = parseInt(document.querySelector('[name="end_minute"]').value);
+        const totalMembers = parseInt(document.getElementById('total_members').value) || 0;
+
+        // 시작 시간이나 종료 시간이 점심시간인 경우
+        if ((startHour === 12) || (endHour === 12)) {
+            alert('점심시간(12:00~13:00)은 선택할 수 없습니다.');
+            resetTimeSelections();
+            return false;
+        }
+
+        // 시작시간과 종료시간 사이에 점심시간이 포함되는 경우
+        if (startHour < 12 && endHour > 12) {
+            alert('점심시간(12:00~13:00)을 포함할 수 없습니다.');
+            resetTimeSelections();
+            return false;
+        }
+
+        // 시간 차이 계산 (분 단위)
+        const startTime = startHour * 60 + (startMinute || 0);
+        const endTime = endHour * 60 + (endMinute || 0);
+        const timeDiff = endTime - startTime;
+
+        // 인원수별 최대 이용시간 체크
+        if (totalMembers >= 10 && totalMembers <= 19) {
+            if (timeDiff > 120) { // 2시간 = 120분
+                alert('10~19명은 최대 2시간까지만 이용 가능합니다.');
+                resetTimeSelections();
+                return false;
+            }
+        } else if (totalMembers >= 20 && totalMembers <= 30) {
+            if (timeDiff > 180) { // 3시간 = 180분
+                alert('20~30명은 최대 3시간까지만 이용 가능합니다.');
+                resetTimeSelections();
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function resetTimeSelections() {
+        document.querySelector('[name="start_hour"]').value = "";
+        document.querySelector('[name="start_minute"]').value = "";
+        document.querySelector('[name="end_hour"]').value = "";
+        document.querySelector('[name="end_minute"]').value = "";
+    }
+
+    // 시간 선택 이벤트 리스너 추가
+    document.addEventListener('DOMContentLoaded', function() {
+        const timeSelects = document.querySelectorAll('[name="start_hour"], [name="start_minute"], [name="end_hour"], [name="end_minute"]');
+        timeSelects.forEach(select => {
+            select.addEventListener('change', validateTimeSelection);
+        });
+    });
+
+    // selectbox 옵션 수정
+    const hourSelects = document.querySelectorAll('[name="start_hour"], [name="end_hour"]');
+    hourSelects.forEach(select => {
+        select.innerHTML = `
+            <option value="">선택</option>
+            <option value="09">09</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+            <option value="18">18</option>
+        `;
+    });
+
+    $(document).ready(function(){
+        $(document).ready(function(){
+            $(".datepicker").datepicker({
+                dateFormat: 'yy-mm-dd',
+                showMonthAfterYear: true,
+                showOn: "both",
+                buttonImage: "/images/icon_month.svg",
+                buttonImageOnly: true,
+                changeYear: true,
+                changeMonth: true,
+                yearRange: 'c-100:c+10',
+                yearSuffix: "년 ",
+                monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+                minDate: "+14d"
             });
         });
-    }
+    });
 </script>
 </body>
 </html>

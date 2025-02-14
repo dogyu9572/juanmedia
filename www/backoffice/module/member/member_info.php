@@ -231,8 +231,11 @@ function inNumber(str){
 				<tr>
 					<th>연락처<i>*</i></th>
 					<td><div class="inputs"><input type="text" class="w4" name="mobile" value="<?=$mobile?>" maxlength="20"></div></td>
-				</tr>	
-				
+				</tr>
+                <tr>
+                    <th>생년월일<i>*</i></th>
+                    <td><div class="inputs"><input type="text" class="w3 datepicker" name="birth" value="<?=$arrInfo["list"][0]['birth']?>" maxlength="20"></td></div>
+                </tr>
 				<tr <?=$is_pw_change?"":"style='display:none;'"?>>
 					<th>비밀번호 <i>*</i></th>
 					<td><div class="inputs"><input type="password" class="w4" name="user_pw" maxlength="50" value=""></div></td>
@@ -393,7 +396,10 @@ function inNumber(str){
                                             </td>
                                             <td>
                                                 <span class="text-content"><?=$arrChildCategory[$i]?></span>
-                                                <input type="text" class="w4 input-content" name="child_category[]" value="<?=$arrChildCategory[$i]?>" style="display:none;">
+                                                <select class="w4 input-content" name="child_category[]" style="display:none;" onload="this.style.display='none';">
+                                                    <option value="정지" <?=$arrChildCategory[$i]=='정지'?'selected':''?>>정지</option>
+                                                    <option value="주의" <?=$arrChildCategory[$i]=='주의'?'selected':''?>>주의</option>
+                                                </select>
                                             </td>
                                             <td>
                                                 <span class="text-content"><?=$arrChildViolationWdate[$i]?></span>
@@ -424,6 +430,24 @@ function inNumber(str){
 	
 </div>
 <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        var elements = document.querySelectorAll('select[name="child_category[]"]');
+        elements.forEach(function(element) {
+            element.style.display = 'none';
+        });
+    });
+
+    $(document).ready(function() {
+        // Override the niceSelect function to do nothing
+        $.fn.niceSelect = function() {
+            return this;
+        };
+
+        // If you need to remove the existing niceSelect elements
+        $('.nice-select').remove();
+        $('select').show();
+    });
+
     function fnAddViolation() {
         var htm = `
      <tr>

@@ -114,6 +114,10 @@ function inNumber(str){
                 <td><div class="inputs"><input type="text" class="w3" name="mobile" value="<?=$mobile?>" maxlength="20"><button type="button" onclick="sendAcc(document.memberForm.mobile)" class="btn">연락처 중복확인</button></td></div>
             </tr>
             <tr>
+                <th>생년월일<i>*</i></th>
+                <td><div class="inputs"><input type="text" class="w3 datepicker" name="birth" value="<?=$arrInfo["list"][0]['birth']?>" maxlength="20"></td></div>
+            </tr>
+            <tr>
                 <th>비밀번호</th>
                 <td><div class="inputs"><input type="password" class="w4" name="user_pw" maxlength="50" value=""></div></td>
             </tr>
@@ -567,6 +571,21 @@ $(window).load(function(){
             });
         });
         //]]>
+        $(document).ready(function(){
+            $(".datepicker").datepicker({
+                dateFormat: 'yy-mm-dd',
+                showMonthAfterYear:true,
+                showOn: "both",
+                buttonImage: "../images/ico_cal.svg",
+                buttonImageOnly: true,
+                changeYear: true,
+                changeMonth: true,
+                yearRange: 'c-100:c+10',
+                yearSuffix: "년 ",
+                monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+                dayNamesMin: ['일','월','화','수','목','금','토']
+            });
+        });
     </script>
 <?php
 ######################################################## 디자인 ED

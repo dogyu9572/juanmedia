@@ -105,7 +105,7 @@ SetDisConn ( $dblink );
 
                     <div class="btnCenter two mt">
                         <a href="#;" class="btnType1 fix" onclick="fnFrmCheck(document.form1)">저장</a>
-                        <a href="free.php" class="btnType1 fix gray">취소</a>
+                        <a href="teacher.php" class="btnType1 fix gray">취소</a>
                     </div>
 
                 </div>
