@@ -143,6 +143,7 @@ select::-ms-expand {display:none;}
 .stateBox.end {border-color:rgba(255, 255, 255, 0.3); background-color:rgba(102, 102, 102, 1);}
 .stateBox.ready {border-color:rgba(255, 255, 255, 0.3); background-color:rgba(248, 96, 152, 1);}
 .stateBox.etc {border-color:rgba(255, 255, 255, 0.3); background-color:rgba(255, 142, 66, 1);}
+.stateBox.closed {border-color:rgba(255, 255, 255, 0.3); background-color:rgba(153, 153, 153, 1);}
 
 .mainSide {display:flex; justify-content:space-between; gap:48px; margin-bottom:140px;}
 
@@ -166,7 +167,7 @@ select::-ms-expand {display:none;}
 
 
 .mainCal {min-width:318px;}
-.mainCal .calendar {height: ;}
+.mainCal .calendar {height:;}
 .mainCal .calendar .top {margin-bottom:16px;display:flex; justify-content:space-between; align-items:center; background:#D8EAFF; border-radius:8px; height:40px; padding:16px;}
 .mainCal .calendar .top .year {display:flex; justify-content:center; align-items:center; gap:16px;}
 .mainCal .calendar .top .year button {background:none; border:none; width:14px; height:14px; display:flex; justify-content:center; align-items:center;}
@@ -175,11 +176,11 @@ select::-ms-expand {display:none;}
 .mainCal .calendar .top .dayInfo span {position:relative; padding-left:18px;}
 .mainCal .calendar .top .dayInfo span:after {content:''; position:absolute; left:0; top:50%; transform:translateY(-50%);}
 .mainCal .calendar .top .dayInfo span.today:after {width:10px; height:1px; background:#222;}
-.mainCal .calendar .top .dayInfo span.holiday:after {width:10px; height:10px; border-radius:10px; background:#1A75BC;}
+.mainCal .calendar .top .dayInfo span.holiday:after {width:10px; height:10px; border-radius:10px; background:#cb4914;}
 .mainCal .calendar .tableCal {padding:0 14px;  text-align:center; table-layout:fixed; width:100%;}
 .mainCal .calendar .tableCal thead th {font-size:15px; font-weight:500; color:#888888; padding-bottom:14px;}
 .mainCal .calendar .tableCal tbody td {font-size:15px; font-weight:500; color:#222; padding:10px 0;}
-.mainCal .calendar .tableCal tbody td.holiday {color:#1A75BC;}
+.mainCal .calendar .tableCal tbody td.holiday {color:#cb4914;}
 .mainCal .calendar .tableCal tbody td.today span {position:relative;}
 .mainCal .calendar .tableCal tbody td.today span:after {content:''; position:absolute; left:0; bottom:-1px; width:100%; height:2px; background:#222;}
 
@@ -439,8 +440,8 @@ select::-ms-expand {display:none;}
 .listType1 li .stateBox {top:14px; right:14px;}
 .listType1 li .img {margin-bottom:24px;}
 .listType1 li .img img {width:294px; height:219px; object-fit:cover; border-radius:12px;}
-.listType1 li .textWrap .title {font-size:20px; line-height:32px; font-weight:600; margin-bottom:16px; display:flex;	}
-.listType1 li .textWrap .title .num {margin-top:4px; margin-right:6px;width:24px; height:24px; display:inline-flex; border-radius:100px; justify-content:center; align-items:center; background:#EDB819; font-size:12px; font-weight:900; color:#fff;}
+.listType1 li .textWrap .title {position:relative; font-size:20px; line-height:32px; font-weight:600; margin-bottom:16px; display:flex; padding-left:34px;}
+.listType1 li .textWrap .title .num {position:absolute; top:2px; left:0; width:28px; height:28px; display:inline-flex; border-radius:100px; justify-content:center; align-items:center; background:#EDB819; font-size:12px; font-weight:900; color:#fff;}
 .listType1 li .textWrap .info {position:relative; display:flex; align-items:center; margin-bottom:5px; padding-left:72px;}
 .listType1 li .textWrap .info:last-child {margin-bottom:0;}
 .listType1 li .textWrap .info .left {position:absolute; top:0; left:0; color:#888888; font-size:15px; line-height:24px;  margin-right:10px; width:62px;}
@@ -478,8 +479,8 @@ select::-ms-expand {display:none;}
 .detailInfo .left .img img{width:100%; border-radius:20px;}
 .detailInfo .textCont {width:586px; max-width:100%;}
 .detailInfo .textCont .pointBox {margin-bottom:8px;}
-.detailInfo .textCont .title {font-size:32px; line-height:51px; font-weight:600; margin-bottom:8px; display:flex; align-items:flex-start;}
-.detailInfo .textCont .title .num {margin:10px 8px 0 0; width:30px; height:30px; display:inline-flex; border-radius:100px; justify-content:center; align-items:center; background:#EDB819; font-size:13px; font-weight:900; color:#fff;}
+.detailInfo .textCont .title {position:relative; font-size:32px; line-height:51px; font-weight:600; margin-bottom:8px; display:flex; align-items:flex-start; padding-left:38px;}
+.detailInfo .textCont .title .num {position:absolute; top:10px; left:0; width:30px; height:30px; display:inline-flex; border-radius:100px; justify-content:center; align-items:center; background:#EDB819; font-size:13px; font-weight:900; color:#fff;}
 .detailInfo .textCont .item_num {margin-bottom:20px; display:flex; gap:20px;}
 .detailInfo .textCont .item_num span {color:#888;}
 .detailInfo .textCont .subTit {font-size:16px; margin-bottom:20px;}
@@ -532,7 +533,7 @@ select::-ms-expand {display:none;}
 .contentPop .popIn .closePop a {text-indent:-999em; width:16px; height:16px; display:block; background:url('/images/ico_close.svg') center no-repeat;}
 .contentPop .popIn .popTit {text-align:center; margin-bottom:16px; font-size:28px; line-height:44px; font-weight:700;}
 .contentPop.profilePop .popIn {width:1000px;}
-.contentPop.profilePop .popIn .no1 {width:190px;}
+.contentPop.profilePop .popIn .no1 {width:240px;}
 .contentPop.profilePop .popIn .no2 {width:220px;}
 
 .contentPop.stopPop .popIn {width:1000px; padding-top:70px;}
@@ -654,7 +655,7 @@ select::-ms-expand {display:none;}
 
 .eqDetail {display:flex; margin-top:25px; gap:146px; margin-bottom:0;}
 .eqDetail .swiper-slide {display:flex; justify-content:center; align-items:center;}
-.eqDetail .img {position:relative; width:708px; height:531px; flex:1; border:1px solid #EBEBEB; display:flex; align-items:center; justify-content:center; border-radius:30px; overflow:hidden; padding: 30px;}
+.eqDetail .img {position:relative; width:708px; height:531px; flex:1; border:1px solid #EBEBEB; display:flex; align-items:center; justify-content:center; border-radius:30px; overflow:hidden; padding:30px;}
 .eqDetail .img img {width:100%; height:100%; object-fit:contain;}
 .eqDetail .info ul + ul{padding-top:24px; margin-top:24px; border-top:1px solid #EBEBEB ;}
 .eqDetail .totalPrice {margin-top:22px; position:relative;  padding:24px; border-radius:8px;  border:1px solid #111; box-shadow:0px 4px 20px 0px #0000001F; margin-bottom:40px;}
@@ -842,6 +843,7 @@ select::-ms-expand {display:none;}
 .noticeDetail .top .info .box .tit {font-weight:600;}
 .noticeDetail .top .info .box .txt {color:#666;}
 .noticeDetail .cont {font-size:18px; line-height:32px; margin-bottom:40px;}
+.noticeDetail .cont img {height:auto !important;}
 .noticeDetail .fileAdd {background:#F5F5F5; border-radius:8px; padding:13px 20px; display:flex; gap:10px; align-items:center; font-size:16px; line-height:28px; font-weight:600;}
 .noticeDetail .fileAdd .file a {font-weight:500; color:#1A75BC}
 .noticeDetail .btn {display:flex; gap:10px; justify-content:flex-end; align-items:center; margin-top:24px;}
@@ -1054,7 +1056,7 @@ select::-ms-expand {display:none;}
 .joinWrap .formJoin .tit span {color:#E93E39;}
 .joinWrap .formJoin .btnInput {display:flex; justify-content:space-between; gap:8px}
 .joinWrap .formJoin .btnInput .baseInput {flex:1;}
-.joinWrap .formJoin .btnInput .btn {min-width:100px; height:50px; border:1px solid #222; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; font-size:16px; line-height:25px; font-weight:500;}
+.joinWrap .formJoin .btnInput .btn {min-width:100px; height:50px; border:1px solid #222; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; font-size:16px; line-height:25px; font-weight:500; background:#fff;}
 .joinWrap .formJoin .btnInput + .baseInput {margin-top:10px;}
 .joinWrap .formJoin .btnInput.half {gap:10px;}
 .joinWrap .formJoin .btnInput.half .baseRadio {width:calc(50% - 5px);}
@@ -1133,12 +1135,13 @@ select::-ms-expand {display:none;}
 .myDetail {margin-bottom:48px;}
 .myDetail:last-child {margin-bottom:0;}
 .myDetail .detailTit {position:relative; font-size:24px; line-height:38px; font-weight:600; margin-bottom:16px;}
-.myDetail .detailTit .more {position:absolute; top:0; right:0; font-size:14px; line-height:38px; height:40px; padding:0 20px; border:#ddd 1px solid; border-radius:10px;}
+.myDetail .detailTit .more {position:absolute; top:0; right:0; font-size:14px; line-height:28px; height:30px; padding:0 20px; border:#ddd 1px solid; border-radius:10px;}
 .myDetail .detailTable {border-top:1px solid #222;}
 .myDetail .detailTable .line{display:flex; align-items:center; border-bottom:1px solid #EBEBEB; padding:16px 0;}
 .myDetail .detailTable .line .th {width:130px; font-size:16px; line-height:18px; font-weight:600;}
 .myDetail .detailTable .line .td {font-size:16px; line-height:28px;}
 .myDetail .detailTable .line .td .btnTypeSm {padding:8px 12px; margin-left:12px;}
+.myDetail .detailTable .line .td .btnTypeSm.disabled {background:#f5f5f5;}
 .myDetail .detailWrap {max-width:100%;}
 
 
@@ -1680,8 +1683,8 @@ label.check input:checked + i:before {width:10px; height:10px;}
 	.listType1 li .stateBox {top:24px; right:24px;}
 	.listType1 li .img {margin-bottom:15px;}
 	.listType1 li .img img {width:100%; height:auto; object-fit:cover; border-radius:10px;}
-	.listType1 li .textWrap .title {font-size:16px; line-height:25px; font-weight:600; margin-bottom:10px; display:flex;	}
-	.listType1 li .textWrap .title .num {margin-top:0; margin-right:6px;width:24px; height:24px; display:inline-flex; border-radius:100px; justify-content:center; align-items:center; background:#EDB819; font-size:12px; font-weight:900; color:#fff;}
+	.listType1 li .textWrap .title {font-size:16px; line-height:26px; font-weight:600; margin-bottom:10px; display:flex; padding: 1px 0 1px 34px;}
+	.listType1 li .textWrap .title .num {top:0; margin-top:0; margin-right:6px;width:28px; height:28px; display:inline-flex; border-radius:100px; justify-content:center; align-items:center; background:#EDB819; font-size:12px; font-weight:900; color:#fff;}
 	.listType1 li .textWrap .info {display:flex; align-items:center; margin-bottom:5px;}
 	.listType1 li .textWrap .info:last-child {margin-bottom:0;}
 	.listType1 li .textWrap .info .left {font-size:13px; line-height:15px;}
@@ -1765,8 +1768,8 @@ label.check input:checked + i:before {width:10px; height:10px;}
 	.contentPop .popIn .closePop a {text-indent:-999em; width:12px; height:12px; background-size:12px auto;}
 	.contentPop .popIn .popTit {margin-bottom:12px; font-size:21px; line-height:33px; font-weight:700;}
 	.contentPop.profilePop .popIn {width:calc(100% - 60px);}
-	.contentPop.profilePop .popIn table .no1 {width:60px;}
-	.contentPop.profilePop .popIn table .no2 {width:80px;}
+	.contentPop.profilePop .popIn table .no1 {width:30%;}
+	.contentPop.profilePop .popIn table .no2 {width:28%;}
 	.contentPop.profilePop .tableType1 td {font-size:12px;}
 
 	.contentPop.stopPop .popIn {width:calc(100% - 60px); padding-top:50px;}
@@ -2388,6 +2391,11 @@ label.check input:checked + i:before {width:10px; height:10px;}
 	.tableType2 td {vertical-align:middle; height:46px; text-align:center; font-size:13px; line-height:22px; font-weight:400; border-bottom:1px solid #EBEBEB; padding:0 8px;}
 	.tableType2 td.name a {display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:left;}
 	.tableType2 td .btnTypeSm {padding:8px 12px;}
+	.tableType2 col.w90 {width:80px;}
+	.tableType2 col.w100 {width:85px;}
+	.tableType2 col.w110 {width:100px;}
+	.tableType2 col.w120 {width:110px;}
+	.tableType2 col.w130 {width:100px;}
 
 	.tableScroll {position:relative;}
 	.tableScroll .scroll {overflow-x:auto; min-height:220px;}
@@ -2404,7 +2412,7 @@ label.check input:checked + i:before {width:10px; height:10px;}
 	.myDetail .detailTable .line{display:flex; align-items:center; border-bottom:1px solid #EBEBEB; padding:14px 0;}
 	.myDetail .detailTable .line .th {width:100px; font-size:14px; line-height:25px; font-weight:600;}
 	.myDetail .detailTable .line .td {font-size:14px; line-height:25px;}
-	.myDetail .detailTable .line .td .btnTypeSm {padding:6px 14px; margin-left:12px;}
+	.myDetail .detailTable .line .td .btnTypeSm {padding:2px 14px; margin-left:12px; width:auto;}
 	.myDetail .detailWrap {max-width:100%; margin-bottom:0;}
 	.myDetail .detailWrap .simpleView {margin-bottom:0;}
 	.cancelBox {}

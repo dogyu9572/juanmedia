@@ -294,7 +294,7 @@ function fnCopyEst(eidx){
 			</div>
 			<div class="bdr_right">
                 <div class="btns">
-                    <a href="./board_<?=$arrBoardInfo["list"][0]["boardid"]?>_xls.php?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&sw=<?=$_REQUEST['sw']?>&sk=<?=$_REQUEST['sk']?>&user_level=<?=$_REQUEST['user_level']?>&s_date=<?=$_REQUEST['s_date']?>&e_date=<?=$_REQUEST['e_date']?>&status=<?=$_REQUEST['status']?>" class="excel" download>엑셀파일로 저장<span class="pc_vw"></span></a>
+                    <a href="./board_<?=$arrBoardInfo["list"][0]["boardid"]?>_xls.php?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&sw=<?=$_REQUEST['sw']?>&sk=<?=$_REQUEST['sk']?>&user_level=<?=$_REQUEST['user_level']?>&s_date=<?=$_REQUEST['s_date']?>&e_date=<?=$_REQUEST['e_date']?>&status=<?=$_REQUEST['status']?>&page_size=<?=$_GET['page_size']?>&offset=<?=$_GET['offset']?>" class="excel" download>엑셀파일로 저장<span class="pc_vw"></span></a>
                 </div>
 				<div class="count">
 					<select name="page_size" onchange="document.form1.submit()"  style="width:60px;">
@@ -561,17 +561,17 @@ $(document).ready(function(){
     <!-- //pageTitle -->
 
     <!-- tabType1 -->
-    <div class="tabType1">
+    <!--<div class="tabType1">
         <ul class="inner">
-            <li class="<?= $_GET['cat_no'] == '' ? 'active' : '' ?>"><a href="/place/list.php">전체</a></li>
+            <li class="<?php /*= $_GET['cat_no'] == '' ? 'active' : '' */?>"><a href="/place/list.php">전체</a></li>
             <?php
-            for($i=0; $i<$arrCategory1["total"]; $i++):
+/*            for($i=0; $i<$arrCategory1["total"]; $i++):
                 $activeClass = ($_GET['cat_no'] == $arrCategory1["list"][$i]['cat_no']) ? 'class="active"' : '';
-                ?>
-                <li <?=$activeClass?>><a href="/place/list.php?cat_no=<?=$arrCategory1["list"][$i]['cat_no']?>"><?=$arrCategory1["list"][$i]['cat_name']?></a></li>
-            <?php endfor; ?>
+                */?>
+                <li <?php /*=$activeClass*/?>><a href="/place/list.php?cat_no=<?php /*=$arrCategory1["list"][$i]['cat_no']*/?>"><?php /*=$arrCategory1["list"][$i]['cat_name']*/?></a></li>
+            <?php /*endfor; */?>
         </ul>
-    </div>
+    </div>-->
     <!-- //tabType1 -->
 
     <!-- subSec -->

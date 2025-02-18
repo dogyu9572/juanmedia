@@ -73,22 +73,28 @@
 <script type="text/javascript" src="/js/jquery-3.7.1.min.js" ></script>
 <script>
     $(document).ready(function () {
-        // 인쇄 이벤트 실행
-        window.print();
+        // PC 환경 감지
+        const isPC = !/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-        // 인쇄 후 창 닫기 처리
-        $(window).on('afterprint', function () {
-            window.close();
-        });
+        if (isPC) {
+            // 인쇄 이벤트 실행
+            window.print();
 
-        // 일부 브라우저에서 'afterprint' 이벤트가 동작하지 않을 경우 대체
-        setTimeout(function () {
-            if (!window.closed) {
+            // 인쇄 후 창 닫기 처리
+            $(window).on('afterprint', function () {
                 window.close();
-            }
-        }, 500); // 인쇄가 완료될 시간을 대략적으로 기다림
+            });
+
+            // 일부 브라우저에서 'afterprint' 이벤트가 동작하지 않을 경우 대체
+            setTimeout(function () {
+                if (!window.closed) {
+                    window.close();
+                }
+            }, 500); // 인쇄가 완료될 시간을 대략적으로 기다림
+        }
     });
 </script>
+
 
 </body>
 </html>

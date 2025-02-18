@@ -257,6 +257,7 @@ $arrCategory01 = getCategoryList("114","Y");	// 분류
                         <label class="radio"><input type="radio" name="etc_3" value="place" <?if($arrBoardArticle["list"][0]['etc_3'] == "place" ){echo " checked";}?>><i></i>공간</label>
                         <label class="radio"><input type="radio" name="etc_3" value="video" <?if($arrBoardArticle["list"][0]['etc_3'] == "video" ){echo " checked";}?>><i></i>상영회</label>
                         <label class="radio"><input type="radio" name="etc_3" value="media" <?if($arrBoardArticle["list"][0]['etc_3'] == "media" ){echo " checked";}?>><i></i>미디어체험</label>
+                        <label class="radio"><input type="radio" name="etc_3" value="member" <?if($arrBoardArticle["list"][0]['etc_3'] == "member" ){echo " checked";}?>><i></i>회원관리</label>
                     </div></td>
             </tr>
 			<tr>

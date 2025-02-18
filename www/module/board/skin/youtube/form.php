@@ -233,8 +233,8 @@ function fileDownload(boardid,b_idx,idx){
 			<tr>
 				<th>사용여부</th>
 				<td><div class="inputs">
-					<label class="radio"><input type="radio" name="is_show" value="Y" <?if($arrBoardArticle["list"][0]['is_show']!="N"){echo " checked";}?>><i></i>Y</label>
-					<label class="radio"><input type="radio" name="is_show" value="N" <?if($arrBoardArticle["list"][0]['is_show']=="N"){echo " checked";}?>><i></i>N</label> 
+					<label class="radio"><input type="radio" name="etc_1" value="Y" <?if($arrBoardArticle["list"][0]['etc_1']!="N"){echo " checked";}?>><i></i>Y</label>
+					<label class="radio"><input type="radio" name="etc_1" value="N" <?if($arrBoardArticle["list"][0]['etc_1']=="N"){echo " checked";}?>><i></i>N</label> 
 					<em></em>
 				</div></td>
 			</tr>

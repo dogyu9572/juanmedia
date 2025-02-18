@@ -5,13 +5,15 @@
   <div class="subTopBg mediaEdu">
     <div class="inner">
       <div class="enName">MEDIA EDUCATION</div>
-      <div class="korName">미디어교육</div>
       <?php include("../inc/sub_navi.php"); ?>
     </div>
   </div>
   <!-- //subTopBg --> <!-- pageTitle -->
   <div class="pageTitle inner">교육신청 안내</div>
-  <!-- //pageTitle --> <!-- eduInfo --> <!--		<div class="eduInfo inner">			<div class="box">				<div class="logo">					<span><img src="/images/ico_logo.svg" alt="주안영상미디어센터"></span>				</div>				<div class="cont">					<ul>						<li class="no1">							<div class="tit">								<span class="ico"><img src="/images/ico_media1.svg" alt="아이콘"></span>								<div class="txt">기본교육</div>							</div>							<div class="text">								영상기획,촬영,<br class="mob" />편집,스피치							</div>						</li>						<li class="no2">							<div class="tit">								<span class="ico"><img src="/images/ico_media2.svg" alt="아이콘"></span>								<div class="txt">마을방송지원</div>							</div>							<div class="text">								마을미디어동아리 <br class="mob" />지원							</div>						</li>						<li class="no3">							<div class="tit">								<span class="ico"><img src="/images/ico_media3.svg" alt="아이콘"></span>								<div class="txt">제작단 운영</div>							</div>							<div class="text">								다큐멘터리,웹드라마,<br class="mob" />팟캐스트, 1인방송, <br class="mob" />방송 프로그램							</div>						</li>						<li class="no4">							<div class="tit">								<span class="ico"><img src="/images/ico_media4.svg" alt="아이콘"></span>								<div class="txt">미디어체험</div>							</div>							<div class="text">								팟캐스트, <br class="mob" />스튜디오 체험							</div>						</li>						<li class="no5">							<div class="tit">								<span class="ico"><img src="/images/ico_media5.svg" alt="아이콘"></span>								<div class="txt">주안미디어<br class="pc" />TV 프로그램제작</div>							</div>							<div class="text">								TV 프로그램 제작							</div>						</li>					</ul>				</div> 			</div>			</div>		--> <!-- //eduInfo --> <!-- subSec -->
+  <!-- //pageTitle -->
+  <!-- eduInfo --> <!--		<div class="eduInfo inner">			<div class="box">				<div class="logo">					<span><img src="/images/ico_logo.svg" alt="주안영상미디어센터"></span>				</div>				<div class="cont">					<ul>						<li class="no1">							<div class="tit">								<span class="ico"><img src="/images/ico_media1.svg" alt="아이콘"></span>								<div class="txt">기본교육</div>							</div>							<div class="text">								영상기획,촬영,<br class="mob" />편집,스피치							</div>						</li>						<li class="no2">							<div class="tit">								<span class="ico"><img src="/images/ico_media2.svg" alt="아이콘"></span>								<div class="txt">마을방송지원</div>							</div>							<div class="text">								마을미디어동아리 <br class="mob" />지원							</div>						</li>						<li class="no3">							<div class="tit">								<span class="ico"><img src="/images/ico_media3.svg" alt="아이콘"></span>								<div class="txt">제작단 운영</div>							</div>							<div class="text">								다큐멘터리,웹드라마,<br class="mob" />팟캐스트, 1인방송, <br class="mob" />방송 프로그램							</div>						</li>						<li class="no4">							<div class="tit">								<span class="ico"><img src="/images/ico_media4.svg" alt="아이콘"></span>								<div class="txt">미디어체험</div>							</div>							<div class="text">								팟캐스트, <br class="mob" />스튜디오 체험							</div>						</li>						<li class="no5">							<div class="tit">								<span class="ico"><img src="/images/ico_media5.svg" alt="아이콘"></span>								<div class="txt">주안미디어<br class="pc" />TV 프로그램제작</div>							</div>							<div class="text">								TV 프로그램 제작							</div>						</li>					</ul>				</div> 			</div>			</div>		-->
+  <!-- //eduInfo -->
+  <!-- subSec -->
   <div class="subSec blue eduSubSec">
     <div class="eduInfoSide inner side">
       <div class="titleType1">수강신청 절차 및 안내</div>
@@ -93,7 +95,7 @@
             <li>· 영수증/계산서는 발급 가능하며, 세금계산서와 현금영수증은 발급이 불가합니다.</li>
           </ul>
           <div class="pointBox"> <span class="tit">입금계좌</span>
-            <div class="name">우리은행 1005-304-746644 [처운대학교산학협력단(인천캠퍼스)]</div>
+            <div class="name">우리은행 1005-304-746644 [청운대학교산학협력단(인천캠퍼스)]</div>
           </div>
         </div>
         <div class="infoList">

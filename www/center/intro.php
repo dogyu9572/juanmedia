@@ -8,7 +8,6 @@
 			<div class="subTopBg center">
 				<div class="inner">
 					<div class="enName">CENTER INFORMATION</div>
-					<div class="korName">센터안내</div>
 					<?php include("../inc/sub_navi.php"); ?>
 				</div>
 			</div>

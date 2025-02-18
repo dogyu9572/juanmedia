@@ -132,7 +132,7 @@ if(!$_SESSION['uName']){
     //아이디 중복체크
     function check_id(uid){
         if(uid.length<4){
-            alert("아이디는 4자 이상 입력해 주세요.");
+            alert("이메일(아이디)는 4자 이상 입력해 주세요.");
             document.memberForm.user_id.focus();
             return ;
         }
@@ -178,8 +178,12 @@ if(!$_SESSION['uName']){
         }
     }
     function frmCheck(frm){
+        if(!frm.gender.value){ //성별
+            alert('성별을 선택해 주세요.');
+            return ;
+        }
         if (frm.user_id.value.length < 4){
-            alert("아이디는 4자 이상 입력해 주세요.");
+            alert("이메일(아이디)는 4자 이상 입력해 주세요.");
             frm.user_id.focus();
             return ;
         }
@@ -188,12 +192,13 @@ if(!$_SESSION['uName']){
             frm.user_name.focus();
             return ;
         }
-        if(!frm.gender.value){ //성별
-            alert('성별을 선택해 주세요.');
-            return ;
-        }
         if (frm.user_id.value != frm.dupcheck.value){
             alert("아이디 중복확인을 해주세요.");
+            return ;
+        }
+        if(frm.birth.value.length < 1){	// 휴대폰 번호
+            alert('생년월일을 입력해 주세요.');
+            frm.birth.focus();
             return ;
         }
         /*if (!fnEmailcheck(frm.user_id.value)){
@@ -213,11 +218,6 @@ if(!$_SESSION['uName']){
         if(frm.mobile.value.length < 1){	// 휴대폰 번호
             alert('연락처를 입력해 주세요.');
             frm.mobile.focus();
-            return ;
-        }
-        if(frm.birth.value.length < 1){	// 휴대폰 번호
-            alert('생년월일을 입력해 주세요.');
-            frm.birth.focus();
             return ;
         }
         if (frm.address.value.length < 2){

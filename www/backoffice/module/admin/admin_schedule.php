@@ -192,10 +192,10 @@ $arrCategory = array(
         <div class="inbox write_tbl schedule_wrap">
             <div class="schedule_area">
                 <div class="years">
-                    <button type="button" onclick="location.href='<?=$_SERVER["PHP_SELF"]?>?sYear=<?=substr($prev_date,0,4)?>&sMonth=<?=substr($prev_date,5,2)?>'" class="btn prev">이전</button>
+                    <button type="button" onclick="location.href='<?=$_SERVER["PHP_SELF"]?>?sYear=<?=substr($prev_date,0,4)?>&sMonth=<?=substr($prev_date,5,2)?><?=$_GET["tab"]?"&tab=".$_GET["tab"]:""?>'" class="btn prev">이전</button>
                     <span><?=str_replace("-",". ",substr($cal_date,0,7))?></span>
-                    <button type="button" onclick="location.href='<?=$_SERVER["PHP_SELF"]?>?sYear=<?=substr($next_date,0,4)?>&sMonth=<?=substr($next_date,5,2)?>'" class="btn next">다음</button>
-                    <button type="button" onclick="location.href='<?=$_SERVER["PHP_SELF"]?>'" class="btn today">오늘</button>
+                    <button type="button" onclick="location.href='<?=$_SERVER["PHP_SELF"]?>?sYear=<?=substr($next_date,0,4)?>&sMonth=<?=substr($next_date,5,2)?><?=$_GET["tab"]?"&tab=".$_GET["tab"]:""?>'" class="btn next">다음</button>
+                    <button type="button" onclick="location.href='<?=$_SERVER["PHP_SELF"]?><?=$_GET["tab"]?"?tab=".$_GET["tab"]:""?>'" class="btn today">오늘</button>
                 </div>
 
                 <table>
@@ -303,7 +303,7 @@ $arrCategory = array(
                                                             <?php endif; ?>
                                                             <?=$val['subject']?>
 	                                                        <?php if ($boardidMap[$scheduleType] == 'edu'): ?>
-                                                                / <?=$val['r_start_date']?> ~ <?=$val['r_end_date']?> / <?=$val['start_hour']?>:<?=$val['start_minute']?> ~ <?=$val['end_hour']?>:<?=$val['end_minute']?>
+                                                                / <?=$val['e_start_date']?> ~ <?=$val['e_end_date']?> / <?=$val['start_hour']?>:<?=$val['start_minute']?> ~ <?=$val['end_hour']?>:<?=$val['end_minute']?>
 	                                                        <?php endif; ?>
 	                                                        <?php if ($boardidMap[$scheduleType] == 'equ_applicants'): ?>
                                                                 / <?=$val['rental_start_date']?> ~ <?=$val['rental_end_date']?> / <?=$val['rental_start_time']?> ~ <?=$val['rental_end_time']?>

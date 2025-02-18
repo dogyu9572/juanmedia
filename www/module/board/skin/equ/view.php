@@ -241,6 +241,26 @@ function doLoad(){
                                     </div>
                                 </div>
                             </li>
+							<!-- <li>
+								<div class="tit">대여 방문시간</div>
+								<div class="txt">
+									<div class="baseSel">
+										<select name="rental_start_time" id="rental_start_time">
+											<option value="">선택</option>
+										</select>
+									</div>
+								</div>
+							                            </li>
+							<li>
+								<div class="tit">반납 방문시간</div>
+								<div class="txt">
+									<div class="baseSel">
+										<select name="rental_end_time" id="rental_end_time">
+											<option value="">선택</option>
+										</select>
+									</div>
+								</div>
+							</li> -->
                         </ul>
                     </div>
 
@@ -476,7 +496,10 @@ function doLoad(){
                     alert("최대 대여 개수를 초과 하였습니다.");
                     return;
                 }*/
-
+                if (<?= $_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["LEVEL"] ?> == 6 ) {
+                    alert("정지 회원은 신청 불가능 합니다.");
+                    return;
+                }
                 if (!document.getElementById('st1').value) {
                     alert('대여일을 선택해 주세요.');
                     return;

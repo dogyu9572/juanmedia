@@ -8,7 +8,6 @@
 			<div class="subTopBg equ">
 				<div class="inner">
 					<div class="enName">EQUIPMENT RENTAL</div>
-					<div class="korName">장비대여</div>
 					<?php include("../inc/sub_navi.php"); ?>
 				</div>
 			</div>

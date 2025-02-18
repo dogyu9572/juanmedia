@@ -120,7 +120,7 @@
     $arrBoardEquList = getBoardListBase("equ_applicants", "", "", "", 100, 0, $subQuery, "", "");
 
     if($arrBoardEquList["total"] >= $arrSetInfo["list"][0]["equ_max_rental_count"]){
-        jsMsg("대여 가능한 장비의 수량을 초과하였습니다.");
+        jsMsg("타인에게 대여된 장비로, 귀하의 대여 신청은 불가합니다.");
         jsHistory("-1");
     }
 
@@ -175,7 +175,7 @@
                                         $arrBoardEquList = getBoardListBase("equ_applicants", "", "", "", 100, 0, $subQuery, "", "");
 
                                         if($arrBoardEquList["total"] >= $arrSetInfo["list"][0]["equ_max_rental_count"]){
-                                            jsMsg($arrBoardList["list"][$i]['subject']. " 장비가 대여 가능한 장비의 수량을 초과하였습니다.");
+                                            jsMsg($arrBoardList["list"][$i]['subject']. " 장비가 타인에게 대여된 장비로, 귀하의 대여 신청은 불가합니다.");
                                             jsHistory("-1");
                                         }
 
@@ -269,10 +269,10 @@
                             <input type="hidden" name="evnMode" value="write">
 		                <?php endif;?>
 
-                    <div class="detailTit">대여 정보</div>
+                    <!-- <div class="detailTit">대여 정보</div> -->
 
                     <!-- formBox -->
-                    <div class="formBox mb1">
+                    <!-- <div class="formBox mb1">
                         <div class="row">
                             <div class="formTit">대여 방문시간</div>
                             <div class="right">
@@ -293,7 +293,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- //formBox -->
 
 

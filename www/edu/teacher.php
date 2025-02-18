@@ -2,6 +2,7 @@
 <?php
 include_once $_SERVER["DOCUMENT_ROOT"] . "/module/member/member.lib.php";
 include_once $_SERVER["DOCUMENT_ROOT"] . "/module/category/category.lib.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/module/member/auth.php";
 
 // DB연결
 $dblink = SetConn ( $_conf_db ["main_db"] );

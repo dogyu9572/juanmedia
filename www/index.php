@@ -68,8 +68,8 @@ SetDisConn($dblink);
                     for ($i = 0; $i < $total; $i++) {
                         $pc_image = "/pub/images/mvisual01.png";
                         $mo_image = "/pub/images/mvisual01.png";
-                        $url = "#this";
                         $target = "";
+	                    $link_attr = '';
 
                         if (!empty($arrPCBannerList["list"][$i]["b_image"])) {
                             $pc_image = "/uploaded/banner/" . $arrPCBannerList["list"][$i]["b_image"];
@@ -78,16 +78,14 @@ SetDisConn($dblink);
                             $mo_image = "/uploaded/banner/" . $arrMOBannerList["list"][$i]["b_image"];
                         }
 
-                        if (!empty($arrPCBannerList["list"][$i]["b_url"])) {
-                            $url = $arrPCBannerList["list"][$i]["b_url"];
-                            $target = " target='" . $arrPCBannerList["list"][$i]["b_target"] . "' ";
-                        } elseif (!empty($arrMOBannerList["list"][$i]["b_url"])) {
-                            $url = $arrMOBannerList["list"][$i]["b_url"];
-                            $target = " target='" . $arrMOBannerList["list"][$i]["b_target"] . "' ";
-                        }
+	                    if (!empty($arrPCBannerList["list"][$i]["b_url"]) && $arrPCBannerList["list"][$i]["b_url"] != "https://") {
+		                    $link_attr = 'href="'.$arrPCBannerList["list"][$i]["b_url"].'" target="'.$arrPCBannerList["list"][$i]["b_target"].'"';
+	                    } elseif (!empty($arrMOBannerList["list"][$i]["b_url"]) && $arrMOBannerList["list"][$i]["b_url"] != "https://") {
+		                    $link_attr = 'href="'.$arrMOBannerList["list"][$i]["b_url"].'" target="'.$arrMOBannerList["list"][$i]["b_target"].'"';
+	                    }
                         ?>
                         <div class="swiper-slide">
-                            <a href="<?=$url?>" <?=$target?>>
+                            <a <?=$link_attr?>>
                                 <img src="<?=$pc_image?>" class="pc" alt="슬라이드">
                                 <img src="<?=$mo_image?>" class="mob" alt="슬라이드">
                             </a>
@@ -349,7 +347,7 @@ SetDisConn($dblink);
             <!-- mainNotice -->
             <div class="mainNotice">
                 <div class="mainTit">
-                    <div class="tit">공지&뉴스</div>
+                    <div class="tit">공지 사항</div>
                     <a href="/cm/notice.php" class="btnMore">More</a>
                 </div>
                 <div class="noticeList">
@@ -369,7 +367,7 @@ SetDisConn($dblink);
                 <div class="youtubeList">
                     <ul>
                         <?php for($i=0;$i<$arrYoutubeList["list"]["total"];$i++){?>
-                            <li><a href="<?=$arrYoutubeList["list"][$i]["homepage"]?>"><span class="img"><img src="/uploaded/board/youtube/<?=$arrYoutubeList["list"][$i]["re_name"]?>" alt="썸네일"></span>
+                            <li><a href="<?=$arrYoutubeList["list"][$i]["homepage"]?>" target="_blank"><span class="img"><img src="/uploaded/board/youtube/<?=$arrYoutubeList["list"][$i]["re_name"]?>" alt="썸네일"></span>
                                     <div class="text"><span class="tit"><?=$arrYoutubeList["list"][$i]["subject"]?></span>
                                         <span class="txt"><?=$arrYoutubeList["list"][$i]["contents"]?></span>
                                     </div>

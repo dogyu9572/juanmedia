@@ -8,7 +8,6 @@
 			<div class="subTopBg place">
 				<div class="inner">
 					<div class="enName">SPACE RENTAL</div>
-					<div class="korName">공간대관</div>
 					<?php include("../inc/sub_navi.php"); ?>
 				</div>
 			</div>
@@ -92,7 +91,7 @@
 							</ul>
 							<div class="pointBox">
 								<span class="tit">입금계좌</span>
-								<div class="name">우리은행 1005-304-746644 [처운대학교산학협력단(인천캠퍼스)]</div>
+								<div class="name">우리은행 1005-304-746644 [청운대학교산학협력단(인천캠퍼스)]</div>
 							</div>
 						</div>
 					</div>

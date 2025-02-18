@@ -279,44 +279,45 @@ function getMemberList($jb, $sw, $sk, $scale, $offset=0, $subQuery="", $orderBy=
 	}else{
 		$sql .= " order by idx desc ";
 	}
-	//echo $sql;
+	
+	// 전체 레코드 수 먼저 조회
 	$rs = mysqli_query($GLOBALS['dblink'], $sql);
-    $total_rs = mysqli_num_rows($rs);
+	$total_rs = mysqli_num_rows($rs);
 
+	// 결과 배열 초기화
+	$list = array('total' => $total_rs);
 
-    if($total_rs > 0){
-        $list['total'] = $total_rs;
-        // 페이지 네비게이션 오프셋 지정.
-		    if(!$offset){
-		        $offset=0;
-		    }else{
-		        $offset=$offset;
-		    }
+	if($total_rs > 0) {
+		// offset 유효성 검사
+		if(!isset($offset) || $offset < 0) {
+			$offset = 0;
+		}
 
-		    // offset 이 전체 게시물수보다 작을때 offset 을 전체게시물 - 페이지당 보여줄 글 수로 offset 설정
-		    if($total_rs<=$offset){
-		        $offset = $total_rs - $scale;
-		    }
+		// offset이 전체 레코드 수보다 크면 조정
+		if($total_rs <= $offset) {
+			$offset = max(0, $total_rs - $scale);
+		}
 
-				//scale 0 으로 지정시에는 전체 가져옴
-			if($scale > 0){
-		    	$sql .= " limit $offset,$scale ";
+		// LIMIT 구문 추가 (scale이 양수일 때만)
+		if($scale > 0) {
+			$sql .= " LIMIT $offset, $scale";
+
+			// 페이징된 결과 조회
+			$rs = mysqli_query($GLOBALS['dblink'], $sql);
+			$list['list']['total'] = mysqli_num_rows($rs);
+
+			// 결과 데이터 처리
+			$i = 0;
+			while($row = mysqli_fetch_assoc($rs)) {
+				$list['list'][$i] = $row;
+				$i++;
 			}
-		    $rs = mysqli_query($GLOBALS['dblink'],$sql);
+		}
+	} else {
+		$list['list']['total'] = 0;
+	}
 
-		    // offset 을 이용한 limit 가 적용된 갯수
-		    $total = mysqli_num_rows($rs);
-		    $list['list']['total'] = $total;
-		    // 페이지 네비게이션 오프셋 지정.
-
-        for($i=0; $i < $total; $i++){
-            $list['list'][$i] = mysqli_fetch_assoc($rs);
-        }
-    }else{
-        $list['total'] = 0;
-    }
-
-    return $list;
+	return $list;
 }
 
 //회원가입
@@ -1013,7 +1014,13 @@ function editMember($id){
 	if($_POST['user_pw'] && $_POST['user_pw1'] && $_POST['user_pw'] == $_POST['user_pw1']){
 		$sql_add .= " user_pw = password('".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['user_pw'])."'), ";
 	}
+
+	if($_POST['user_pw'] !=""){
+		$sql_pw = " user_pw = password('".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['user_pw'])."'), ";
+	}
+
 	$sql = "UPDATE ".$tbl." SET
+		$sql_pw
 		$sql_add
 		email = '".$user_email."',
 		email_accept = '$email_accept',
@@ -1027,6 +1034,7 @@ function editMember($id){
 		birth = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['birth'])."',
 		phone = '".$phone."',
 		mobile = '".$mobile."',
+		`before` = 'N',
 		address = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['address'])."',
 		address_ext = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['address_ext'])."',
 		etc_1 = '".mysqli_real_escape_string($GLOBALS['dblink'], $_POST['etc_1'])."',
@@ -1582,7 +1590,10 @@ function getMemberInfoByNameAndMobile($name, $mobile) {
 	$formatted_mobile = substr($mobile, 0, 3) . '-' . substr($mobile, 3, 4) . '-' . substr($mobile, 7);
 	$encoded_formatted_mobile = base64_encode($formatted_mobile);
 
-	$sql = "SELECT * FROM $tbl WHERE user_name = '$encoded_name' AND (mobile = '$encoded_mobile' OR mobile = '$encoded_formatted_mobile')";
+	$sql = "SELECT * FROM $tbl 
+            WHERE (user_name = '$encoded_name' OR user_name = '$name') 
+            AND (mobile = '$encoded_mobile' OR mobile = '$encoded_formatted_mobile' OR mobile = '$mobile' OR mobile = '$formatted_mobile')";
+
 	$rs = mysqli_query($GLOBALS['dblink'], $sql);
 	$total_rs = mysqli_num_rows($rs);
 
@@ -1597,6 +1608,7 @@ function getMemberInfoByNameAndMobile($name, $mobile) {
 
 	return $list;
 }
+
 
 
 //기간별회원

@@ -1,34 +1,1 @@
-<?
-include_once ($_SERVER['DOCUMENT_ROOT'] . "/common/conf/config.inc.php");
-include_once ($_SERVER['DOCUMENT_ROOT'] . "/module/member/member.lib.php");
-
-//DB연결
-$dblink = SetConn($_conf_db["main_db"]);
-
-$nick_name = mysqli_real_escape_string($dblink,$_REQUEST['nick_name']);
-
-$arrMemberList = getUserInfo($_REQUEST["user_id"]);
-
-if ($arrMemberList['list'][0]['before'] == 'Y') {
-    $user_name = base64_decode($arrMemberList['list'][0]['user_name']);
-    $mobile = base64_decode($arrMemberList['list'][0]['mobile']);
-    $email = base64_decode($arrMemberList['list'][0]['email']);
-} else {
-    $user_name = $arrMemberList['list'][0]['user_name'];
-    $mobile = $arrMemberList['list'][0]['mobile'];
-    $email = $arrMemberList['list'][0]['email'];
-}
-
-$arrLevel = getArticleList ( $_conf_tbl ["member_level"], 0, 0, "order by level_no desc " );
-for($i = 0; $i < $arrLevel["total"]; $i ++) {
-    $arrayLevel[$arrLevel["list"][$i]['level_no']] = $arrLevel["list"][$i]['level_name'];
-}
-
-$level_name = $arrayLevel[$arrMemberList['list'][0]['user_level']];
-$level_no = $arrMemberList['list'][0]['user_level'];
-
-//DB해제
-SetDisConn($dblink);
-
-echo $arrMemberList['list'][0]['user_id'] . "|" . $user_name . "|" . $email . "|" . $mobile . "|" . $level_name. "|" . $level_no;
-?>
+<?include_once ($_SERVER['DOCUMENT_ROOT'] . "/common/conf/config.inc.php");include_once ($_SERVER['DOCUMENT_ROOT'] . "/module/member/member.lib.php");//DB연결$dblink = SetConn($_conf_db["main_db"]);$nick_name = mysqli_real_escape_string($dblink,$_REQUEST['nick_name']);$arrMemberList = getUserInfo($_REQUEST["user_id"]);if ($arrMemberList['list'][0]['before'] == 'Y') {    $user_name = base64_decode($arrMemberList['list'][0]['user_name']);    $mobile = base64_decode($arrMemberList['list'][0]['mobile']);    $email = base64_decode($arrMemberList['list'][0]['email']);} else {    $user_name = $arrMemberList['list'][0]['user_name'];    $mobile = $arrMemberList['list'][0]['mobile'];    $email = $arrMemberList['list'][0]['email'];}$arrLevel = getArticleList ( $_conf_tbl ["member_level"], 0, 0, "order by level_no desc " );for($i = 0; $i < $arrLevel["total"]; $i ++) {    $arrayLevel[$arrLevel["list"][$i]['level_no']] = $arrLevel["list"][$i]['level_name'];}$level_name = $arrayLevel[$arrMemberList['list'][0]['user_level']];$level_no = $arrMemberList['list'][0]['user_level'];//DB해제SetDisConn($dblink);echo $arrMemberList['list'][0]['user_id'] . "|" . $user_name . "|" . $email . "|" . $mobile . "|" . $level_name. "|" . $level_no . "|" . $arrMemberList['list'][0]['birth'];?>

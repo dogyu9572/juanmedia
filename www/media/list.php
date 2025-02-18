@@ -1,5 +1,5 @@
 <?php include("../inc/header.php"); ?>
-<?php $gNum = "04"; $sNum = "04"; $gName = "미디어체험"; $sName = "상영회신청"; ?>
+<?php $gNum = "04"; $sNum = "04"; $gName = "미디어 체험"; $sName = "상영회신청"; ?>
 
 		<!-- Container -->
 		<div class="container sub" id="container">
@@ -8,7 +8,6 @@
 			<div class="subTopBg media">
 				<div class="inner">
 					<div class="enName">BRUNCH MOVIE TALK</div>
-					<div class="korName">미디어체험</div>
 					<?php include("../inc/sub_navi.php"); ?>
 				</div>
 			</div>

@@ -8,7 +8,6 @@
 			<div class="subTopBg equ">
 				<div class="inner">
 					<div class="enName">EQUIPMENT RENTAL</div>
-					<div class="korName">장비대여</div>
 					<?php include("../inc/sub_navi.php"); ?>
 				</div>
 			</div>
@@ -31,7 +30,7 @@
 								</li>
 								<li>
 									<div class="img"><img src="/images/ico_eq2.svg" alt="아이콘"></div>
-									<div class="text">전화 확인<br />(070-4607<br class="mob" />-1214)</div>
+									<div class="text">전화 확인<br />(070-4607<br class="mob" />-1213)</div>
 								</li>
 								<li>
 									<div class="img"><img src="/images/ico_eq3.svg" alt="아이콘"></div>
@@ -64,7 +63,7 @@
 								<li>· 온라인 신청 후 반드시 전화 확인을 통해 담당자의 승인을 받아야 합니다.</li>
 							</ul>
 							<div class="warnIco mt">
-								장비 대여 담당자 연락처: 070-4607-1214
+								장비 대여 담당자 연락처: 070-4607-1213
 							</div>
 						</div>
 						<div class="infoList">
@@ -91,7 +90,7 @@
 							</ul>
 							<div class="pointBox">
 								<span class="tit">입금계좌</span>
-								<div class="name">우리은행 1005-304-746644 [처운대학교산학협력단(인천캠퍼스)]</div>
+								<div class="name">우리은행 1005-304-746644 [청운대학교산학협력단(인천캠퍼스)]</div>
 							</div>
 						</div>
 					</div>

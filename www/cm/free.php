@@ -8,7 +8,6 @@
 			<div class="subTopBg notice">
 				<div class="inner">
 					<div class="enName">NOTICE BOARD</div>
-					<div class="korName">게시판</div>
 					<?php include("../inc/sub_navi.php"); ?>
 				</div>
 			</div>

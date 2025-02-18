@@ -1,5 +1,5 @@
 <?php include("../inc/header.php"); ?>
-<?php $gNum = "05"; $sNum = "01"; $gName = "게시판"; $sName = "공지&뉴스"; ?>
+<?php $gNum = "05"; $sNum = "01"; $gName = "게시판"; $sName = "공지 사항"; ?>
 
 		<!-- Container -->
 		<div class="container sub" id="container">
@@ -8,7 +8,6 @@
 			<div class="subTopBg notice">
 				<div class="inner">
 					<div class="enName">NOTICE BOARD</div>
-					<div class="korName">게시판</div>
 					<?php include("../inc/sub_navi.php"); ?>
 				</div>
 			</div>
@@ -32,6 +31,3 @@
 
 </body>
 </html>
-
-
-

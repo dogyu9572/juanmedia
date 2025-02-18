@@ -1,5 +1,5 @@
 <?php include("../inc/header.php"); ?>
-<?php $gNum = "04"; $sNum = "03"; $gName = "미디어체험"; $sName = "상영회"; ?>
+<?php $gNum = "04"; $sNum = "03"; $gName = "미디어 체험"; $sName = "상영회 안내"; ?>
 
 		<!-- Container -->
 		<div class="container sub" id="container">
@@ -8,14 +8,13 @@
 			<div class="subTopBg video">
 				<div class="inner">
 					<div class="enName">BRUNCH MOVIE TALK</div>
-					<div class="korName">미디어체험</div>
 					<?php include("../inc/sub_navi.php"); ?>
 				</div>
 			</div>
 			<!-- //subTopBg -->
 
 			<!-- pageTitle -->
-			<div class="pageTitle inner">상영회</div>
+			<div class="pageTitle inner">상영회 안내</div>
 			<!-- //pageTitle -->
 
 			<div class="mediaExpInfo inner">
@@ -35,8 +34,8 @@
 			<div class="subSec blue last">
 				<div class="inner">
 					<div class="imgTwo">
-						<div><img src="/images/img_media12.png" alt="미디어체험"></div>
-						<div><img src="/images/img_media13.png" alt="미디어체험"></div>
+						<div><img src="/images/img_media12.png" alt="미디어 체험"></div>
+						<div><img src="/images/img_media13.png" alt="미디어 체험"></div>
 					</div>
 						
 				</div>

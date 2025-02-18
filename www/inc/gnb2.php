@@ -53,14 +53,14 @@ SetDisConn($dblink);
 							</ul>
 						<?php } elseif ($arrVal["cat_engname"] == "/media/info.php") { ?>
 							<ul>
-								<li><a href="/media/info.php">미디어체험</a></li>
+								<li><a href="/media/info.php">미디어 체험 안내</a></li>
 								<li><a href="/media/order.php">체험신청</a></li>
-								<li><a href="/media/video.php">상영회</a></li>
+								<li><a href="/media/video.php">상영회 안내</a></li>
 								<li><a href="/media/list.php">상영회신청</a></li>
 							</ul>
 						<?php } elseif ($arrVal["cat_engname"] == "/cm/notice.php") { ?>
 							<ul>
-								<li><a href="/cm/notice.php">공지&뉴스</a></li>
+								<li><a href="/cm/notice.php">공지 사항</a></li>
 								<li><a href="/cm/free.php">자유게시판</a></li>
 								<li><a href="/cm/dataList.php">자료실</a></li>
 							</ul>

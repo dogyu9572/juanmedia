@@ -7,20 +7,33 @@ include $_SERVER['DOCUMENT_ROOT'] . "/module/mail/mail.lib.php";
 
 //DB연결
 $dblink = SetConn($_conf_db["main_db"]);
-
 $phones = explode(',', $_REQUEST["phones"]);
-$messages = $_REQUEST["messages"];
 $results = [];
 
+$arrBoardSmsArticle = getBoardArticleView("mailsms", "sms", $_REQUEST["idx"], "read", "and etc_3='" . $_REQUEST["etc_3"] . "'");
+
+$subject = $arrBoardSmsArticle["list"][0]['subject'];
+$title = $arrBoardSmsArticle["list"][0]['etc_4'];
+$contents = $arrBoardSmsArticle["list"][0]['contents'];
+
+//$messages = "[" . $title . "]\n" . $contents;
+
+$clean_title = str_replace('&nbsp;', ' ', $title);
+$clean_contents = str_replace('&nbsp;', ' ', $contents);
+
+$messages = "[" . $clean_title . "]\n" . $clean_contents;
+
+$mtype = strlen($messages) > 90?"lms":"sms";
+
 foreach ($phones as $phone) {
-    $smsRS = munja_send("sms", "Recipient Name", $phone, $messages, "010-2740-4458", "", "", "", "", "");
+    $smsRS = munja_send($mtype, "Recipient Name", $phone, $messages, "010-2740-4458", "", "", "", "", "");
     $results[] = $smsRS;
 }
 
 if($smsRS==true){
     echo "true";
 }else{
-    echo "false".$_REQUEST["phones"]."//".$smsRS;
+    echo "false".$_REQUEST["phones"]."//".$arrBoardSmsArticle;
 }
 
 //DB해제

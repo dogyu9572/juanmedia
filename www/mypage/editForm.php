@@ -272,7 +272,7 @@ else {
 									<div class="tit">생년월일<span>*</span></div>
 									<div class="btnInput">
 										<div class="baseInput">
-											<input type="text" name="user_bearth" id="user_bearth" class="datepicker">
+											<input type="text" name="birth" id="birth" value="<?=$arrMemberInfo['list'][0]['birth']?>" class="datepicker">
 										</div>
 									</div>
 								</div>

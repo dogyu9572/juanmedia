@@ -1,5 +1,5 @@
 <?php include("../inc/header.php"); ?>
-<?php $gNum = "04"; $sNum = "01"; $gName = "미디어체험"; $sName = "미디어체험"; ?>
+<?php $gNum = "04"; $sNum = "01"; $gName = "미디어 체험"; $sName = "미디어 체험 안내"; ?>
 
 		<!-- Container -->
 		<div class="container sub" id="container">
@@ -8,14 +8,13 @@
 			<div class="subTopBg media">
 				<div class="inner">
 					<div class="enName">MEDIA EXPERIENCE</div>
-					<div class="korName">미디어체험</div>
 					<?php include("../inc/sub_navi.php"); ?>
 				</div>
 			</div>
 			<!-- //subTopBg -->
 
 			<!-- pageTitle -->
-			<div class="pageTitle inner">미디어체험 안내</div>
+			<div class="pageTitle inner">미디어 체험 안내</div>
 			<!-- //pageTitle -->
 
 			<div class="mediaExpInfo inner">
@@ -28,7 +27,7 @@
 					홈페이지와 전화로 신청할 수 있으며, 화요일에서 토요일까지 예약 진행합니다
 					</div>
 				</div>
-				<div class="img"><img src="/images/img_media1.jpg" alt="미디어체험"></div>
+				<div class="img"><img src="/images/img_media1.jpg" alt="미디어 체험"></div>
 			</div>
 
 			<!-- subSec -->
@@ -56,8 +55,8 @@
 								</div>
 								<div class="text">진행자, 리포터, 카메라 감독, 기술 감독 등 방송 스태프가 되어 TV 프로그램 녹화를 진행하는 체험입니다. <br />미디어 파크의 오픈 스튜디오에서 진행됩니다.</div>
 								<div class="img">
-									<div><img src="/images/img_media2.png" alt="미디어체험"></div>
-									<div><img src="/images/img_media3.png" alt="미디어체험"></div>
+									<div><img src="/images/img_media2.png" alt="미디어 체험"></div>
+									<div><img src="/images/img_media3.png" alt="미디어 체험"></div>
 								</div>
 							</div>
 							<div class="box">
@@ -67,8 +66,8 @@
 								</div>
 								<div class="text">DJ, 구성 작가, 오디오 엔지니어 등 방송 스태프가 되어 라디오 프로그램 녹음을 진행하는 체험입니다.<br />미디어 파크의 오디오 스튜디오에서 진행됩니다.</div>
 								<div class="img">
-									<div><img src="/images/img_media4.png" alt="미디어체험"></div>
-									<div><img src="/images/img_media5.png" alt="미디어체험"></div>
+									<div><img src="/images/img_media4.png" alt="미디어 체험"></div>
+									<div><img src="/images/img_media5.png" alt="미디어 체험"></div>
 								</div>
 							</div>
 							<div class="box">
@@ -78,8 +77,8 @@
 								</div>
 								<div class="text">체험용 드론을 이용한 축구 경기를 진행하는 체험입니다. 미디어 파크의 드론 축구 전용 경기 장에서 진행됩니다.</div>
 								<div class="img">
-									<div><img src="/images/img_media6.png" alt="미디어체험"></div>
-									<div><img src="/images/img_media7.png" alt="미디어체험"></div>
+									<div><img src="/images/img_media6.png" alt="미디어 체험"></div>
+									<div><img src="/images/img_media7.png" alt="미디어 체험"></div>
 								</div>
 							</div>
 							<div class="box">
@@ -89,8 +88,8 @@
 								</div>
 								<div class="text">‘오큘러스 퀘스트’로 가상 현실을 경험하는 체험입니다. 미디어 파크의 VR 전용 공간에서 진행됩니다.</div>
 								<div class="img">
-									<div><img src="/images/img_media8.png" alt="미디어체험"></div>
-									<div><img src="/images/img_media9.png" alt="미디어체험"></div>
+									<div><img src="/images/img_media8.png" alt="미디어 체험"></div>
+									<div><img src="/images/img_media9.png" alt="미디어 체험"></div>
 								</div>
 							</div>
 							<div class="box">
@@ -100,8 +99,8 @@
 								</div>
 								<div class="text">기상 캐스터가 되어 크로마키 앞에서 날씨 정보를 전달하는 체험입니다. 미디어 파크의 스튜 디오에서 진행됩니다.</div>
 								<div class="img">
-									<div><img src="/images/img_media10.png" alt="미디어체험"></div>
-									<div><img src="/images/img_media11.png" alt="미디어체험"></div>
+									<div><img src="/images/img_media10.png" alt="미디어 체험"></div>
+									<div><img src="/images/img_media11.png" alt="미디어 체험"></div>
 								</div>
 								<div class="warn">
 									<div class="infoTit">유의사항 안내</div>
@@ -139,8 +138,8 @@
 								언제나 다양한 장르와 테마의 영화를 상영하는 브런치 무비 톡! 편안한 분위기에서 영화와 함께하는 멋진 경험을 놓치지 마세요!
 								</div>
 								<div class="imgTwo">
-									<div><img src="/images/img_media12.png" alt="미디어체험"></div>
-									<div><img src="/images/img_media13.png" alt="미디어체험"></div>
+									<div><img src="/images/img_media12.png" alt="미디어 체험"></div>
+									<div><img src="/images/img_media13.png" alt="미디어 체험"></div>
 								</div>
 							</div>
 							

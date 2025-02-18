@@ -8,26 +8,7 @@
 			<div class="subTopBg equ">
 				<div class="inner">
 					<div class="enName">EQUIPMENT RENTAL</div>
-					<div class="korName">장비대여</div>
-					<div class="lnb">
-						<a href="/"><img src="/images/ico_home.svg" alt="home"></a>
-						<div class="lnbSub">
-							<div class="tit">장비대여</div>
-							<ul>
-								<li><a href="/edu/info.php">미디어교육</a></li>
-								<li><a href="/place/info.php">공간대관</a></li>
-								<li><a href="/media/info.php">미디어체험</a></li>
-								<li><a href="/cm/notice.php">게시판</a></li>
-								<li><a href="/center/intro.php">센터안내</a></li>
-							</ul>
-						</div>
-						<div class="lnbSub">
-							<div class="tit">장비대여신청</div>
-							<ul>
-								<li><a href="/equ/info.php">대여안내</a></li>
-							</ul>
-						</div>
-					</div>
+					<?php include("../inc/sub_navi.php"); ?>
 				</div>
 			</div>
 			<!-- //subTopBg -->

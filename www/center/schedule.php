@@ -21,8 +21,17 @@ if($_GET['boardid'] == 'all') {
     foreach($eduItems as &$item) $item['type'] = 'edu';
     foreach($videoItems as &$item) $item['type'] = 'video';
 
-    // 전체 리스트 합치기 및 정렬
-    $allItems = array_merge($eduItems, $videoItems);
+	// 전체 리스트 합치기 및 정렬
+	if (!empty($eduItems) && !empty($videoItems)) {
+		$allItems = array_merge($eduItems, $videoItems);
+	} elseif (!empty($eduItems)) {
+		$allItems = $eduItems;
+	} elseif (!empty($videoItems)) {
+		$allItems = $videoItems;
+	} else {
+		$allItems = array();
+	}
+
     usort($allItems, function($a, $b) {
         return strtotime($b['wdate']) - strtotime($a['wdate']);
     });

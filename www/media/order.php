@@ -1,5 +1,5 @@
 <?php include("../inc/header.php"); ?>
-<?php $gNum = "04"; $sNum = "02"; $gName = "미디어체험"; $sName = "체험신청";?>
+<?php $gNum = "04"; $sNum = "02"; $gName = "미디어 체험"; $sName = "체험신청";?>
 <?php
     include_once $_SERVER['DOCUMENT_ROOT'] . "/module/board/board.lib.php";
     $dblink = SetConn($_conf_db["main_db"]);
@@ -34,12 +34,31 @@
     $holidayWeekdaysJson = json_encode($holidayWeekdays);
     $specificHolidayDatesJson = json_encode($specificHolidayDates);
 
+    $arrMediaApplicantsList = getBoardListBaseNFile("media_applicants", $_GET["category"], $_GET['sw'], $_GET['sk'], $arrBoardInfo["list"][0]["scale"], $_GET['offset'], $_GET['reply']);
+
+    // 기존 예약 데이터를 JSON으로 변환
+    $existingReservations = array_filter(array_map(function($item) {
+        if (!empty($item['desired_date']) && $item['desired_date'] != '0000-00-00') {
+            return [
+                'desired_date' => $item['desired_date'],
+                'start_time' => $item['start_hour'] . ':' . $item['start_minute'],
+                'end_time' => $item['end_hour'] . ':' . $item['end_minute']
+            ];
+        }
+        return null;
+    }, $arrMediaApplicantsList['list']), function($item) {
+        return $item !== null;
+    });
+
+    $reservationsJson = json_encode(array_values($existingReservations));
+
     //DB해제
     SetDisConn($dblink);
 ?>
 <script>
     const holidayWeekdaysJson = <?= json_encode($holidayWeekdays) ?>;
     const specificHolidayDatesJson = <?= json_encode($specificHolidayDates) ?>;
+    const existingReservations = <?= $reservationsJson ?>;
 </script>
 <script src="/js/calendar_sub.js"></script>
 <!-- Container -->
@@ -49,7 +68,6 @@
     <div class="subTopBg media">
         <div class="inner">
             <div class="enName">MEDIA EXPERIENCE</div>
-            <div class="korName">미디어체험</div>
             <?php include("../inc/sub_navi.php"); ?>
         </div>
     </div>
@@ -521,7 +539,7 @@
                 <!-- //formBox -->
 
                 <div class="expAgree">
-                    <div class="text">체험 신청은 아래와 같이 <br class="mob" />주안영상미디어센터 미디어체험을 신청하고 있습니다.<br /> 미디어 체험 운영을 위한 개인 정보 활용에 동의합니다.</div>
+                    <div class="text">체험 신청은 아래와 같이 <br class="mob" />주안영상미디어센터 미디어 체험을 신청하고 있습니다.<br /> 미디어 체험 운영을 위한 개인 정보 활용에 동의합니다.</div>
                     <div class="baseCheck">
                         <input type="checkbox" id="agree" />
                         <label for="agree">동의합니다</label>
@@ -552,6 +570,10 @@
     }
 
     function validateForm() {
+        if (<?= $_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["LEVEL"] ?> == 6 ) {
+            alert("정지 회원은 신청 불가능 합니다.");
+            return;
+        }
         const name = document.querySelector('[name="name"]');
         if (!name.value) {
             alert('이름을 입력하지 않았습니다.');
@@ -706,12 +728,54 @@
         }
     }
 
+    function isTimeOverlap(date, startHour, startMinute, endHour, endMinute) {
+        const selectedStart = startHour * 60 + parseInt(startMinute);
+        const selectedEnd = endHour * 60 + parseInt(endMinute);
+
+        // existingReservations가 객체인 경우 유효한 예약만 필터링
+        for (let key in existingReservations) {
+            const reservation = existingReservations[key];
+
+            // total과 빈 데이터 건너뛰기
+            if (key === 'total' ||
+                !reservation.desired_date ||
+                reservation.desired_date === '0000-00-00' ||
+                !reservation.start_time ||
+                reservation.start_time === ':') {
+                continue;
+            }
+
+            // 같은 날짜인 경우에만 체크
+            if (reservation.desired_date === date) {
+                const [resStartHour, resStartMinute] = reservation.start_time.split(':');
+                const [resEndHour, resEndMinute] = reservation.end_time.split(':');
+
+                const existingStart = parseInt(resStartHour) * 60 + parseInt(resStartMinute);
+                const existingEnd = parseInt(resEndHour) * 60 + parseInt(resEndMinute);
+
+                // 시간 범위가 겹치는지 확인
+                if (selectedStart < existingEnd && selectedEnd > existingStart) {
+                    return true; // 중복 있음
+                }
+            }
+        }
+        return false; // 중복 없음
+    }
+
     function validateTimeSelection() {
         const startHour = parseInt(document.querySelector('[name="start_hour"]').value);
         const startMinute = parseInt(document.querySelector('[name="start_minute"]').value);
         const endHour = parseInt(document.querySelector('[name="end_hour"]').value);
         const endMinute = parseInt(document.querySelector('[name="end_minute"]').value);
+        const desiredDate = document.querySelector('[name="desired_date"]').value;
         const totalMembers = parseInt(document.getElementById('total_members').value) || 0;
+
+        // 시간 중복 체크
+        if (isTimeOverlap(desiredDate, startHour, startMinute, endHour, endMinute)) {
+            alert('선택하신 날짜와 시간에 이미 예약이 있습니다. 다른 시간을 선택해주세요.');
+            resetTimeSelections();
+            return false;
+        }
 
         // 시작 시간이나 종료 시간이 점심시간인 경우
         if ((startHour === 12) || (endHour === 12)) {

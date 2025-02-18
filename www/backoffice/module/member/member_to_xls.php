@@ -13,12 +13,10 @@ if (! in_array ( "member_manage", $_SESSION [$_SITE ["DOMAIN"]] ["ADMIN"] ["AUTH
 
 endif;
 
-$scale = 10000;
-
 // DB연결
 $dblink = SetConn ( $_conf_db ["main_db"] );
 
-$arrList = getMemberList( "",  mysqli_real_escape_string ( $GLOBALS ['dblink'], $_REQUEST ['sw'] ), mysqli_real_escape_string ( $GLOBALS ['dblink'], $_REQUEST ['sk'] ), $scale, $_REQUEST ['offset'] , $subQuery);
+$arrList = getMemberList( "",  mysqli_real_escape_string ( $GLOBALS ['dblink'], $_REQUEST ['sw'] ), mysqli_real_escape_string ( $GLOBALS ['dblink'], $_REQUEST ['sk'] ), $_REQUEST ['page_size'], $_REQUEST ['offset'] , $subQuery);
 // _DEBUG($arrList);
 
 $arrAllCategory = getCategoryAll();
@@ -53,7 +51,7 @@ $EXCEL_TXT = "
 </tr>
 ";
 
-for ($i = 0; $i < $arrList["total"]; $i++) {
+for ($i = 0; $i < $arrList["list"]["total"]; $i++) {
 	if ($arrList['list'][$i]['before'] == 'Y') {
 		$user_name = base64_decode($arrList['list'][$i]['user_name']);
 		$mobile = '="' . base64_decode($arrList['list'][$i]['mobile']) . '"';

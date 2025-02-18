@@ -8,7 +8,6 @@
 			<div class="subTopBg mediaEdu">
 				<div class="inner">
 					<div class="enName">MEDIA EDUCATION</div>
-					<div class="korName">미디어교육</div>
 					<?php include("../inc/sub_navi.php"); ?>
 				</div>
 			</div>

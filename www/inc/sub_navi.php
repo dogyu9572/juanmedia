@@ -60,12 +60,12 @@ SetDisConn($dblink);
                     <li class="<?if($gNum=="03"&&$sNum=="01"){?>on<?}?>"><a href="/place/info.php">대관안내</a></li>
                     <li class="<?if($gNum=="03"&&$sNum=="02"){?>on<?}?>"><a href="/place/list.php">공간대관신청</a></li>
                 <?php elseif($arrVal["cat_engname"] == "/media/info.php" && $gNum=="04"): ?>
-                    <li class="<?if($gNum=="04"&&$sNum=="01"){?>on<?}?>"><a href="/media/info.php">미디어체험</a></li>
+                    <li class="<?if($gNum=="04"&&$sNum=="01"){?>on<?}?>"><a href="/media/info.php">미디어 체험</a></li>
                     <li class="<?if($gNum=="04"&&$sNum=="02"){?>on<?}?>"><a href="/media/order.php">체험신청</a></li>
                     <li class="<?if($gNum=="04"&&$sNum=="03"){?>on<?}?>"><a href="/media/video.php">상영회</a></li>
                     <li class="<?if($gNum=="04"&&$sNum=="04"){?>on<?}?>"><a href="/media/list.php">상영회신청</a></li>
                 <?php elseif($arrVal["cat_engname"] == "/cm/notice.php" && $gNum=="05"): ?>
-                    <li class="<?if($gNum=="05"&&$sNum=="01"){?>on<?}?>"><a href="/cm/notice.php">공지&뉴스</a></li>
+                    <li class="<?if($gNum=="05"&&$sNum=="01"){?>on<?}?>"><a href="/cm/notice.php">공지 사항</a></li>
                     <li class="<?if($gNum=="05"&&$sNum=="02"){?>on<?}?>"><a href="/cm/free.php">자유게시판</a></li>
                     <li class="<?if($gNum=="05"&&$sNum=="03"){?>on<?}?>"><a href="/cm/dataList.php">자료실</a></li>
                 <?php elseif($arrVal["cat_engname"] == "/center/intro.php" && $gNum=="06"): ?>

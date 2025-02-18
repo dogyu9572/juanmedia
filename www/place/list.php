@@ -8,7 +8,6 @@
 			<div class="subTopBg place">
 				<div class="inner">
 					<div class="enName">SPACE RENTAL</div>
-					<div class="korName">공간대관</div>
 					<?php include("../inc/sub_navi.php"); ?>
 				</div>
 			</div>

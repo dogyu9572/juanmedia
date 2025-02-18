@@ -7,28 +7,7 @@
 			<div class="subTopBg media">
 				<div class="inner">
 					<div class="enName">MEDIA EXPERIENCE</div>
-					<div class="korName">미디어체험</div>
-					<div class="lnb">
-						<a href="/"><img src="/images/ico_home.svg" alt="home"></a>
-						<div class="lnbSub">
-							<div class="tit">미디어체험</div>
-							<ul>
-								<li><a href="/edu/info.php">미디어교육</a></li>
-								<li><a href="/equ/info.php">장비대여</a></li>
-								<li><a href="/place/info.php">공간대관</a></li>
-								<li><a href="/cm/notice.php">게시판</a></li>
-								<li><a href="/center/intro.php">센터안내</a></li>
-							</ul>
-						</div>
-						<div class="lnbSub">
-							<div class="tit">체험신청</div>
-							<ul>
-								<li><a href="/media/info.php">미디어체험</a></li>
-								<li><a href="/media/video.php">상영회</a></li>
-								<li><a href="/media/list.php">상영회신청</a></li>
-							</ul>
-						</div>
-					</div>
+					<?php include("../inc/sub_navi.php"); ?>
 				</div>
 			</div>
 			<!-- //subTopBg -->
