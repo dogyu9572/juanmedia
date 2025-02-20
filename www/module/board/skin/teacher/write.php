@@ -1,11 +1,19 @@
 <!-- pageTitle -->
-<div class="pageTitle inner">강사지원</div>
+<div class="pageTitle inner">강사모집</div>
 <!-- //pageTitle -->
 <form name="form1" method="post" action="/module/board/board_evn.php" ENCTYPE="multipart/form-data">
 	<input type="hidden" name="boardid" value="teacher">
 	<input type="hidden" name="returnURL" value="/edu/teacher.php">
-	<input type="hidden" name="evnMode" value="write">
+    <input type="hidden" name="etc_1" value="Y">
+    <input type="hidden" name="idx" value="<?=$arrBoardArticle["list"][0]["idx"]?>">
 	<input type="hidden" name="w_user" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]?>">
+    <?if($_REQUEST['mode']=="reply"):?>
+        <input type="hidden" name="evnMode" value="reply">
+    <?elseif($_REQUEST['mode']=="user_modify"):?>
+        <input type="hidden" name="evnMode" value="modify">
+    <?else:?>
+        <input type="hidden" name="evnMode" value="write">
+    <?endif;?>
 	<!-- subSec -->
 	<div class="subSec pt0 last">
 		<div class="inner">
@@ -20,7 +28,7 @@
 						<div class="formTit">작성자<span>*</span></div>
 						<div class="right">
 							<div class="baseInput">
-								<input type="text" name="name" id="name">
+								<input type="text" name="name" id="name" value="<?=$arrBoardArticle["list"][0]['name']?>">
 							</div>
 						</div>
 					</div>
@@ -28,14 +36,14 @@
 						<div class="formTit">제목<span>*</span></div>
 						<div class="right">
 							<div class="baseInput">
-								<input type="text" name="subject" id="subject">
+								<input type="text" name="subject" id="subject" value="<?=stripslashes($arrBoardArticle["list"][0]['subject'])?>">
 							</div>
 						</div>
 					</div>
 					<div class="row">
 						<div class="formTit">내용</div>
 						<div class="right">
-							<textarea class="baseTextarea" name="contents" id="contents"></textarea>
+							<textarea class="baseTextarea" name="contents" id="contents"><?=stripslashes($arrBoardArticle["list"][0]['contents'])?></textarea>
 						</div>
 					</div>
 
@@ -51,6 +59,26 @@
 									<input type="text" id="fileName" class="fileInputTextbox" readonly="readonly" value="">
 								</div>
 							</div>
+                            <?
+                            if($arrBoardArticle["total_files"]>0 && $_REQUEST['mode']=="user_modify"){
+                                ?>
+                                <table id="files_list" border="0" cellpadding="3" cellspacing="1" width="100%" style="padding:1%">
+                                    <tbody>
+                                    <?
+                                    for($i=0;$i<$arrBoardArticle["total_files"];$i++){
+                                        if(substr($arrBoardArticle["files"][$i]['re_name'],0,2) != "l_" && substr($arrBoardArticle["files"][$i]['re_name'],0,2) != "v_") {
+                                            ?>
+                                            <tr>
+                                                <td><label class="check"><input type="checkbox" name="filedel[]" value="<?=$arrBoardArticle["files"][$i]['idx']?>"><i></i>삭제</label>
+                                                    file :  <a href="javascript:void(0);" onclick="fileDownload('<?=$arrBoardArticle["files"][$i]['boardid']?>','<?=$arrBoardArticle["files"][$i]['b_idx']?>','<?=$arrBoardArticle["files"][$i]['idx']?>');"><?=$arrBoardArticle["files"][$i]['ori_name']?></a>
+                                                </td>
+                                            </tr>
+                                            <?
+                                        }
+                                    }?>
+                                    </tbody>
+                                </table>
+                            <?}?>
 						</div>
 					</div>
 					<div class="row">

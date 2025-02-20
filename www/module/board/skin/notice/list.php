@@ -312,7 +312,7 @@ if(isset($_GET["offset"])){
     </script>
 
     <!-- pageTitle -->
-    <div class="pageTitle inner">공지 & 뉴스</div>
+    <div class="pageTitle inner">공지 사항</div>
     <!-- //pageTitle -->
 
     <!-- subSec -->

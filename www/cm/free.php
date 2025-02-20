@@ -1,5 +1,5 @@
 <?php include("../inc/header.php"); ?>
-<?php $gNum = "05"; $sNum = "02"; $gName = "게시판"; $sName = "자유게시판"; ?>
+<?php $gNum = "05"; $sNum = "02"; $gName = "게시판"; $sName = "보도자료"; ?>
 
 		<!-- Container -->
 		<div class="container sub" id="container">

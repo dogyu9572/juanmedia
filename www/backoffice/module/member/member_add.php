@@ -136,10 +136,6 @@ function inNumber(str){
                 </td>
             </tr>
             <tr>
-                <th>생년월일<i>*</i></th>
-                <td><div class="inputs"><input type="text" class="w4" name="birth" value="<?=$birth?>" maxlength="20"></div></td>
-            </tr>
-            <tr>
                 <th>성별 <i>*</i></th>
                 <td>
                     <div class="inputs">

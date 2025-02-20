@@ -57,7 +57,7 @@ $arrBoardList	= getBoardListBaseNFile("free", "", $_GET['sw'], $_GET['sk'], $arr
 							<div class="box">
 								<div class="tit">나의 활동 관리</div>
 								<ul>
-									<li><a href="freeList.php" class="active">자유게시판</a></li>
+									<li><a href="freeList.php" class="active">보도자료</a></li>
 									<li><a href="stopList.php">자격 정지 내역</a></li>
 								</ul>
 							</div>
@@ -71,12 +71,12 @@ $arrBoardList	= getBoardListBaseNFile("free", "", $_GET['sw'], $_GET['sk'], $arr
 					</div>
 
 					<div class="rightCont">
-						<div class="bigTit">자유게시판</div>
+						<div class="bigTit">보도자료</div>
 
 						<div class="mobSelect mob">
 							<div class="baseSel">
 								<select>
-									<option value="freeList.php">자유게시판</option>
+									<option value="freeList.php">보도자료</option>
 									<option value="stopList.php">자격 정지 내역</option>
 								</select>
 							</div>

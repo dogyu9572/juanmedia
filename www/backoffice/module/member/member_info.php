@@ -368,14 +368,18 @@ function inNumber(str){
                         <div class="bdr_list tac" style="width:100%;board:1px">
                             <table>
                                 <colgroup>
-                                    <col width="25%">
-                                    <col width="25%">
-                                    <col width="25%">
+                                    <col width="20%">
+                                    <col width="15%">
+                                    <col width="15%">
+                                    <col width="10%">
+                                    <col width="15%">
                                     <col width="25%">
                                 </colgroup>
                                 <thead>
                                 <tr>
                                     <th style="text-align:center;padding:20px 0;">위반내용</th>
+                                    <th style="text-align:center;padding:20px 0;">시작일</th>
+                                    <th style="text-align:center;padding:20px 0;">종료일</th>
                                     <th style="text-align:center;padding:20px 0;">구분</th>
                                     <th style="text-align:center;padding:20px 0;">등록일</th>
                                     <th style="text-align:center;padding:20px 0;">수정/삭제</th>
@@ -386,6 +390,8 @@ function inNumber(str){
 								$arrChildViolation = explode("||", $arrInfo["list"][0]['child_violation']);
 								$arrChildCategory = explode("||", $arrInfo["list"][0]['child_category']);
 								$arrChildViolationWdate = explode("||", $arrInfo["list"][0]['child_violation_wdate']);
+                                $arrChildViolationStart = explode("||", $arrInfo["list"][0]['child_violation_start_date']);
+                                $arrChildViolationEnd = explode("||", $arrInfo["list"][0]['child_violation_end_date']);
 								if ($arrInfo["list"][0]['child_violation_wdate']){
 									for ($i = 0; $i < count($arrChildViolationWdate); $i++) {
 										?>
@@ -393,6 +399,14 @@ function inNumber(str){
                                             <td>
                                                 <span class="text-content"><?=$arrChildViolation[$i]?></span>
                                                 <input type="text" class="w4 input-content" name="child_violation[]" value="<?=$arrChildViolation[$i]?>" style="display:none;">
+                                            </td>
+                                            <td>
+                                                <span class="text-content"><?=$arrChildViolationStart[$i]?></span>
+                                                <input type="text" class="w3 datepicker input-content" name="child_violation_start_date[]" value="<?=$arrChildViolationStart[$i]?>" style="display:none;">
+                                            </td>
+                                            <td>
+                                                <span class="text-content"><?=$arrChildViolationEnd[$i]?></span>
+                                                <input type="text" class="w3 datepicker input-content" name="child_violation_end_date[]" value="<?=$arrChildViolationEnd[$i]?>" style="display:none;">
                                             </td>
                                             <td>
                                                 <span class="text-content"><?=$arrChildCategory[$i]?></span>
@@ -427,7 +441,7 @@ function inNumber(str){
 			<button class="btn btn_save" type="button" onclick="frmCheck(document.memberForm)">수정하기</button>
 		</div>
 	</div> <!-- //inbox -->
-	
+
 </div>
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function() {
@@ -449,10 +463,17 @@ function inNumber(str){
     });
 
     function fnAddViolation() {
+        var today = new Date().toISOString().split('T')[0];
         var htm = `
-     <tr>
+    <tr>
         <td>
             <input type="text" class="w4 input-content" name="child_violation[]" value="">
+        </td>
+        <td>
+            <input type="text" class="w4 datepicker input-content" name="child_violation_start_date[]" value="">
+        </td>
+        <td>
+            <input type="text" class="w4 datepicker input-content" name="child_violation_end_date[]" value="">
         </td>
         <td>
             <select class="w4 input-content" name="child_category[]">
@@ -461,7 +482,7 @@ function inNumber(str){
             </select>
         </td>
         <td>
-            <input type="text" class="w4 datepicker input-content" name="child_violation_wdate[]" value="">
+            <input type="text" class="w4 datepicker input-content" name="child_violation_wdate[]" value="${today}" readonly>
         </td>
         <td>
             <a href="javascript:void(0);" onclick="toggleAddViolation(this)" class="btn edit" style="display: inline-block;">추가</a>
@@ -470,37 +491,34 @@ function inNumber(str){
     </tr>`;
         $("#violationList").append(htm);
 
-        // Initialize datepicker for the new input
-        $(".datepicker").datepicker({
-            dateFormat: 'yy-mm-dd',
-            showMonthAfterYear: true,
-            showOn: "both",
-            buttonImage: "/images/icon_month.gif",
-            buttonImageOnly: true,
-            changeYear: true,
-            changeMonth: true,
-            yearRange: 'c-100:c+10',
-            yearSuffix: "년 ",
-            monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
-            dayNamesMin: ['일','월','화','수','목','금','토']
-        });
+        // Initialize datepicker for the new inputs
+        initDatepicker();
     }
 
     function toggleAddViolation(button) {
         var row = button.closest('tr');
         var inputContents = row.querySelectorAll('.input-content');
 
+        // Create text content elements and hide input fields
         inputContents.forEach(function(inputContent) {
             var span = document.createElement('span');
             span.className = 'text-content';
-            span.textContent = inputContent.value;
+
+            // Handle select elements differently
+            if (inputContent.tagName.toLowerCase() === 'select') {
+                span.textContent = inputContent.options[inputContent.selectedIndex].value;
+            } else {
+                span.textContent = inputContent.value;
+            }
+
             inputContent.style.display = 'none';
             inputContent.parentNode.insertBefore(span, inputContent);
         });
 
+        // Change the button to "수정" (Edit)
         button.textContent = '수정';
         button.className = 'btn edit';
-        button.setAttribute('onclick', 'toggleEditViolation(this)');
+        button.setAttribute('onclick', 'toggleEdit(this)');
     }
 
     function toggleEdit(button) {
@@ -541,6 +559,8 @@ function inNumber(str){
                 }
             });
 
+            // Re-initialize datepicker for visible date inputs
+            initDatepicker();
             button.textContent = '저장';
         } else {
             inputContents.forEach(function(inputContent, index) {
@@ -554,6 +574,22 @@ function inNumber(str){
 
             button.textContent = '수정';
         }
+    }
+
+    function initDatepicker() {
+        $(".datepicker").datepicker({
+            dateFormat: 'yy-mm-dd',
+            showMonthAfterYear:true,
+            showOn: "both",
+            buttonImage: "/images/icon_month.gif",
+            buttonImageOnly: true,
+            changeYear: true,
+            changeMonth: true,
+            yearRange: 'c-100:c+10',
+            yearSuffix: "년 ",
+            monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+            dayNamesMin: ['일','월','화','수','목','금','토']
+        });
     }
 
     function fnDeleteViolation(button) {

@@ -21,7 +21,7 @@ $arrMemberInfo = getUserInfo($_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]);
 // DB해제
 SetDisConn ( $dblink );
 ?>
-<?php $gNum="01"; $sNum="04"; $gName="미디어교육"; $sName="강사지원"; ?>
+<?php $gNum="01"; $sNum="04"; $gName="미디어교육"; $sName="강사모집"; ?>
 <!-- Container -->
 <div class="container sub" id="container">
     <!-- subTopBg -->

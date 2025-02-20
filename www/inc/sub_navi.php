@@ -52,7 +52,7 @@ SetDisConn($dblink);
                     <li class="<?if($gNum=="01"&&$sNum=="02"){?>on<?}?>"><a href="/edu/list.php">교육신청</a></li>
                     <!-- <li class="<?if($gNum=="01"&&$sNum=="02"){?>on<?}?>"><a href="/edu/list.php">상설교육</a></li>
                     <li class="<?if($gNum=="01"&&$sNum=="03"){?>on<?}?>"><a href="/edu/list.php?cat_no=116">공동체교육</a></li> -->
-                    <li class="<?if($gNum=="01"&&$sNum=="04"){?>on<?}?>"><a href="/edu/teacher.php">강사지원</a></li>
+                    <li class="<?if($gNum=="01"&&$sNum=="04"){?>on<?}?>"><a href="/edu/teacher.php">강사모집</a></li>
                 <?php elseif($arrVal["cat_engname"] == "/equ/info.php" && $gNum=="02"): ?>
                     <li class="<?if($gNum=="02"&&$sNum=="01"){?>on<?}?>"><a href="/equ/info.php">대여안내</a></li>
                     <li class="<?if($gNum=="02"&&$sNum=="02"){?>on<?}?>"><a href="/equ/list.php">장비대여신청</a></li>
@@ -66,7 +66,7 @@ SetDisConn($dblink);
                     <li class="<?if($gNum=="04"&&$sNum=="04"){?>on<?}?>"><a href="/media/list.php">상영회신청</a></li>
                 <?php elseif($arrVal["cat_engname"] == "/cm/notice.php" && $gNum=="05"): ?>
                     <li class="<?if($gNum=="05"&&$sNum=="01"){?>on<?}?>"><a href="/cm/notice.php">공지 사항</a></li>
-                    <li class="<?if($gNum=="05"&&$sNum=="02"){?>on<?}?>"><a href="/cm/free.php">자유게시판</a></li>
+                    <li class="<?if($gNum=="05"&&$sNum=="02"){?>on<?}?>"><a href="/cm/free.php">보도자료</a></li>
                     <li class="<?if($gNum=="05"&&$sNum=="03"){?>on<?}?>"><a href="/cm/dataList.php">자료실</a></li>
                 <?php elseif($arrVal["cat_engname"] == "/center/intro.php" && $gNum=="06"): ?>
                     <li class="<?if($gNum=="06"&&$sNum=="01"){?>on<?}?>"><a href="/center/intro.php">센터소개</a></li>

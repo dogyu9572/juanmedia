@@ -25,7 +25,7 @@ $_POST = sanitizeInput($_POST);
 			<!-- //subTopBg -->
 
                 <!-- pageTitle -->
-			<div class="pageTitle inner">자유게시판</div>
+			<div class="pageTitle inner">보도자료</div>
 			<!-- //pageTitle -->
 
         <form name="form1" method="post" action="/module/board/board_evn.php" ENCTYPE="multipart/form-data">

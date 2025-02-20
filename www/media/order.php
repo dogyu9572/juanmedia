@@ -663,69 +663,71 @@
     function checkMembers() {
         const totalMembersInput = document.getElementById('total_members');
         const totalMembers = parseInt(totalMembersInput.value, 10) || 0;
+        const checkboxes = document.querySelectorAll('input[name="experience[]"]');
+        const minMembers = {
+            exp1: parseInt('<?= $arrSetInfo["list"][0]["tv_broadcasting"] ?>'), // TV방송제작
+            exp2: parseInt('<?= $arrSetInfo["list"][0]["radio_broadcasting"] ?>'), // 라디오 방송제작
+            exp3: parseInt('<?= $arrSetInfo["list"][0]["weather_forecaster"] ?>'), // 기상캐스터
+            exp4: parseInt('<?= $arrSetInfo["list"][0]["drone"] ?>'), // 드론
+            exp5: parseInt('<?= $arrSetInfo["list"][0]["vr"] ?>') // VR
+        };
 
+        // 인원수 제한 체크
         if (totalMembers > 30) {
             alert('최대 인원은 30명 입니다.');
             totalMembersInput.value = 0;
             return;
         }
 
-        // 모든 체험 체크박스 가져오기
-        const checkboxes = document.querySelectorAll('input[name="experience[]"]');
-
-        // 모든 체크박스 초기화 및 비활성화
+        // 모든 체크박스 초기화
         checkboxes.forEach(checkbox => {
             checkbox.checked = false;
             checkbox.disabled = true;
-            // 기존 이벤트 리스너 제거
-            checkbox.removeEventListener('change', checkboxHandler);
         });
 
-        // 체크박스 이벤트 핸들러 함수
-        function checkboxHandler() {
-            if (totalMembers >= 6 && totalMembers <= 8) {
-                const checkedCount = document.querySelectorAll('input[name="experience[]"]:checked').length;
-                if (checkedCount > 1) {
-                    this.checked = false;
-                    alert('VR 체험은 1개만 선택 가능합니다.');
-                }
-            } else if (totalMembers >= 10 && totalMembers <= 19) {
-                const checkedCount = document.querySelectorAll('input[name="experience[]"]:checked').length;
-                if (checkedCount > 2) {
-                    this.checked = false;
-                    alert('최대 2개까지 선택 가능합니다.');
-                }
-            } else if (totalMembers >= 20 && totalMembers <= 30) {
-                const checkedCount = document.querySelectorAll('input[name="experience[]"]:checked').length;
-                if (checkedCount > 3) {
-                    this.checked = false;
-                    alert('최대 3개까지 선택 가능합니다.');
-                }
-            }
-        }
-
-        // 인원수에 따른 체험분야 활성화 로직
+       /* // 인원수가 최소 인원보다 적으면 체크박스 비활성화
         if (totalMembers >= 6 && totalMembers <= 8) {
-            // VR만 활성화
-            document.getElementById('exp5').disabled = false;
-            document.getElementById('exp5').addEventListener('change', checkboxHandler);
-
+            // VR만 활성화 (최소 인원 체크)
+            if (totalMembers >= minMembers.exp5) {
+                document.getElementById('exp5').disabled = false;
+            }
         } else if (totalMembers >= 10 && totalMembers <= 19) {
-            // TV방송제작, 라디오 방송제작, 기상캐스터, 드론 활성화
-            const availableExps = ['exp1', 'exp2', 'exp3', 'exp4'];
-            availableExps.forEach(id => {
-                document.getElementById(id).disabled = false;
-                document.getElementById(id).addEventListener('change', checkboxHandler);
+            // TV방송제작, 라디오 방송제작, 기상캐스터, 드론 활성화 (최소 인원 체크)
+            ['exp1', 'exp2', 'exp3', 'exp4'].forEach((id, index) => {
+                const expMinMembers = minMembers[id];
+                if (totalMembers >= expMinMembers) {
+                    document.getElementById(id).disabled = false;
+                }
             });
-
         } else if (totalMembers >= 20 && totalMembers <= 30) {
-            // TV방송제작, 라디오 방송제작, 기상캐스터, 드론 활성화
-            const availableExps = ['exp1', 'exp2', 'exp3', 'exp4'];
-            availableExps.forEach(id => {
-                document.getElementById(id).disabled = false;
-                document.getElementById(id).addEventListener('change', checkboxHandler);
+            // TV방송제작, 라디오 방송제작, 기상캐스터, 드론 활성화 (최소 인원 체크)
+            ['exp1', 'exp2', 'exp3', 'exp4'].forEach((id, index) => {
+                const expMinMembers = minMembers[id];
+                if (totalMembers >= expMinMembers) {
+                    document.getElementById(id).disabled = false;
+                }
             });
-        }
+        }*/
+
+        // $arrSetInfo의 최소 인원 기준으로만 체크박스 활성화
+        Object.keys(minMembers).forEach(expId => {
+            if (totalMembers >= minMembers[expId]) {
+                document.getElementById(expId).disabled = false;
+            }
+        });
+
+        // 체크박스 이벤트 설정
+        checkboxes.forEach(checkbox => {
+            checkbox.onclick = function() {
+                const checked = document.querySelectorAll('input[name="experience[]"]:checked');
+                const maxChecks = totalMembers >= 20 ? 3 : (totalMembers >= 10 ? 2 : 1);
+
+                if (checked.length > maxChecks) {
+                    this.checked = false;
+                    alert(`최대 ${maxChecks}개까지 선택 가능합니다.`);
+                }
+            };
+        });
     }
 
     function isTimeOverlap(date, startHour, startMinute, endHour, endMinute) {

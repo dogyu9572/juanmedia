@@ -127,19 +127,34 @@ if ($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"] == "/back
                             <div class="tit">등록일</div>
                             <?=date('Y.m.d', strtotime($arrBoardArticle["list"][0]['wdate']))?>
                         </div>
-                        <div class="box">
+                        <!--<div class="box">
                             <div class="tit">조회수</div>
-                            <div class="txt"><?=number_format($arrBoardArticle["list"][0]['hit'])?></div>
-                        </div>
+                            <div class="txt"><?php /*=number_format($arrBoardArticle["list"][0]['hit'])*/?></div>
+                        </div>-->
                         <div class="box">
                             <div class="tit">작성자</div>
-                            <div class="txt"><?=$arrBoardArticle["list"][0]['name']?></div>
+                            <div class="txt">
+                                <?php
+                                $name = $arrBoardArticle["list"][0]['name'];
+                                $nameLen = mb_strlen($name);
+                                if ($nameLen <= 2) {
+                                    // 2글자인 경우 마지막 글자만 마스킹
+                                    echo mb_substr($name, 0, 1) . '*';
+                                } else {
+                                    // 3글자 이상인 경우 가운데 글자들만 마스킹
+                                    $maskLen = $nameLen - 2;
+                                    $firstChar = mb_substr($name, 0, 1);
+                                    $lastChar = mb_substr($name, -1);
+                                    echo $firstChar . str_repeat('*', $maskLen) . $lastChar;
+                                }
+                                ?>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </div> <!-- //top -->
                 <div class="cont">
                     <?=$arrBoardArticle["list"][0]['contents']?>
-                </div>
+                </div> <!-- //cont -->
                 <div class="fileAdd">
                     <?php
                     $upfile = true;
@@ -150,7 +165,6 @@ if ($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"] == "/back
                     ?>
                     <div class="tit">첨부파일</div>
                     <div class="file"><a href="/uploaded/board/<?=$arrBoardInfo["list"][0]["boardid"]?>/<?=$arrBoardArticle["files"][$i]['re_name']?>" download="<?=$arrBoardArticle["files"][$i]['ori_name']?>"><?=$arrBoardArticle["files"][$i]['ori_name']?></a></div>
-                </div>
                 <?php
                 }
                 }
@@ -161,6 +175,14 @@ if ($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"] == "/back
                     <?php
                 }
                 ?>
+                </div> <!-- //fileAddㄴ -->
+
+                <?php if ($arrBoardArticle["list"][0]['no'] != 0) { ?>
+                    <p class="btn_r">
+                        <a href="javascript:void(0);" onclick="boardDel(<?=$arrBoardArticle["list"][0]['idx']?>)" class="btn btn_de">삭제</a>
+                        <a href="/edu/write.php?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=user_modify&idx=<?=$arrBoardArticle["list"][0]['idx']?>&category=<?=$_GET['category']?>" class="btn btn_modify">수정</a>
+                    </p>
+                <?php } ?>
             </div>
             <!-- listPaging -->
             <div class="listPaging">
@@ -197,6 +219,22 @@ if ($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"] == "/back
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+        <!--
+        function boardDel(val) {
+            if (confirm("삭제 하시겠습니까?")) {
+                $.post("/module/board/ajax_board_del.php", { evnMode: "delete", g_idx: val, boardid: "<?=$arrBoardInfo["list"][0]["boardid"]?>" },
+                    function(data) {
+                        alert("삭제 되었습니다.");
+                        doLoad();
+                    });
+            }
+        }
+        function doLoad() {
+            location.href = "<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=list&sk=<?=$_GET['sk']?>&sw=<?=$_GET['sw']?>&offset=<?=$_GET['offset']?>&category=<?=$_GET['category']?>";
+        }
+        //-->
+    </script>
     <!-- //subSec -->
     <?php
 }

@@ -241,7 +241,7 @@ function doLoad(){
                                     </div>
                                 </div>
                             </li>
-							<!-- <li>
+							<li>
 								<div class="tit">대여 방문시간</div>
 								<div class="txt">
 									<div class="baseSel">
@@ -250,7 +250,7 @@ function doLoad(){
 										</select>
 									</div>
 								</div>
-							                            </li>
+                            </li>
 							<li>
 								<div class="tit">반납 방문시간</div>
 								<div class="txt">
@@ -260,7 +260,7 @@ function doLoad(){
 										</select>
 									</div>
 								</div>
-							</li> -->
+							</li>
                         </ul>
                     </div>
 
@@ -476,23 +476,68 @@ function doLoad(){
             function updateTotalPrice() {
                 const rentalStartDate = $("#st1").datepicker("getDate");
                 const rentalEndDate = $("#ed").datepicker("getDate");
+                const rentalStartTime = $("#rental_start_time").val();
+                const rentalEndTime = $("#rental_end_time").val();
 
-                if (rentalStartDate && rentalEndDate) {
-                    const timeDiff = Math.abs(rentalEndDate.getTime() - rentalStartDate.getTime());
-                    const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                    const totalPrice = diffDays * feePerDay;
+                if (rentalStartDate && rentalEndDate && rentalStartTime && rentalEndTime) {
+                    // 시작 날짜와 시간을 결합
+                    const startDateTime = new Date(rentalStartDate);
+                    const [startHour] = rentalStartTime.split(':').map(Number);
+                    startDateTime.setHours(startHour, 0, 0);
 
-                    document.querySelector('.nameDate').textContent = `<?=stripslashes($arrBoardArticle["list"][0]['subject'])?> / <?=stripslashes($arrBoardArticle["list"][0]['equ_number'])?> / ${diffDays}일`;
-                    document.querySelector('.totalPrice .price').textContent = `${totalPrice.toLocaleString()}원`;
+                    // 종료 날짜와 시간을 결합
+                    const endDateTime = new Date(rentalEndDate);
+                    const [endHour] = rentalEndTime.split(':').map(Number);
+                    endDateTime.setHours(endHour, 0, 0);
 
+                    // 실제 대여 가능 일수 계산
+                    let rentalDays = 0;
+                    const currentDate = new Date(startDateTime);
+
+                    while (currentDate <= endDateTime) {
+                        // 해당 날짜가 휴관일인지 확인
+                        const dayOfWeek = currentDate.getDay();
+                        const koreanDayName = Object.keys(weekdayMap).find(key => weekdayMap[key] === dayOfWeek);
+                        const dateString = currentDate.toLocaleDateString('en-CA');
+
+                        // 휴관일이 아닌 경우만 카운트
+                        if (!holidayWeekdays.includes(koreanDayName) && !specificHolidayDates.includes(dateString)) {
+                            rentalDays++;
+                        }
+
+                        // 다음 날짜로 이동
+                        currentDate.setDate(currentDate.getDate() + 1);
+                    }
+
+                    // 24시간 기준으로 올림 계산
+                    const timeDiff = Math.abs(endDateTime.getTime() - startDateTime.getTime());
+                    const totalDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+                    // 실제 대여 가능 일수가 0이면 경고
+                    if (rentalDays === 0) {
+                        alert("선택한 기간에 대여 가능한 날짜가 없습니다.");
+                        $("#ed").datepicker("setDate", null);
+                        return;
+                    }
+
+                    const feePerDay = <?= $arrBoardArticle["list"][0]['fee'] ?>;
+                    const totalPrice = rentalDays * feePerDay;
+
+                    // UI 업데이트
+                    document.querySelector('.nameDate').textContent =
+                        `<?=stripslashes($arrBoardArticle["list"][0]['subject'])?> / <?=stripslashes($arrBoardArticle["list"][0]['equ_number'])?> / ${rentalDays}일`;
+                    document.querySelector('.totalPrice .price').textContent =
+                        `${totalPrice.toLocaleString()}원`;
+
+                    // 히든 필드 업데이트
                     document.getElementById('total_price_hidden').value = totalPrice;
-                    document.getElementById('usage_time_day').value = diffDays;
+                    document.getElementById('usage_time_day').value = rentalDays;
                 }
             }
 
             // 폼 제출 관련 함수
             window.submitRentalForm = function(mode) {
-               /* if (<?= $arrEduUser["total"] ?> >= <?= $arrSetInfo["list"][0]["equ_max_rental_count"] ?>) {
+                /* if (<?= $arrEduUser["total"] ?> >= <?= $arrSetInfo["list"][0]["equ_max_rental_count"] ?>) {
                     alert("최대 대여 개수를 초과 하였습니다.");
                     return;
                 }*/
@@ -519,6 +564,89 @@ function doLoad(){
                 form.action = actionUrl;
                 form.submit();
             };
+
+            // 운영 시간 설정
+            const rentalStartSelect = document.getElementById('rental_start_time');
+            const rentalEndSelect = document.getElementById('rental_end_time');
+
+            // PHP에서 설정된 시간 가져오기
+            const rentalStartTime = '<?= $arrSetInfo["list"][0]["equ_rental_start_time"] ?>';
+            const rentalEndTime = '<?= $arrSetInfo["list"][0]["equ_rental_end_time"] ?>';
+            const returnStartTime = '<?= $arrSetInfo["list"][0]["equ_return_start_time"] ?>';
+            const returnEndTime = '<?= $arrSetInfo["list"][0]["equ_return_end_time"] ?>';
+
+            // 점심, 저녁 시간 설정
+            const lunchStartTime = '<?= $arrSetInfo["list"][0]["equ_lunch_start_time"] ?>';
+            const lunchEndTime = '<?= $arrSetInfo["list"][0]["equ_lunch_end_time"] ?>';
+            const dinnerStartTime = '<?= $arrSetInfo["list"][0]["equ_dinner_start_time"] ?>';
+            const dinnerEndTime = '<?= $arrSetInfo["list"][0]["equ_dinner_end_time"] ?>';
+
+            // 시간을 분으로 변환하는 함수
+            function timeToMinutes(time) {
+                const [hours, minutes] = time.split(':').map(Number);
+                return hours * 60 + minutes;
+            }
+
+            // 제외할 시간대인지 확인하는 함수
+            function isExcludedTime(time) {
+                const minutes = timeToMinutes(time);
+                const isLunchTime = minutes >= timeToMinutes(lunchStartTime) && minutes < timeToMinutes(lunchEndTime);
+                const isDinnerTime = minutes >= timeToMinutes(dinnerStartTime) && minutes < timeToMinutes(dinnerEndTime);
+                return isLunchTime || isDinnerTime;
+            }
+
+            // 시간 옵션 생성 함수
+            function generateTimeOptions(startTime, endTime, selectElement) {
+                selectElement.innerHTML = '<option value="">선택</option>';
+
+                let start = startTime.split(':');
+                let end = endTime.split(':');
+
+                let startHour = parseInt(start[0]);
+                let endHour = parseInt(end[0]);
+
+                for (let hour = startHour; hour <= endHour; hour++) {
+                    const timeString = `${hour.toString().padStart(2, '0')}:00`;
+                    // 점심시간과 저녁시간 제외
+                    if (!isExcludedTime(timeString)) {
+                        const option = new Option(timeString, timeString);
+                        selectElement.appendChild(option);
+                    }
+                }
+            }
+
+            // 초기 시간 옵션 설정
+            generateTimeOptions(rentalStartTime, rentalEndTime, rentalStartSelect);
+            generateTimeOptions(returnStartTime, returnEndTime, rentalEndSelect);
+
+            // 시간 선택 시 유효성 검사
+            rentalStartSelect.addEventListener('change', function() {
+                if (!document.getElementById('st1').value) {
+                    alert('대여일을 먼저 선택해주세요.');
+                    this.value = '';
+                    return;
+                }
+                if (this.value && isExcludedTime(this.value)) {
+                    alert('점심 시간 또는 저녁 시간에는 선택할 수 없습니다.');
+                    this.value = '';
+                    return;
+                }
+                updateTotalPrice();
+            });
+
+            rentalEndSelect.addEventListener('change', function() {
+                if (!document.getElementById('ed').value) {
+                    alert('반납일을 먼저 선택해주세요.');
+                    this.value = '';
+                    return;
+                }
+                if (this.value && isExcludedTime(this.value)) {
+                    alert('점심 시간 또는 저녁 시간에는 선택할 수 없습니다.');
+                    this.value = '';
+                    return;
+                }
+                updateTotalPrice();
+            });
         });
     </script>
 <?}###################################################### 사용자 페이지 ###################################################### END ?>

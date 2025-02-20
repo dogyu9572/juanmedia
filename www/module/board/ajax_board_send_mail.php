@@ -8,15 +8,15 @@ include $_SERVER['DOCUMENT_ROOT'] . "/module/mail/mail.lib.php";
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require_once $_SERVER['DOCUMENT_ROOT'] . "/_PHPMailer/src/PHPMailer.php";
-require_once $_SERVER['DOCUMENT_ROOT'] . "/_PHPMailer/src/Exception.php";
-
 // DB 연결
 $dblink = SetConn($_conf_db["main_db"]);
 $emails = explode(',', $_REQUEST["emails"]);
+$emailCount = count($emails);
 $results = [];
 
 $arrBoardMailArticle = getBoardArticleView("mailsms", "email", $_REQUEST["idx"], "read", "and etc_3='" . $_REQUEST["etc_3"] . "'");
+//$arrBoardMailArticle = getBoardArticleView("mailsms", "email", 11, "read", "and etc_3='" . "member" . "'");
+//$emailCount = 11;
 
 $title = $arrBoardMailArticle["list"][0]['etc_4'];
 $subject = $arrBoardMailArticle["list"][0]['subject'];
@@ -24,40 +24,107 @@ $contents = $arrBoardMailArticle["list"][0]['contents'];
 
 // Read the HTML template
 $htmlTemplate = file_get_contents($_SERVER['DOCUMENT_ROOT'] . "/_mailform/mailform_member.html");
-
-// Replace placeholders with actual content
 $htmlTemplate = str_replace("{{subject}}", $subject, $htmlTemplate);
 $htmlTemplate = str_replace("{{contents}}", $contents, $htmlTemplate);
 
-foreach ($emails as $email) {
-    $mail = new PHPMailer(true);
+if ($emailCount >= 10) {
+    // 대량메일 발송 설정
+    $sendmail_url = "https://camf2622.sendmail.cafe24.com/sendmail_api.php";
+    $secureKey = "453496af7637e8db2eb490a4c16554e9";
+    $userId = "camf2622";
 
-    try {
-        $mail->IsMail();  // Postfix의 sendmail을 사용
-        $mail->CharSet = "UTF-8";  // 한글 깨짐 방지
-
-	    $mail->setFrom('admin@juanmedia.or.kr', '주안영상미디어센터');  // 보내는 사람 메일 주소
-        $mail->AddAddress($email);  // 받는 사람 메일 주소
-
-        $mail->Subject = $title;  // 메일 제목
-        $mail->MsgHTML($htmlTemplate);  // 메일 내용
-
-        $mail->Send();
-    } catch (phpmailerException $e) {
-        echo $e->errorMessage(); // PHPMailer 에러 메시지
-    } catch (Exception $e) {
-        echo $e->getMessage(); // 일반 예외 메시지
+    // 수신자 리스트 생성 (email,email 형식)
+    $receiverlist = '';
+    foreach ($emails as $email) {
+        $receiverlist .= trim($email) . "," . trim($email) . "\n";
     }
 
-    $results[] = $mail;
-}
+//    $receiverlist = "cdg9572@gmail.com,cdg9572@gmail.com\n";
+//    $receiverlist .= "dogyupower@naver.com,dogyupower@naver.com\n";
+//    $receiverlist .= "dogyupower@hanmail.net,dogyupower@hanmail.net\n";
+//    $receiverlist .= "songsongssong@hotmail.com,songsongssong@hotmail.com\n";
+//    $receiverlist .= "cdg9572@gmail.com,cdg9572@gmail.com\n";
+//    $receiverlist .= "dogyupower@naver.com,dogyupower@naver.com\n";
+//    $receiverlist .= "dogyupower@hanmail.net,dogyupower@hanmail.net\n";
+//    $receiverlist .= "songsongssong@hotmail.com,songsongssong@hotmail.com\n";
+//    $receiverlist .= "dogyupower@hanmail.net,dogyupower@hanmail.net\n";
+//    $receiverlist .= "songsongssong@hotmail.com,songsongssong@hotmail.com\n";
+//    $receiverlist .= "songsongssong@hotmail.com,songsongssong@hotmail.com\n";
 
-if ($mail == true) {
-    echo "true";
+    // 대량메일 요청 데이터 설정
+    $mail = array(
+        'secureKey' => $secureKey,
+        'userId' => $userId,
+        'sender' => base64_encode('주안영상미디어센터'),
+        'email' => base64_encode('admin@juanmedia.or.kr'),
+        'receiverlist' => base64_encode($receiverlist),
+        'subject' => base64_encode($title),
+        'content' => base64_encode($htmlTemplate),
+        'rejectType' => 2,
+        'overlapType' => 2,
+        'sendType' => 0,
+        'useRejectMemo' => 0,
+        'testFlag' => 0
+    );
+
+    // API 요청 처리
+    $host_info = explode("/", $sendmail_url);
+    $host = $host_info[2];
+    $path = $host_info[3]."/".$host_info[4];
+
+    $boundary = "---------------------".substr(md5(rand(0,32000)),0,10);
+    $header = "POST /".$path ." HTTP/1.0\r\n";
+    $header .= "Host: ".$host."\r\n";
+    $header .= "Content-type: multipart/form-data, boundary=".$boundary."\r\n";
+
+    $data = '';
+    foreach($mail as $index => $value){
+        $data .="--$boundary\r\n";
+        $data .= "Content-Disposition: form-data; name=\"".$index."\"\r\n";
+        $data .= "\r\n".$value."\r\n";
+        $data .="--$boundary\r\n";
+    }
+
+    $header .= "Content-length: " . strlen($data) . "\r\n\r\n";
+
+    $fp = fsockopen($host, 80);
+    if ($fp) {
+        fputs($fp, $header.$data);
+        $rsp = '';
+        while(!feof($fp)) {
+            $rsp .= fgets($fp,8192);
+        }
+        fclose($fp);
+        $msg = explode("\r\n\r\n",trim($rsp));
+        $success = (strpos($msg[1], 'SUCCESS') !== false);
+
+        echo $success ? "true" : "false";
+    } else {
+        echo "false";
+    }
 } else {
-    echo "false" . $_REQUEST["emails"] . "//" . $emails;
+    require_once $_SERVER['DOCUMENT_ROOT'] . "/_PHPMailer/src/PHPMailer.php";
+    require_once $_SERVER['DOCUMENT_ROOT'] . "/_PHPMailer/src/Exception.php";
+
+    foreach ($emails as $email) {
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->IsMail();
+            $mail->CharSet = "UTF-8";
+            $mail->setFrom('admin@juanmedia.or.kr', '주안영상미디어센터');
+            $mail->AddAddress($email);
+            $mail->Subject = $title;
+            $mail->MsgHTML($htmlTemplate);
+            $mail->Send();
+            $results[] = true;
+        } catch (Exception $e) {
+            $results[] = false;
+        }
+    }
+
+    echo (in_array(false, $results) === false) ? "true" : "false";
 }
 
-// DB 해제
 SetDisConn($dblink);
 ?>

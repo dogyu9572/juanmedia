@@ -15,17 +15,14 @@ if(!$_SESSION['uName']){
     $arrBirth1	= substr($userBirth,0,4);
     $arrBirth2	= substr($userBirth,4,2);
     $arrBirth3	= substr($userBirth,6,2);
-    $arrMobile1 = substr($userPhone,0,3);
-    $arrMobile2 = substr($userPhone,3,4);
-    $arrMobile3 = substr($userPhone,7,4);
+
 
     //DB연결
     $dblink = SetConn($_conf_db["main_db"]);
 
     $birthDay	= $arrBirth1."-".$arrBirth2."-".$arrBirth3;
-    $mobileNum	= $arrMobile1."-".$arrMobile2."-".$arrMobile3;
 
-    $arrInfo = getUserFindMobile($mobileNum);
+    $arrInfo = getUserFindMobile($userPhone);
 
     //DB해제
     SetDisConn($dblink);

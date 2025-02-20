@@ -270,7 +270,6 @@
 		                <?php endif;?>
 
                     <!-- <div class="detailTit">대여 정보</div> -->
-
                     <!-- formBox -->
                     <!-- <div class="formBox mb1">
                         <div class="row">
@@ -295,7 +294,6 @@
                         </div>
                     </div> -->
                     <!-- //formBox -->
-
 
                     <div class="detailTit">예약자 정보</div>
 

@@ -339,6 +339,21 @@ select::-ms-expand {display:none;}
 .subSec.pt0 {padding-top:0;}
 .subSec.pt2 {padding-top:187px;}
 
+/* 강사모집 목록 배너 */
+.edu_list_banner {background:#FFF6ED url('/images/bg_edu_list_banner.svg') no-repeat 0 0 / contain; border-radius:20px; padding:48px; margin-bottom:22px;}
+.edu_list_banner p {font-size:20px; margin:20px 0 16px; padding-right:450px;}
+.edu_list_banner .btn {display:flex; justify-content:center; align-items:center; gap:8px; width:230px; height:48px; font-size:18px; color:#fff; font-weight:600; border-radius:8px; background:#FF8E42;}
+.edu_list_banner .btn:after {content:""; display:block; width:18px; height:18px; background:url('/images/icon_down.svg') no-repeat 50% 50% / contain;}
+.edu_list_banner .wbox {position:relative; margin-top:20px; background:#fff; padding:24px; border-radius:20px; display:flex; flex-wrap:wrap; gap:10px 0;}
+.edu_list_banner .wbox:after {content:""; position:absolute; top:-20px; right:0; width:37px; height:44px; background:url('/images/icon_clip.svg') no-repeat 50% 50% / contain;}
+.edu_list_banner .wbox dl {width:50%; display:flex;}
+.edu_list_banner .wbox dt {width:80px; height:34px; font-size:14px; color:#fff; font-weight:700; line-height:1; background:#1A75BC; border-radius:17px; display:flex; justify-content:center; align-items:center;}
+.edu_list_banner .wbox dd {font-size:16px; line-height:26px; padding:4px 16px; display:flex; flex-wrap:wrap;}
+.edu_list_banner .wbox dd span {position:relative; margin-left:21px;}
+.edu_list_banner .wbox dd span:before {content:""; position:absolute; top:50%; left:-11px; width:1px; height:14px; transform:translateY(-50%); background:#ddd;}
+.edu_list_banner .wbox dd span:first-child {margin-left:0;}
+.edu_list_banner .wbox dd span:first-child:before {display:none;}
+.edu_list_banner .wbox dd strong {color:#1A75BC;}
 
 .titleType1 {font-size:28px; line-height:44px; font-weight:700; position:relative; padding-left:16px;}
 .titleType1:after {content:''; position:absolute; left:0; top:7px; width:4px; height:27px; border-radius:2px; background:#1A75BC;}
@@ -391,7 +406,6 @@ select::-ms-expand {display:none;}
 
 .subSec.return {padding-top:0;}
 
-.tableType1 {}
 .tableType1 table{border-top:1px solid #222 ; width:100%; table-layout:fixed; text-align:center;}
 .tableType1 th {background:#F5F8FD; font-size:18px; font-weight:600; height:57px; border-bottom:1px solid #ebebeb;}
 .tableType1 td {font-size:18px; line-height:32px;  border-bottom:1px solid #ebebeb; padding:13px 10px;}
@@ -503,7 +517,7 @@ select::-ms-expand {display:none;}
 .btnType1.lineBlue {background:#fff; border:1px solid #1A75BC; color:#1A75BC;}
 .btnType1.gray {background:#fff; border:1px solid #ddd; color:#222;}
 .btnType1.w1 {width:285px;}
-.btnTypeSm {border:1px solid #ddd; background:#fff; border-radius:8px; font-size:14px; line-height:22px; font-weight:500; padding:5px 14px;}
+.btnTypeSm {border:1px solid #ddd; background:#fff; border-radius:8px; font-size:14px; line-height:22px; font-weight:500; padding:5px 14px; display:inline-block;}
 
 .btnType2 {display:inline-flex; align-items:center; justify-content:center; padding:0 14px; font-size:14px; font-weight:500; border:1px solid #DDDDDD; border-radius:8px; height:34px;}
 .btnRight {position:relative; text-align:right;}
@@ -528,7 +542,7 @@ select::-ms-expand {display:none;}
 
 .contentPop {position:fixed; left:0; top:0; width:100%; height:100%; z-index:999; overflow-y:auto; display:none;}
 .contentPop .bg{position:fixed; left:0; top:0; width:100%; height:100%; z-index:10; background:rgba(0,0,0,.5);}
-.contentPop .popIn {position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); background:#fff; border-radius:20px; border:1px solid rgba(221, 221, 221, 0.87); padding:24px 24px 40px; z-index:20;}
+.contentPop .popIn {position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); background:#fff; border-radius:20px; border:1px solid rgba(221, 221, 221, 0.87); padding:24px 24px 40px; z-index:20; max-height:calc(100vh - 40px); overflow:auto;}
 .contentPop .popIn .closePop {position:absolute; right:24px; top:24px;}
 .contentPop .popIn .closePop a {text-indent:-999em; width:16px; height:16px; display:block; background:url('/images/ico_close.svg') center no-repeat;}
 .contentPop .popIn .popTit {text-align:center; margin-bottom:16px; font-size:28px; line-height:44px; font-weight:700;}
@@ -587,6 +601,7 @@ select::-ms-expand {display:none;}
 .fileAddWrap .inputFile .fileInputButton{flex:0 0 auto;position:absolute;left:0; top:0px; font-size:14px; font-weight:500; color:#222; background:#fff; box-shadow:none; border-radius:8px; width:79px; height:34px; line-height:30px; text-align:center; border:1px solid #222222;}
 .fileAddWrap .inputFile .fileInputHidden {font-size:45px; position:absolute; right:0px; top:0px; opacity:0;}
 .fileAddWrap .inputFile .fileInputTextbox {height:auto; background:none; border:none;  font-size:16px; line-height:19px; font-weight:500; color:#1A75BC; margin-left:12px; width:100%; outline:none;}
+.fileAddWrap .inputFile .fileInputTextbox.pl0 {padding-left:0;}
 
 .radioList {display:flex; gap:16px;}
 
@@ -850,6 +865,11 @@ select::-ms-expand {display:none;}
 .noticeDetail .btn a {display:inline-flex; align-items:center; border:1px solid #DDDDDD; border-radius:8px; padding:0 14px; height:34px;}
 .noticeDetail .btn a span {font-size:14px; line-height:14px;font-weight:500; padding-right:18px; background:url('/images/ico_write.svg') right center no-repeat;}
 .noticeDetail .btn a.del span {background:url('/images/ico_del.svg') right center no-repeat;}
+.noticeDetail .btn_r {display:flex; justify-content:flex-end; gap:10px;}
+.noticeDetail .btn_r .btn {width:70px; height:34px; line-height:32px; display:flex; justify-content:center; align-items:center; gap:4px; font-size:14px; color:#222; font-weight:500; border:#ddd 1px solid; border-radius:8px;}
+.noticeDetail .btn_r .btn:after {content:""; background:no-repeat 50% 50% / contain;}
+.noticeDetail .btn_r .btn_modify:after {width:14px; height:14px; background-image:url('/images/icon_modify.svg');}
+.noticeDetail .btn_r .btn_del:after {width:12px; height:12px; background-image:url('/images/icon_del.svg');}
 
 .listPaging  {border-top:1px solid #EBEBEB; margin-bottom:60px;}
 .listPaging .line a {display:flex; height:72px; align-items:center; padding:0 24px; border-bottom:1px solid #EBEBEB;}
@@ -1563,6 +1583,18 @@ label.check input:checked + i:before {width:10px; height:10px;}
 	.eduInfo .box .cont ul li:last-child {grid-column:1 / span 2;}
 	.eduInfo .box .cont ul li:last-child .text {padding-top:20px;}
 
+/* 강사모집 목록 배너 */
+	.edu_list_banner {padding:80px 20px 20px; margin-bottom:20px;}
+	.edu_list_banner img {max-height:30px;}
+	.edu_list_banner p {font-size:14px; margin:15px 0 10px; padding-right:0;}
+	.edu_list_banner .btn {width:160px; height:35px; font-size:14px;}
+	.edu_list_banner .wbox {margin-top:10px; padding:12px;}
+	.edu_list_banner .wbox:after {top:-10px; width:20px; height:24px;}
+	.edu_list_banner .wbox dl {width:100%; flex-direction: column;}
+	.edu_list_banner .wbox dt {width:100px; height:30px; font-size:12px;}
+	.edu_list_banner .wbox dd {font-size:13px; line-height:20px; padding:5px 0;}
+	.edu_list_banner .wbox dd span {margin-left:0; width:100%;}
+	.edu_list_banner .wbox dd span:before {left:-11px; height:14px; display: none;}
 
 	.subSec {padding:40px 0;}
 	.subSec.blue {background:#F5F8FD;}
@@ -1683,7 +1715,7 @@ label.check input:checked + i:before {width:10px; height:10px;}
 	.listType1 li .stateBox {top:24px; right:24px;}
 	.listType1 li .img {margin-bottom:15px;}
 	.listType1 li .img img {width:100%; height:auto; object-fit:cover; border-radius:10px;}
-	.listType1 li .textWrap .title {font-size:16px; line-height:26px; font-weight:600; margin-bottom:10px; display:flex; padding: 1px 0 1px 34px;}
+	.listType1 li .textWrap .title {font-size:16px; line-height:26px; font-weight:600; margin-bottom:10px; display:flex; padding:1px 0 1px 34px;}
 	.listType1 li .textWrap .title .num {top:0; margin-top:0; margin-right:6px;width:28px; height:28px; display:inline-flex; border-radius:100px; justify-content:center; align-items:center; background:#EDB819; font-size:12px; font-weight:900; color:#fff;}
 	.listType1 li .textWrap .info {display:flex; align-items:center; margin-bottom:5px;}
 	.listType1 li .textWrap .info:last-child {margin-bottom:0;}

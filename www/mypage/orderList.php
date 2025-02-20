@@ -66,7 +66,7 @@ $arrBoardList	= getBoardListBaseNFile($arrBoardInfo["list"][0]["boardid"], "", $
 							<div class="box">
 								<div class="tit">나의 활동 관리</div>
 								<ul>
-									<li><a href="freeList.php">자유게시판</a></li>
+									<li><a href="freeList.php">보도자료</a></li>
 									<li><a href="stopList.php">자격 정지 내역</a></li>
 								</ul>
 							</div>
@@ -189,7 +189,12 @@ $arrBoardList	= getBoardListBaseNFile($arrBoardInfo["list"][0]["boardid"], "", $
                                                 </td>
 												<td><?= number_format($arrBoardList["list"][$i]['finalamount']) ?>원</td>
 												<td><?=date("Y-m-d",strtotime($arrBoardList["list"][$i]['wdate']))?></td>
-												<td><?=$arrBoardList["list"][$i]['status'];?></td>
+												<td>
+                                                    <?=$arrBoardList["list"][$i]['status'];?>
+                                                    <?php if (isset($arrBoardList["list"][$i]['wait_number']) && $arrBoardList["list"][$i]['wait_number'] > 0): ?>
+                                                       <br/>(대기 <?=$arrBoardList["list"][$i]['wait_number']?>번)
+                                                    <?php endif; ?>
+                                                </td>
 												<td>
 													<a href="detail.php?idx=<?=$arrBoardList["list"][$i]['idx'];?>" class="btnTypeSm">상세보기</a>
 												</td>
@@ -199,7 +204,7 @@ $arrBoardList	= getBoardListBaseNFile($arrBoardInfo["list"][0]["boardid"], "", $
                                         }else{
                                             ?>
                                             <tr height="100">
-                                                <td colspan="11">등록된 데이터가 없습니다.</td>
+                                                <td colspan="9">등록된 데이터가 없습니다.</td>
                                             </tr>
                                         <?}?>
 										</tbody>

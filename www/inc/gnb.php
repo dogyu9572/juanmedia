@@ -38,7 +38,7 @@ SetDisConn($dblink);
 											   <li><a href="/edu/list.php">교육신청</a></li>
                                                <!-- <li><a href="/edu/list.php">상설교육</a></li>
                                                <li><a href="/edu/list.php?cat_no=116">공동체교육</a></li> -->
-                                               <li><a href="/edu/teacher.php">강사지원</a></li>
+                                               <li><a href="/edu/teacher.php">강사모집</a></li>
                                            </ul>
                                        <?php } elseif ($arrVal["cat_engname"] == "/equ/info.php") { ?>
                                            <ul>
@@ -60,7 +60,7 @@ SetDisConn($dblink);
                                        <?php } elseif ($arrVal["cat_engname"] == "/cm/notice.php") { ?>
                                            <ul>
                                                <li><a href="/cm/notice.php">공지 사항</a></li>
-                                               <li><a href="/cm/free.php">자유게시판</a></li>
+                                               <li><a href="/cm/free.php">보도자료</a></li>
                                                <li><a href="/cm/dataList.php">자료실</a></li>
                                            </ul>
                                        <?php } elseif ($arrVal["cat_engname"] == "/center/intro.php") { ?>

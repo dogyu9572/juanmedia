@@ -969,6 +969,8 @@ function joinMemberAdmin(){
 			child_violation = '" . mysqli_real_escape_string($GLOBALS['dblink'], $child_violation) . "',
 			child_category = '" . mysqli_real_escape_string($GLOBALS['dblink'], $child_category) . "',
 			child_violation_wdate = '" . mysqli_real_escape_string($GLOBALS['dblink'], $child_violation_wdate) . "',
+			child_violation_start_date = '" . mysqli_real_escape_string($GLOBALS['dblink'], $child_violation_start_date) . "',
+			child_violation_end_date = '" . mysqli_real_escape_string($GLOBALS['dblink'], $child_violation_end_date) . "',
 			login_last = now(),
 			wdate = now(),
 			udate = now()
@@ -1148,6 +1150,8 @@ function editMemberAdmin($id){
 		$child_violation    .= $comma.$_POST['child_violation'][$i];
 		$child_category     .= $comma.$_POST['child_category'][$i];
 		$child_violation_wdate .= $comma.$_POST['child_violation_wdate'][$i];
+		$child_violation_start_date .= $comma.$_POST['child_violation_start_date'][$i];
+		$child_violation_end_date .= $comma.$_POST['child_violation_end_date'][$i];
 		$comma = "||";
 	}
 
@@ -1172,6 +1176,8 @@ function editMemberAdmin($id){
 		child_violation = '" . mysqli_real_escape_string($GLOBALS['dblink'], $child_violation) . "',
 		child_category = '" . mysqli_real_escape_string($GLOBALS['dblink'], $child_category) . "',
 		child_violation_wdate = '" . mysqli_real_escape_string($GLOBALS['dblink'], $child_violation_wdate) . "',
+		child_violation_start_date = '" . mysqli_real_escape_string($GLOBALS['dblink'], $child_violation_start_date) . "',
+		child_violation_end_date = '" . mysqli_real_escape_string($GLOBALS['dblink'], $child_violation_end_date) . "',
 		udate = now()
 		WHERE user_id='$id'
 	";
@@ -1368,7 +1374,7 @@ function editMember_($id){
 }
 
 //회원등급 수정
-function getMemberLevelUpdate($idx, $lval, $child_violation, $child_category, $child_violation_wdate){
+function getMemberLevelUpdate($idx, $lval, $child_violation, $child_category, $child_violation_wdate, $child_violation_start_date, $child_violation_end_date){
 	$tbl = $GLOBALS["_conf_tbl"]["member"];
 
 	if ($child_violation_wdate) {
@@ -1380,19 +1386,23 @@ function getMemberLevelUpdate($idx, $lval, $child_violation, $child_category, $c
 		$existing_child_violation = $row['child_violation'];
 		$existing_child_category = $row['child_category'];
 		$existing_child_violation_wdate = $row['child_violation_wdate'];
+		$existing_child_violation_start_date = $row['child_violation_start_date'];
+		$existing_child_violation_end_date = $row['child_violation_end_date'];
 
 		// Append new data
 		// Append new data only if existing data is not empty
 		$new_child_violation = $existing_child_violation ? $existing_child_violation . "||" . mysqli_real_escape_string($GLOBALS['dblink'], $child_violation) : mysqli_real_escape_string($GLOBALS['dblink'], $child_violation);
 		$new_child_category = $existing_child_category ? $existing_child_category . "||" . mysqli_real_escape_string($GLOBALS['dblink'], $child_category) : mysqli_real_escape_string($GLOBALS['dblink'], $child_category);
 		$new_child_violation_wdate = $existing_child_violation_wdate ? $existing_child_violation_wdate . "||" . mysqli_real_escape_string($GLOBALS['dblink'], $child_violation_wdate) : mysqli_real_escape_string($GLOBALS['dblink'], $child_violation_wdate);
+		$new_child_violation_start_date = $existing_child_violation_start_date ? $existing_child_violation_start_date . "||" . mysqli_real_escape_string($GLOBALS['dblink'], $child_violation_start_date) : mysqli_real_escape_string($GLOBALS['dblink'], $child_violation_start_date);
+		$new_child_violation_end_date = $existing_child_violation_end_date ? $existing_child_violation_end_date . "||" . mysqli_real_escape_string($GLOBALS['dblink'], $child_violation_end_date) : mysqli_real_escape_string($GLOBALS['dblink'], $child_violation_end_date);
 
 		$sub_sql = "child_violation = '" . $new_child_violation . "',
              child_category = '" . $new_child_category . "',
-             child_violation_wdate = '" . $new_child_violation_wdate . "',";
-
+             child_violation_wdate = '" . $new_child_violation_wdate . "',
+             child_violation_start_date = '" . $new_child_violation_start_date . "',
+             child_violation_end_date = '" . $new_child_violation_end_date . "',";
 	}
-
 
 	$sql = "UPDATE ".$tbl." SET
 		$sub_sql
@@ -1642,22 +1652,32 @@ function getMemberInfo($sdate, $edate) {
 function getUserFindMobile($mobile){
 	$tbl = $GLOBALS["_conf_tbl"]["member"];
 
-	$mobile = str_replace("-","",$mobile);
+	// 하이픈 제거
+	$mobile = str_replace("-", "", $mobile);
 
-	$sql  = "SELECT * ";
-	$sql .= "FROM ".$tbl." ";
-	//$sql .= "WHERE REPLACE(mobile,'-','')='".$mobile."' where join_type='homepage'";
-	$sql .= "WHERE REPLACE(mobile,'-','')='".$mobile."'";
+	// 하이픈 포함 형식 생성
+	$formatted_mobile = substr($mobile, 0, 3).'-'.substr($mobile, 3, 4).'-'.substr($mobile, 7);
+
+	// base64 인코딩 버전 생성
+	$encoded_mobile = base64_encode($mobile);
+	$encoded_formatted_mobile = base64_encode($formatted_mobile);
+
+	$sql = "SELECT * FROM ".$tbl." 
+            WHERE REPLACE(mobile,'-','') = '".$mobile."' 
+            OR mobile = '".$formatted_mobile."'
+            OR mobile = '".$encoded_mobile."'
+            OR mobile = '".$encoded_formatted_mobile."'";
+
 	$rs = mysqli_query($GLOBALS['dblink'], $sql);
 	$total_rs = mysqli_num_rows($rs);
-	//	echo $sql;
+
 	if($total_rs > 0){
-			$list['total'] = $total_rs;
-			for($i=0; $i < $total_rs; $i++){
-					$list['list'][$i] = mysqli_fetch_assoc($rs);
-			}
+		$list['total'] = $total_rs;
+		for($i=0; $i < $total_rs; $i++){
+			$list['list'][$i] = mysqli_fetch_assoc($rs);
+		}
 	}else{
-			$list['total'] = 0;
+		$list['total'] = 0;
 	}
 	return $list;
 }
@@ -2645,6 +2665,53 @@ function deleteCs($idx){
 	}else{
 		return false;
 	}
+}
+
+function updateMemberLevelByViolation() {
+	$tbl = $GLOBALS["_conf_tbl"]["member"];
+	$today = date('Y-m-d');
+
+	$sql = "UPDATE $tbl SET user_level = '1' 
+            WHERE (
+                SELECT MAX(date_val) <= '$today'
+                FROM (
+                    SELECT IF(
+                        value REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}$',
+                        value,
+                        '0000-00-00'
+                    ) as date_val
+                    FROM (
+                        SELECT SUBSTRING_INDEX(SUBSTRING_INDEX(t.value, '||', n.n), '||', -1) value
+                        FROM (
+                            SELECT child_violation_end_date as value
+                            FROM $tbl
+                            WHERE child_violation_end_date IS NOT NULL 
+                            AND child_violation_end_date != ''
+                        ) t CROSS JOIN (
+                            SELECT a.N + b.N * 10 + 1 n
+                            FROM (
+                                SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL 
+                                SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL 
+                                SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9
+                            ) a,
+                            (
+                                SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL 
+                                SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL 
+                                SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9
+                            ) b
+                            ORDER BY n
+                        ) n
+                        WHERE n.n <= 1 + (LENGTH(t.value) - LENGTH(REPLACE(t.value, '||', '')))
+                    ) as dates
+                    WHERE value != ''
+                ) as valid_dates
+                WHERE date_val != '0000-00-00'
+            )
+            AND child_violation_end_date IS NOT NULL 
+            AND child_violation_end_date != ''";
+
+	$rs = mysqli_query($GLOBALS['dblink'], $sql);
+	return $rs ? true : false;
 }
 
 ?>

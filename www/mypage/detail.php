@@ -73,7 +73,7 @@ $dayTypeMap = [
 							<div class="box">
 								<div class="tit">나의 활동 관리</div>
 								<ul>
-									<li><a href="freeList.php">자유게시판</a></li>
+									<li><a href="freeList.php">보도자료</a></li>
 									<li><a href="stopList.php">자격 정지 내역</a></li>
 								</ul>
 							</div>
@@ -92,7 +92,8 @@ $dayTypeMap = [
 						<div class="myDetail">
 							<div class="detailTit">신청정보
                                 <?php if (!empty($arrBoardCertificatesArticle["list"])): ?>
-                                    <a href="/mypage/print.php?name=<?= urlencode($arrBoardCertificatesArticle["list"][0]['name']) ?>&birthdate=<?= urlencode($arrBoardCertificatesArticle["list"][0]['birthdate']) ?>&subject=<?= urlencode($arrBoardCertificatesArticle["list"][0]['subject']) ?>&wdate=<?= urlencode(date("Y-m-d", strtotime($arrBoardCertificatesArticle["list"][0]['wdate']))) ?>&e_start_date=<?= urlencode($arrBoardCertificatesArticle['list'][0]['e_start_date']) ?>&e_end_date=<?= urlencode($arrBoardCertificatesArticle['list'][0]['e_end_date']) ?>&total_days=<?= urlencode($arrBoardCertificatesArticle['list'][0]['total_days']) ?>&total_hours=<?= urlencode($arrBoardCertificatesArticle['list'][0]['total_hours']) ?>" class="more" target="_blank">수료증 확인</a>
+                                    <a href="/mypage/print.php?name=<?= urlencode($arrBoardCertificatesArticle["list"][0]['name']) ?>&birthdate=<?= urlencode($arrBoardCertificatesArticle["list"][0]['birthdate']) ?>&subject=<?= urlencode($arrBoardCertificatesArticle["list"][0]['subject']) ?>&wdate=<?= urlencode(date("Y-m-d", strtotime($arrBoardCertificatesArticle["list"][0]['wdate']))) ?>&e_start_date=<?= urlencode($arrBoardCertificatesArticle['list'][0]['e_start_date']) ?>&e_end_date=<?= urlencode($arrBoardCertificatesArticle['list'][0]['e_end_date']) ?>&total_days=<?= urlencode($arrBoardCertificatesArticle['list'][0]['total_days']) ?>&total_hours=<?= urlencode($arrBoardCertificatesArticle['list'][0]['total_hours']) ?>" class="more pc_vw" target="_blank">수료증 확인</a>
+									<a href="/mypage/print_mo.php?name=<?= urlencode($arrBoardCertificatesArticle["list"][0]['name']) ?>&birthdate=<?= urlencode($arrBoardCertificatesArticle["list"][0]['birthdate']) ?>&subject=<?= urlencode($arrBoardCertificatesArticle["list"][0]['subject']) ?>&wdate=<?= urlencode(date("Y-m-d", strtotime($arrBoardCertificatesArticle["list"][0]['wdate']))) ?>&e_start_date=<?= urlencode($arrBoardCertificatesArticle['list'][0]['e_start_date']) ?>&e_end_date=<?= urlencode($arrBoardCertificatesArticle['list'][0]['e_end_date']) ?>&total_days=<?= urlencode($arrBoardCertificatesArticle['list'][0]['total_days']) ?>&total_hours=<?= urlencode($arrBoardCertificatesArticle['list'][0]['total_hours']) ?>" class="more mo_vw" target="_blank">수료증 확인</a>
                             <?php endif; ?>
                             </div>
 							<div class="detailTable">

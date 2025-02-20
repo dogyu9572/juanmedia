@@ -331,7 +331,7 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
 												?>
                                                 <tr>
                                                     <td><label class="check"><input type="checkbox" name="filedel[]" value="<?=$arrBoardArticle["files"][$i]['idx']?>"><i></i>삭제</label>
-                                                        file :  <a href="javascript:void(0);" onclick="fileDownload('<?=$arrBoardArticle["files"][$i]['boardid']?>','<?=$arrBoardArticle["files"][$i]['b_idx']?>','<?=$arrBoardArticle["files"][$i]['idx']?>');"><?=$arrBoardArticle["files"][$i]['ori_name']?></a>
+                                                        file :  <a href="/module/board/download.php?boardid=<?=$arrBoardArticle["files"][$i]['boardid']?>&b_idx=<?=$arrBoardArticle["files"][$i]['b_idx']?>&idx=<?=$arrBoardArticle["files"][$i]['idx']?>"><?=$arrBoardArticle["files"][$i]['ori_name']?></a>
                                                     </td>
                                                 </tr>
 												<?

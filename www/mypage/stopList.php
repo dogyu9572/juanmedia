@@ -65,7 +65,7 @@ for($i = 0; $i < $arrLevel["total"]; $i ++) {
 							<div class="box">
 								<div class="tit">나의 활동 관리</div>
 								<ul>
-									<li><a href="freeList.php">자유게시판</a></li>
+									<li><a href="freeList.php">보도자료</a></li>
 									<li><a href="stopList.php" class="active">자격 정지 내역</a></li>
 								</ul>
 							</div>
@@ -85,7 +85,7 @@ for($i = 0; $i < $arrLevel["total"]; $i ++) {
 							<div class="baseSel">
 								<select>
 									<option value="stopList.php">자격 정지 내역</option>
-									<option value="freeList.php">자유게시판</option>
+									<option value="freeList.php">보도자료</option>
 								</select>
 							</div>
 						</div>

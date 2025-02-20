@@ -161,7 +161,7 @@ $_SESSION["SEAR_TYPE"] = "member_info";
                     <div class="box">
                         <div class="tit">나의 활동 관리</div>
                         <ul>
-                            <li><a href="freeList.php">자유게시판</a></li>
+                            <li><a href="freeList.php">보도자료</a></li>
                             <li><a href="stopList.php">자격 정지 내역</a></li>
                         </ul>
                     </div>
@@ -237,6 +237,14 @@ $_SESSION["SEAR_TYPE"] = "member_info";
                                     </div>
                                 </div>
                             </div>
+							<div class="line">
+								<div class="tit">생년월일<span>*</span></div>
+								<div class="btnInput">
+									<div class="baseInput">
+										<input type="text" name="birth" id="birth" class="datepicker" autocomplete='off'>
+									</div>
+								</div>
+							</div>
                             <div class="line">
                                 <div class="tit">주소<span>*</span></div>
                                 <div class="right">
@@ -329,7 +337,7 @@ $_SESSION["SEAR_TYPE"] = "member_info";
             dateFormat: 'yy-mm-dd',
             showMonthAfterYear:true,
             showOn: "both",
-            buttonImage: "/images/icon_month.gif",
+            buttonImage: "/images/icon_month.svg",
             buttonImageOnly: true,
             changeYear: true,
             changeMonth: true,

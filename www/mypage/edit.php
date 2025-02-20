@@ -63,7 +63,7 @@ ob_end_flush(); // 출력 버퍼링 종료 및 출력
 							<div class="box">
 								<div class="tit">나의 활동 관리</div>
 								<ul>
-									<li><a href="freeList.php">자유게시판</a></li>
+									<li><a href="freeList.php">보도자료</a></li>
 									<li><a href="stopList.php">자격 정지 내역</a></li>
 								</ul>
 							</div>

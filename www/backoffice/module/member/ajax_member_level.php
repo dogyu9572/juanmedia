@@ -1,37 +1,1 @@
-<?php
-session_start();
-header("Content-Type: text/html; charset=utf-8");
-include $_SERVER['DOCUMENT_ROOT'] . "/common/conf/config.inc.php";
-include $_SERVER['DOCUMENT_ROOT'] . "/module/member/member.lib.php";
-
-// DB 연결
-$dblink = SetConn($_conf_db["main_db"]);
-
-// g_idx를 쉼표로 분리하여 배열로 변환
-$g_idx_array = explode(',', $_REQUEST["g_idx"]);
-
-//echo "echo:"; print_r($_REQUEST['child_violation']); echo "<br>" ;
-//echo "echo:"; print_r($_REQUEST['child_category']); echo "<br>" ;
-//echo "echo:"; print_r($_REQUEST['child_violation_wdate']); echo "<br>" ;
-foreach ($g_idx_array as $g_idx) {
-	// 회원 레벨 업데이트
-	$editRS = getMemberLevelUpdate($g_idx, $_REQUEST["levelval"], $_REQUEST['child_violation'], $_REQUEST['child_category'], $_REQUEST['child_violation_wdate']);
-	if ($editRS !== true) {
-		echo "false";
-		exit;
-	}
-}
-
-
-
-// 필요한 로직 추가 (예: 데이터베이스에 저장)
-
-if ($editRS == true) {
-	echo "true";
-} else {
-	echo "false";
-}
-
-// DB 연결 해제
-SetDisConn($dblink);
-?>
+<?phpsession_start();header("Content-Type: text/html; charset=utf-8");include $_SERVER['DOCUMENT_ROOT'] . "/common/conf/config.inc.php";include $_SERVER['DOCUMENT_ROOT'] . "/module/member/member.lib.php";// DB 연결$dblink = SetConn($_conf_db["main_db"]);// g_idx를 쉼표로 분리하여 배열로 변환$g_idx_array = explode(',', $_REQUEST["g_idx"]);//echo "echo:"; print_r($_REQUEST['child_violation']); echo "<br>" ;//echo "echo:"; print_r($_REQUEST['child_category']); echo "<br>" ;//echo "echo:"; print_r($_REQUEST['child_violation_wdate']); echo "<br>" ;foreach ($g_idx_array as $g_idx) {	// 회원 레벨 업데이트	$editRS = getMemberLevelUpdate($g_idx, $_REQUEST["levelval"], $_REQUEST['child_violation'], $_REQUEST['child_category'], $_REQUEST['child_violation_wdate'], $_REQUEST['child_violation_start_date'], $_REQUEST['child_violation_end_date']);	if ($editRS !== true) {		echo "false";		exit;	}}// 필요한 로직 추가 (예: 데이터베이스에 저장)if ($editRS == true) {	echo "true";} else {	echo "false";}// DB 연결 해제SetDisConn($dblink);?>
