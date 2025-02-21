@@ -260,14 +260,15 @@ else {
 										</div>
 									</div>
 								</div>
-								<div class="line">
+                                <input type="hidden" name="email" id="email" value="<?=$email?>">
+								<!--<div class="line">
 									<div class="tit">이메일<span>*</span></div>
 									<div class="right">
 										<div class="baseInput">
-											<input type="text" name="email" id="email"   value="<?=$email?>" readonly class="readonly-input">
+											<input type="text" name="email" id="email"   value="<?php /*=$email*/?>" readonly class="readonly-input">
 										</div>
 									</div>
-								</div>
+								</div>-->
 								<div class="line">
 									<div class="tit">생년월일<span>*</span></div>
 									<div class="btnInput">

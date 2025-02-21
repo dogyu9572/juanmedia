@@ -924,6 +924,7 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                     var userLevelContainer = document.getElementById('userLevelContainer');
                     userLevelContainer.innerText = memInfo[4]; // Assuming user_level is the 5th element in the response
                     frm.user_level.value	= memInfo[5];
+                    frm.birthdate.value	= memInfo[6];
 
                 }
             );

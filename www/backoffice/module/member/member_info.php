@@ -6,7 +6,7 @@ include_once $_SERVER['DOCUMENT_ROOT'] . "/module/member/member.lib.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/module/board/board.lib.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/module/category/category.lib.php";
 include_once $_SERVER['DOCUMENT_ROOT'] . "/module/coupon/coupon.lib.php";
-if(!in_array("member_manage",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTH"]) && $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]!="ROOT"):
+if(!in_array("member_manage",$arrLevel_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTH"]) && $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]!="ROOT"):
 	jsMsg("권한이 없습니다.");
 	jsHistory("-1");
 endif;
@@ -200,13 +200,13 @@ function inNumber(str){
 			<input type="hidden" name="idx" value="<?=$arrInfo["list"][0]["idx"]?$arrInfo["list"][0]["idx"]:""?>">
 			<input type="hidden" name="etc_8" value="<?=$arrInfo["list"][0]["etc_8"]?>">
 			<input type="hidden" name="etc_9" value="<?=$arrInfo["list"][0]["etc_9"]?>">
-            <input type="hidden" name="email" value="<?=$arrInfo["list"][0]["email"]?>">
+            <input type="hidden" name="email" value="<?=$email?>">
 			<div class="tit">회원정보</div>
 			<table>
                 <tr>
                     <th>회원 상태 <i>*</i></th>
                     <td>
-                        <select name="user_level">
+                        <select name="user_level" class="w2">
                             <option value="">전체</option>
                             <?for ($i=0;$i<$arrLevel['total'];$i++) {?>
                                 <option value="<?=$arrLevel['list'][$i]['level_no']?>" <?=$arrLevel['list'][$i]['level_no']==$arrInfo["list"][0]['user_level']?" selected":""?>><?=$arrLevel['list'][$i]['level_name']?></option>

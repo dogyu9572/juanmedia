@@ -110,14 +110,14 @@ for($i = 0; $i < $arrLevel["total"]; $i ++) {
                                             <col class="no1" />
                                             <col class="no2" />
                                             <col class="no3" />
-                                            <col class="no4" />
+<!--                                            <col class="no4" />-->
                                         </colgroup>
                                         <thead>
                                         <tr>
                                             <th>NO.</th>
                                             <th>위반내용</th>
                                             <th>정지구분</th>
-                                            <th>등록일</th>
+<!--                                            <th>등록일</th>-->
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -134,7 +134,7 @@ for($i = 0; $i < $arrLevel["total"]; $i ++) {
 <!--                                                    <td class="name"><a href="#;" onclick="contentPop('.stopPop');">--><?php //= $arrChildViolation[$i] ?><!--</a></td>-->
                                                     <td class="name"><a href="#;"><?= $arrChildViolation[$i] ?></a></td>
                                                     <td><?= $arrChildCategory[$i] ?></td>
-                                                    <td><?= $arrChildViolationWdate[$i] ?></td>
+<!--                                                    <td>--><?php //= $arrChildViolationWdate[$i] ?><!--</td>-->
                                                 </tr>
                                                 <?php
                                             }

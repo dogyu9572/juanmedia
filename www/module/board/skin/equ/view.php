@@ -120,39 +120,52 @@ function doLoad(){
 
 	$imgsrc = "/uploaded/board/".$arrBoardInfo["list"][0]["boardid"]."/".$arrBoardArticle["files"][0]['re_name'];
 
-    $arrBoardHolidayList = getBoardListBaseNFile("holiday", $_GET["category"], $_GET['sw'], $_GET['sk'], $arrBoardInfo["list"][0]["scale"], $_GET['offset'], $_GET['reply']);
+	$arrBoardHolidayList = getBoardListBaseNFile("holiday", $_GET["category"], $_GET['sw'], $_GET['sk'], $arrBoardInfo["list"][0]["scale"], $_GET['offset'], $_GET['reply']);
 
-    $holidayWeekdays = [];
-    $specificHolidayDates = [];
+	$holidayWeekdays = [];
+	$specificHolidayDates = [];
 
-    foreach ($arrBoardHolidayList['list'] as $holiday) {
-        // 요일 정보 처리
-        if (!empty($holiday['weekdays'])) {
-            $weekdays = explode('|', $holiday['weekdays']);
-            $holidayWeekdays = array_merge($holidayWeekdays, $weekdays);
-        }
+	foreach ($arrBoardHolidayList['list'] as $holiday) {
+		// 요일 정보 처리
+		if (!empty($holiday['weekdays'])) {
+			$weekdays = explode('|', $holiday['weekdays']);
+			$holidayWeekdays = array_merge($holidayWeekdays, $weekdays);
+		}
 
-        // 특정 날짜 범위 처리
-        if (!empty($holiday['holly_start_date']) && !empty($holiday['holly_end_date'])) {
-            $startDate = strtotime($holiday['holly_start_date']);
-            $endDate = strtotime($holiday['holly_end_date']);
+		// 특정 날짜 범위 처리
+		if (!empty($holiday['holly_start_date']) && !empty($holiday['holly_end_date'])) {
+			$startDate = strtotime($holiday['holly_start_date']);
+			$endDate = strtotime($holiday['holly_end_date']);
 
-            for ($date = $startDate; $date <= $endDate; $date = strtotime('+1 day', $date)) {
-                $specificHolidayDates[] = date('Y-m-d', $date);
-            }
-        }
-    }
+			for ($date = $startDate; $date <= $endDate; $date = strtotime('+1 day', $date)) {
+				$specificHolidayDates[] = date('Y-m-d', $date);
+			}
+		}
+	}
 
-    // 중복 제거
-    $holidayWeekdays = array_unique($holidayWeekdays);
-    $specificHolidayDates = array_unique($specificHolidayDates);
+	// 중복 제거
+	$holidayWeekdays = array_unique($holidayWeekdays);
+	$specificHolidayDates = array_unique($specificHolidayDates);
 
-    // JavaScript 배열로 변환
-    $holidayWeekdaysJson = json_encode($holidayWeekdays);
-    $specificHolidayDatesJson = json_encode($specificHolidayDates);
-?>
+	// JavaScript 배열로 변환
+	$holidayWeekdaysJson = json_encode($holidayWeekdays);
+	$specificHolidayDatesJson = json_encode($specificHolidayDates);
+
+	// 대여 정보를 JSON으로 변환
+	$rentalData = [];
+	foreach ($arrEquUser["list"] as $rental) {
+		$rentalData[] = [
+			'start_date' => $rental['rental_start_date'],
+			'end_date' => $rental['rental_end_date'],
+			'start_time' => $rental['rental_start_time'],
+			'end_time' => $rental['rental_end_time']
+		];
+	}
+	$rentalDataJson = json_encode($rentalData);
+	$stockQuantity = $arrBoardArticle["list"][0]["stock_quantity"];
+	?>
     <form id="rentalForm"  method="POST">
-    <input type="hidden" name="rental_date" id="rental_date">
+        <input type="hidden" name="rental_date" id="rental_date">
         <input type="hidden" name="totalamount" id="total_price_hidden">
         <input type="hidden" name="fee" id="fee" value="<?=$arrBoardArticle["list"][0]['fee']?>">
         <input type="hidden" name="subject" id="subject" value="<?=$arrBoardArticle["list"][0]['subject']?>">
@@ -161,125 +174,125 @@ function doLoad(){
         <input type="hidden" name="usage_day" id="usage_time_day">
         <input  type="hidden" name="equ_number" value="<?=$arrBoardArticle["list"][0]['equ_number']?>">
         <input  type="hidden" name="equ_idx" value="<?=$arrBoardArticle["list"][0]["idx"]?>">
-<!--        <input type="hidden" name="boardid" value="equ_applicants_cart">-->
+        <!--        <input type="hidden" name="boardid" value="equ_applicants_cart">-->
         <input type="hidden" name="user_id" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]?>">
         <input type="hidden" name="w_user" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]?>">
-    <!-- subSec -->
-    <div class="subSec ">
-        <div class="inner">
-            <div class="btnBack">
-                <a href="javascript:history.back();">뒤로</a>
-            </div>
-            <!-- eqDetail -->
-            <div class="eqDetail detailInfo">
-                <div class="img">
-                    <div class="swiper-wrapper">
-                        <?php
-                        foreach ($arrBoardArticle["files"] as $file) {
-                            $imgsrc = "/uploaded/board/" . $arrBoardInfo["list"][0]["boardid"] . "/" . $file['re_name'];
-                            echo '<div class="swiper-slide"><img src="' . $imgsrc . '" alt="섬네일"></div>';
-                        }
-                        ?>
-                    </div>
-                    <div class="swiper-pagination"></div>
+        <!-- subSec -->
+        <div class="subSec ">
+            <div class="inner">
+                <div class="btnBack">
+                    <a href="javascript:history.back();">뒤로</a>
                 </div>
-                <div class="textCont">
-                    <div class="pointBox">
-                        <?php if (!empty(getCategoryName($arrBoardArticle["list"][0]['category1']))): ?>
-                            <div class="tit"><?=getCategoryName($arrBoardArticle["list"][0]['category1'])?></div>
-                        <?php endif; ?>
-                        <?php if (!empty(getCategoryName($arrBoardArticle["list"][0]['category2']))): ?>
-                            <div class="tit"><?=getCategoryName($arrBoardArticle["list"][0]['category2'])?></div>
-                        <?php endif; ?>
-                        <div class="tit green"><?=stripslashes($arrBoardArticle["list"][0]['usage_level'])?></div>
+                <!-- eqDetail -->
+                <div class="eqDetail detailInfo">
+                    <div class="img">
+                        <div class="swiper-wrapper">
+							<?php
+							foreach ($arrBoardArticle["files"] as $file) {
+								$imgsrc = "/uploaded/board/" . $arrBoardInfo["list"][0]["boardid"] . "/" . $file['re_name'];
+								echo '<div class="swiper-slide"><img src="' . $imgsrc . '" alt="섬네일"></div>';
+							}
+							?>
+                        </div>
+                        <div class="swiper-pagination"></div>
                     </div>
-                    <div class="title"><?=stripslashes($arrBoardArticle["list"][0]['subject'])?></div>
-					<div class="item_num"><span>장비번호</span><em><?=stripslashes($arrBoardArticle["list"][0]['equ_number'])?></em></div>
-                    <div class="price">
-                        <div class="name">대여료</div>
-                        <div class="money"><?=number_format(stripslashes($arrBoardArticle["list"][0]['fee']))?>원 (1일)</div>
-                    </div>
-                    <div class="info">
-                        <ul>
-                            <li>
-                                <div class="tit">대여 / 반납시간</div>
-                                <div class="txt">
-                                    <?= $arrSetInfo["list"][0]["equ_rental_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_rental_start_time"] : '00:00' ?>
-                                    ~
-                                    <?= $arrSetInfo["list"][0]["equ_rental_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_rental_end_time"] : '00:00' ?>
-                                    /
-                                    <?= $arrSetInfo["list"][0]["equ_return_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_return_start_time"] : '00:00' ?>
-                                    ~
-                                    <?= $arrSetInfo["list"][0]["equ_return_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_return_end_time"] : '00:00' ?>
-                                </div>
-                            </li>
-                            <li>
-                            <div class="tit">점심 / 저녁시간</div>
-                            <div class="txt">
-                                <?= $arrSetInfo["list"][0]["equ_lunch_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_lunch_start_time"] : '00:00' ?>
-                                ~
-                                <?= $arrSetInfo["list"][0]["equ_lunch_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_lunch_end_time"] : '00:00' ?>
-                                /
-                                <?= $arrSetInfo["list"][0]["equ_dinner_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_dinner_start_time"] : '00:00' ?>
-                                ~
-                                <?= $arrSetInfo["list"][0]["equ_dinner_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_dinner_end_time"] : '00:00' ?>
-                            </div>
-                            </li>
-                        </ul>
-                        <ul>
-                            <li>
-                                <div class="tit">대여일/반납일</div>
-                                <div class="txt">
-                                    <div class="cmsDate">
-                                        <div class="baseInput">
-                                            <input id="st1" name ="rental_start_date" readonly type="text" title="시작날짜" value="" >
-                                        </div>
-                                        <div class="line">-</div>
-                                        <div class="baseInput">
-                                            <input id="ed" name ="rental_end_date" readonly type="text" title="마지막날짜" value=""" >
+                    <div class="textCont">
+                        <div class="pointBox">
+							<?php if (!empty(getCategoryName($arrBoardArticle["list"][0]['category1']))): ?>
+                                <div class="tit"><?=getCategoryName($arrBoardArticle["list"][0]['category1'])?></div>
+							<?php endif; ?>
+							<?php if (!empty(getCategoryName($arrBoardArticle["list"][0]['category2']))): ?>
+                                <div class="tit"><?=getCategoryName($arrBoardArticle["list"][0]['category2'])?></div>
+							<?php endif; ?>
+                            <div class="tit green"><?=stripslashes($arrBoardArticle["list"][0]['usage_level'])?></div>
+                        </div>
+                        <div class="title"><?=stripslashes($arrBoardArticle["list"][0]['subject'])?></div>
+                        <div class="item_num"><span>장비번호</span><em><?=stripslashes($arrBoardArticle["list"][0]['equ_number'])?></em></div>
+                        <div class="price">
+                            <div class="name">대여료</div>
+                            <div class="money"><?=number_format(stripslashes($arrBoardArticle["list"][0]['fee']))?>원 (1일)</div>
+                        </div>
+                        <div class="info">
+                            <ul>
+                                <li>
+                                    <div class="tit">대여 / 반납시간</div>
+                                    <div class="txt">
+										<?= $arrSetInfo["list"][0]["equ_rental_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_rental_start_time"] : '00:00' ?>
+                                        ~
+										<?= $arrSetInfo["list"][0]["equ_rental_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_rental_end_time"] : '00:00' ?>
+                                        /
+										<?= $arrSetInfo["list"][0]["equ_return_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_return_start_time"] : '00:00' ?>
+                                        ~
+										<?= $arrSetInfo["list"][0]["equ_return_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_return_end_time"] : '00:00' ?>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="tit">점심 / 저녁시간</div>
+                                    <div class="txt">
+										<?= $arrSetInfo["list"][0]["equ_lunch_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_lunch_start_time"] : '00:00' ?>
+                                        ~
+										<?= $arrSetInfo["list"][0]["equ_lunch_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_lunch_end_time"] : '00:00' ?>
+                                        /
+										<?= $arrSetInfo["list"][0]["equ_dinner_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_dinner_start_time"] : '00:00' ?>
+                                        ~
+										<?= $arrSetInfo["list"][0]["equ_dinner_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_dinner_end_time"] : '00:00' ?>
+                                    </div>
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>
+                                    <div class="tit">대여일/반납일</div>
+                                    <div class="txt">
+                                        <div class="cmsDate">
+                                            <div class="baseInput">
+                                                <input id="st1" name ="rental_start_date" readonly type="text" title="시작날짜" value="" >
+                                            </div>
+                                            <div class="line">-</div>
+                                            <div class="baseInput">
+                                                <input id="ed" name ="rental_end_date" readonly type="text" title="마지막날짜" value=""" >
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </li>
-							<li>
-								<div class="tit">대여 방문시간</div>
-								<div class="txt">
-									<div class="baseSel">
-										<select name="rental_start_time" id="rental_start_time">
-											<option value="">선택</option>
-										</select>
-									</div>
-								</div>
-                            </li>
-							<li>
-								<div class="tit">반납 방문시간</div>
-								<div class="txt">
-									<div class="baseSel">
-										<select name="rental_end_time" id="rental_end_time">
-											<option value="">선택</option>
-										</select>
-									</div>
-								</div>
-							</li>
-                        </ul>
-                    </div>
-
-                    <div class="totalPrice">
-                        <div class="nameDate">
-                            <?=stripslashes($arrBoardArticle["list"][0]['subject'])?> / <?=stripslashes($arrBoardArticle["list"][0]['equ_number'])?>  / 0일
+                                </li>
+                                <li>
+                                    <div class="tit">대여 방문시간</div>
+                                    <div class="txt">
+                                        <div class="baseSel">
+                                            <select name="rental_start_time" id="rental_start_time">
+                                                <option value="">선택</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="tit">반납 방문시간</div>
+                                    <div class="txt">
+                                        <div class="baseSel">
+                                            <select name="rental_end_time" id="rental_end_time">
+                                                <option value="">선택</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
                         </div>
-                        <div class="price">0원</div>
-                        <a href="javascript:void(0)" class="close"><img src="/images/ico_smClose.svg" alt="닫기"></a>
-                    </div>
-                    <div class="btnOrder mobFix two">
-                        <a href="javascript:void(0);" class="btnType1 lineBlue" onclick="submitRentalForm('cart_write')">장바구니</a>
-                        <a href="javascript:void(0);" class="btnType1" onclick="submitRentalForm('order')">대여 신청</a>
+
+                        <div class="totalPrice">
+                            <div class="nameDate">
+								<?=stripslashes($arrBoardArticle["list"][0]['subject'])?> / <?=stripslashes($arrBoardArticle["list"][0]['equ_number'])?>  / 0일
+                            </div>
+                            <div class="price">0원</div>
+                            <a href="javascript:void(0)" class="close"><img src="/images/ico_smClose.svg" alt="닫기"></a>
+                        </div>
+                        <div class="btnOrder mobFix two">
+                            <a href="javascript:void(0);" class="btnType1 lineBlue" onclick="submitRentalForm('cart_write')">장바구니</a>
+                            <a href="javascript:void(0);" class="btnType1" onclick="submitRentalForm('order')">대여 신청</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!-- //eqDetail -->
+                <!-- //eqDetail -->
     </form>
-        </div>
+    </div>
     </div>
     <!-- //subSec -->
 
@@ -473,6 +486,57 @@ function doLoad(){
                 }
             });
 
+            // 대여 정보와 재고 수량
+            const rentalData = <?= $rentalDataJson ?>;
+            const stockQuantity = <?= $stockQuantity ?>;
+
+            // 날짜 범위가 겹치는지 확인하는 함수
+            function isDateOverlap(start1, end1, start2, end2) {
+                return start1 <= end2 && end1 >= start2;
+            }
+
+            // 특정 기간 동안의 대여 수량을 확인하는 함수
+            function checkAvailability(startDate, endDate, startTime, endTime) {
+                let maxOverlap = 0;
+
+                // 선택한 날짜들을 배열로 생성
+                const selectedDates = [];
+                let currentDate = new Date(startDate);
+                while (currentDate <= new Date(endDate)) {
+                    // 휴관일이 아닌 경우만 포함
+                    if (!isHoliday(currentDate)[0]) {
+                        selectedDates.push(new Date(currentDate));
+                    }
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+
+                // 각 날짜별로 겹치는 대여 건수 확인
+                selectedDates.forEach(date => {
+                    let overlapCount = 0;
+                    const dateStr = date.toLocaleDateString('en-CA');
+
+                    rentalData.forEach(rental => {
+                        if (isDateOverlap(
+                            dateStr,
+                            dateStr,
+                            rental.start_date,
+                            rental.end_date
+                        )) {
+                            // 시간이 겹치는지 확인
+                            if (
+                                (startTime <= rental.end_time && endTime >= rental.start_time) ||
+                                (rental.start_time <= endTime && rental.end_time >= startTime)
+                            ) {
+                                overlapCount++;
+                            }
+                        }
+                    });
+                    maxOverlap = Math.max(maxOverlap, overlapCount);
+                });
+
+                return maxOverlap < stockQuantity;
+            }
+
             function updateTotalPrice() {
                 const rentalStartDate = $("#st1").datepicker("getDate");
                 const rentalEndDate = $("#ed").datepicker("getDate");
@@ -480,6 +544,22 @@ function doLoad(){
                 const rentalEndTime = $("#rental_end_time").val();
 
                 if (rentalStartDate && rentalEndDate && rentalStartTime && rentalEndTime) {
+                    // 재고 수량 체크
+                    const isAvailable = checkAvailability(
+                        rentalStartDate.toLocaleDateString('en-CA'),
+                        rentalEndDate.toLocaleDateString('en-CA'),
+                        rentalStartTime,
+                        rentalEndTime
+                    );
+
+                    if (!isAvailable) {
+                        alert("선택하신 기간에 대여 가능한 수량을 초과하였습니다.");
+                        $("#ed").datepicker("setDate", null);
+                        $("#rental_start_time").val("");
+                        $("#rental_end_time").val("");
+                        return;
+                    }
+
                     // 시작 날짜와 시간을 결합
                     const startDateTime = new Date(rentalStartDate);
                     const [startHour] = rentalStartTime.split(':').map(Number);
@@ -535,8 +615,96 @@ function doLoad(){
                 }
             }
 
+            // 대여 가능 여부를 확인하는 함수
+            function checkRentalAvailability(newStartDate, newEndDate, newStartTime, newEndTime, existingRentals, stockQuantity) {
+                // 새로운 대여 시작/종료 시간 생성
+                const newStart = new Date(`${newStartDate}T${newStartTime}`);
+                const newEnd = new Date(`${newEndDate}T${newEndTime}`);
+
+                // 각 날짜별 대여 수량을 추적하는 맵 생성
+                const rentalCountByDate = new Map();
+
+                // 새로운 대여 기간의 각 날짜에 대해
+                const currentDate = new Date(newStart);
+                while (currentDate <= newEnd) {
+                    const dateStr = currentDate.toISOString().split('T')[0];
+                    rentalCountByDate.set(dateStr, 0);
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+
+                // 기존 대여 정보를 확인하여 각 날짜별 대여 수량 계산
+                for (const rental of existingRentals) {
+                    const rentalStart = new Date(`${rental.rental_start_date}T${rental.rental_start_time}`);
+                    const rentalEnd = new Date(`${rental.rental_end_date}T${rental.rental_end_time}`);
+
+                    // 기존 대여가 새로운 대여 기간과 겹치는지 확인
+                    if (!(rentalEnd < newStart || rentalStart > newEnd)) {
+                        const current = new Date(rentalStart);
+                        while (current <= rentalEnd) {
+                            const dateStr = current.toISOString().split('T')[0];
+                            if (rentalCountByDate.has(dateStr)) {
+                                rentalCountByDate.set(dateStr, rentalCountByDate.get(dateStr) + 1);
+                            }
+                            current.setDate(current.getDate() + 1);
+                        }
+                    }
+                }
+
+                // 각 날짜에 대해 재고 수량을 초과하는지 확인
+                for (const [date, count] of rentalCountByDate) {
+                    if (count >= stockQuantity) {
+                        return {
+                            available: false,
+                            message: `${date} 날짜에 대여 가능한 수량(${stockQuantity}개)을 초과했습니다.`
+                        };
+                    }
+                }
+
+                return {
+                    available: true,
+                    message: "대여 가능합니다."
+                };
+            }
+
+// 폼 제출 전 유효성 검사 함수
+            function validateRentalForm() {
+                const startDate = document.getElementById('st1').value;
+                const endDate = document.getElementById('ed').value;
+                const startTime = document.getElementById('rental_start_time').value;
+                const endTime = document.getElementById('rental_end_time').value;
+
+                // PHP에서 전달받은 기존 대여 정보와 재고 수량을 JavaScript 변수로 변환
+                const existingRentals = <?= json_encode($arrEquUser['list'] ?? []) ?>;
+                const stockQuantity = <?= $arrBoardArticle["list"][0]["stock_quantity"] ?>;
+
+                const availability = checkRentalAvailability(
+                    startDate,
+                    endDate,
+                    startTime,
+                    endTime,
+                    existingRentals,
+                    stockQuantity
+                );
+
+                if (!availability.available) {
+                    alert(availability.message);
+                    return false;
+                }
+
+                return true;
+            }
+
             // 폼 제출 관련 함수
             window.submitRentalForm = function(mode) {
+                // 대여/반납 시간 체크
+                const startTime = document.getElementById('rental_start_time').value;
+                const endTime = document.getElementById('rental_end_time').value;
+                const startDate = document.getElementById('st1').value;
+                const endDate = document.getElementById('ed').value;
+
+                if (!validateRentalForm()) {
+                    return;
+                }
                 /* if (<?= $arrEduUser["total"] ?> >= <?= $arrSetInfo["list"][0]["equ_max_rental_count"] ?>) {
                     alert("최대 대여 개수를 초과 하였습니다.");
                     return;
@@ -551,6 +719,24 @@ function doLoad(){
                 }
                 if (!document.getElementById('ed').value) {
                     alert('반납일을 선택해 주세요.');
+                    return;
+                }
+
+                if (!startTime) {
+                    alert('대여 방문시간을 선택해 주세요.');
+                    document.getElementById('rental_start_time').focus();
+                    return;
+                }
+
+                if (!endTime) {
+                    alert('반납 방문시간을 선택해 주세요.');
+                    document.getElementById('rental_end_time').focus();
+                    return;
+                }
+
+
+                if (!checkAvailability(startDate, endDate, startTime, endTime)) {
+                    alert("선택하신 기간에 대여 가능한 수량을 초과하였습니다.");
                     return;
                 }
 

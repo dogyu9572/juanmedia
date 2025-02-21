@@ -87,7 +87,7 @@ function inNumber(str){
             <tr>
                 <th>회원 상태 <i>*</i></th>
                 <td>
-                    <select name="user_level">
+                    <select name="user_level" class="w2">>
                         <option value="">전체</option>
                         <?for ($i=0;$i<$arrLevel['total'];$i++) {?>
                             <option value="<?=$arrLevel['list'][$i]['level_no']?>" <?=$arrLevel['list'][$i]['level_no']==$arrInfo["list"][0]['user_level']?" selected":""?>><?=$arrLevel['list'][$i]['level_name']?></option>

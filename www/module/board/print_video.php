@@ -114,10 +114,12 @@ for($i = 0; $i < $arrLevel["total"]; $i ++) {
             width: 30%; /* Set width for last column */
         }
     </style>
-    <script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
-            print();
+        $(window).on('load', function() {
+            setTimeout(function() {
+                window.print();
+            }, 1000);
         });
     </script>
 </head>

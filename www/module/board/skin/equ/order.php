@@ -606,25 +606,10 @@
         });
 
         function validateForm() {
-            const rentalStartTime = document.getElementById('rental_start_time');
-            const rentalEndTime = document.getElementById('rental_end_time');
-            const birthdate = document.querySelector('input[name="birthdate"]');
             const usagePeople = document.querySelector('select[name="usage_people"]');
             const usagePurpose = document.querySelector('input[name="usage_purpose"]');
             const certificateSelect = document.querySelector('select[name="certificate"]');
             const discountSelect = document.getElementById('discountSelect');
-         
-            if (!rentalStartTime.value) {
-                alert('대여 방문시간을 선택하지 않았습니다.');
-                rentalStartTime.focus();
-                return false;
-            }
-
-            if (!rentalEndTime.value) {
-                alert('반납 방문시간을 선택하지 않았습니다.');
-                rentalEndTime.focus();
-                return false;
-            }
 
             if (!discountSelect.value) {
                 alert('할인적용을 선택하지 않았습니다.');
@@ -652,7 +637,6 @@
 
             return true;
         }
-
 
     </script>
 

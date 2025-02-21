@@ -241,7 +241,7 @@ $_SESSION["SEAR_TYPE"] = "member_info";
 								<div class="tit">생년월일<span>*</span></div>
 								<div class="btnInput">
 									<div class="baseInput">
-										<input type="text" name="birth" id="birth" class="datepicker" autocomplete='off'>
+										<input type="text" name="birth" id="birth" class="datepicker" autocomplete='off' value="<?=$arrMemberInfo["list"][0]['birth']?>">
 									</div>
 								</div>
 							</div>

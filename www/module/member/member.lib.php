@@ -279,7 +279,7 @@ function getMemberList($jb, $sw, $sk, $scale, $offset=0, $subQuery="", $orderBy=
 	}else{
 		$sql .= " order by idx desc ";
 	}
-	
+
 	// 전체 레코드 수 먼저 조회
 	$rs = mysqli_query($GLOBALS['dblink'], $sql);
 	$total_rs = mysqli_num_rows($rs);
@@ -295,23 +295,23 @@ function getMemberList($jb, $sw, $sk, $scale, $offset=0, $subQuery="", $orderBy=
 
 		// offset이 전체 레코드 수보다 크면 조정
 		if($total_rs <= $offset) {
-			$offset = max(0, $total_rs - $scale);
+			$offset = max(0, $total_rs - ($scale > 0 ? $scale : $total_rs));
 		}
 
-		// LIMIT 구문 추가 (scale이 양수일 때만)
+		// scale이 0이면 전체 데이터 조회, 아니면 LIMIT 적용
 		if($scale > 0) {
 			$sql .= " LIMIT $offset, $scale";
+		}
 
-			// 페이징된 결과 조회
-			$rs = mysqli_query($GLOBALS['dblink'], $sql);
-			$list['list']['total'] = mysqli_num_rows($rs);
+		// 결과 조회
+		$rs = mysqli_query($GLOBALS['dblink'], $sql);
+		$list['list']['total'] = mysqli_num_rows($rs);
 
-			// 결과 데이터 처리
-			$i = 0;
-			while($row = mysqli_fetch_assoc($rs)) {
-				$list['list'][$i] = $row;
-				$i++;
-			}
+		// 결과 데이터 처리
+		$i = 0;
+		while($row = mysqli_fetch_assoc($rs)) {
+			$list['list'][$i] = $row;
+			$i++;
 		}
 	} else {
 		$list['list']['total'] = 0;
@@ -319,6 +319,7 @@ function getMemberList($jb, $sw, $sk, $scale, $offset=0, $subQuery="", $orderBy=
 
 	return $list;
 }
+
 
 //회원가입
 function joinMember(){
@@ -2706,7 +2707,8 @@ function updateMemberLevelByViolation() {
                     WHERE value != ''
                 ) as valid_dates
                 WHERE date_val != '0000-00-00'
-            )
+            ) 
+            AND (user_level = '3' OR user_level = '6')
             AND child_violation_end_date IS NOT NULL 
             AND child_violation_end_date != ''";
 

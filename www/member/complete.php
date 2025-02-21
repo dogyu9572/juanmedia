@@ -28,7 +28,7 @@
 				<div class="completeBox">
 					<div class="title">회원가입이 완료되었습니다.</div>
 					<div class="textComp">로그인 후 주안영상미디어센터에서 제공하는<br /> 다양한 서비스를 경험해보세요!</div>
-					<a href="login.php" class="btnType1">로그인</a>
+					<a href="login.php?rt_url=/" class="btnType1">로그인</a>
 				</div>
 			</div>
 			<!-- //memberWrap -->

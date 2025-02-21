@@ -150,7 +150,6 @@ if ($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"] == "/back
                     ?>
                     <div class="tit">첨부파일</div>
                     <div class="file"><a href="/uploaded/board/<?=$arrBoardInfo["list"][0]["boardid"]?>/<?=$arrBoardArticle["files"][$i]['re_name']?>" download="<?=$arrBoardArticle["files"][$i]['ori_name']?>"><?=$arrBoardArticle["files"][$i]['ori_name']?></a></div>
-                </div>
                 <?php
                 }
                 }
@@ -161,6 +160,7 @@ if ($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"] == "/back
                     <?php
                 }
                 ?>
+                </div>
             </div>
             <!-- listPaging -->
             <div class="listPaging">
