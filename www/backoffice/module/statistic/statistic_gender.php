@@ -45,41 +45,48 @@ SetDisConn($dblink);
                         <tbody>
                         <?php
                         $ageRanges = [
-	                        '0~4', '5~9', '10~14', '15~19', '20~24', '25~29', '30~34', '35~39', '40~44', '45~49', '50~54', '55~59', '60~64', '65~69', '70~74', '75~79', '80세 이상', '미집계'
+                            '0~4', '5~9', '10~14', '15~19', '20~24', '25~29', '30~34', '35~39', '40~44', '45~49', '50~54', '55~59', '60~64', '65~69', '70~74', '75~79', '80세 이상', '미집계'
                         ];
 
                         $firstRow = true;
+                        $totalSum = 0;
+                        $maleSum = 0;
+                        $femaleSum = 0;
 
                         foreach ($ageRanges as $range) {
-	                        $total = 0;
-	                        $male = 0;
-	                        $female = 0;
+                            $total = 0;
+                            $male = 0;
+                            $female = 0;
 
-	                        foreach ($statistics as $table => $data) {
-		                        if (isset($data[$range])) {
-			                        $total += array_sum($data[$range]);
-			                        $male += isset($data[$range]['남자']) ? $data[$range]['남자'] : 0;
-			                        $female += isset($data[$range]['여자']) ? $data[$range]['여자'] : 0;
-		                        }
-	                        }
+                            foreach ($statistics as $table => $data) {
+                                if (isset($data[$range])) {
+                                    $total += array_sum($data[$range]);
+                                    $male += isset($data[$range]['남자']) ? $data[$range]['남자'] : 0;
+                                    $female += isset($data[$range]['여자']) ? $data[$range]['여자'] : 0;
+                                }
+                            }
 
-	                        echo '<tr>';
-	                        if ($firstRow) {
-		                        echo '<td rowspan="' . count($ageRanges) . '">연령</td>';
-		                        $firstRow = false;
-	                        }
-	                        echo '<td>' . $range . '</td>';
-	                        echo '<td>' . number_format($total) . '</td>';
-	                        echo '<td>' . number_format($male) . '</td>';
-	                        echo '<td>' . number_format($female) . '</td>';
-	                        echo '</tr>';
+                            echo '<tr>';
+                            if ($firstRow) {
+                                echo '<td rowspan="' . count($ageRanges) . '">연령</td>';
+                                $firstRow = false;
+                            }
+                            echo '<td>' . $range . '</td>';
+                            echo '<td>' . number_format($total) . '</td>';
+                            echo '<td>' . number_format($male) . '</td>';
+                            echo '<td>' . number_format($female) . '</td>';
+                            echo '</tr>';
+
+                            $totalSum += $total;
+                            $maleSum += $male;
+                            $femaleSum += $female;
                         }
                         ?>
                         <tr class="total">
                             <td colspan="2">총합</td>
-                            <td><?= number_format(array_sum(array_column($statistics, 'total'))) ?></td>
-                            <td><?= number_format(array_sum(array_column($statistics, '남자'))) ?></td>
-                            <td><?= number_format(array_sum(array_column($statistics, '여자'))) ?></td>
+                            <td><?= number_format($totalSum) ?></td>
+                            <td><?= number_format($maleSum) ?></td>
+                            <td><?= number_format($femaleSum) ?></td>
                         </tr>
                         </tbody>
                     </table>

@@ -359,7 +359,7 @@ if(!$_SESSION['uName']){
                             <div class="tit">성별<span>*</span></div>
                             <div class="baseInput flex_half">
                                 <div class="baseRadio"><input type="radio" name="gender" id="gnd1" value="M"><label for="gnd1">남</label></div>
-                                <div class="baseRadio"><input type="radio" name="gender" id="gnd2" value="F"><label for="gnd2">여</label></div>
+                                <div class="baseRadio"><input type="radio" name="" id="gnd2" value="F"><label for="gnd2">여</label></div>
                             </div>
                         </div>
                         <div class="line">

@@ -160,6 +160,13 @@
                                     </div>
                                 </div>
                                 <div class="info">
+                                    <div class="tit">대여시간/반납시간</div>
+                                    <div class="txt">
+                                        <?= isset($arrBoardApplicantsArticle["list"][0]["rental_start_time"]) ? $arrBoardApplicantsArticle["list"][0]["rental_start_time"] : $_POST["rental_start_time"] ?> ~
+                                        <?= isset($arrBoardApplicantsArticle["list"][0]["rental_end_time"]) ? $arrBoardApplicantsArticle["list"][0]["rental_end_time"] : $_POST["rental_end_time"] ?>
+                                    </div>
+                                </div>
+                                <div class="info">
                                     <div class="tit">대여금액</div>
                                     <div class="txt">
                                         <?= isset($arrBoardApplicantsArticle["list"][0]["totalamount"]) ? number_format($arrBoardApplicantsArticle["list"][0]["totalamount"]) : number_format($_POST["totalamount"]) ?>원
@@ -203,6 +210,10 @@
                                     <div class="txt"><?=$arrBoardList["list"][$i]['rental_start_date']?> ~ <?=$arrBoardList["list"][$i]['rental_end_date']?> (<?=$arrBoardList["list"][$i]['usage_day']?>일)</div>
                                 </div>
                                 <div class="info">
+                                    <div class="tit">대여시간/반납시간</div>
+                                    <div class="txt"><?=$arrBoardList["list"][$i]['rental_start_time']?> ~ <?=$arrBoardList["list"][$i]['rental_end_time']?></div>
+                                </div>
+                                <div class="info">
                                     <div class="tit">대여금액</div>
                                     <div class="txt"><?=number_format($arrBoardList["list"][$i]['totalamount'])?>원</div>
                                 </div>
@@ -220,6 +231,7 @@
                         <input type="hidden" id="user_level" name="user_level" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["LEVEL"]?>">
                         <input type="hidden" id="w_user" name="w_user" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]?>">
                         <input type="hidden" name="birthdate" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["BIRTH"]?>">
+                        <input type="hidden" id="gender" name="gender" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["GENDER"]?>">
                         <input type="hidden" name="usehtml" value="Y">
 
 		                <?php if (isset($_GET["idx"])): ?>
@@ -230,6 +242,8 @@
                             <input type="hidden" id="category2" name="category2" value="<?=$arrBoardArticle["list"][0]['category2']?>">
                             <input type="hidden" id="rental_start_date" name="rental_start_date" value="<?= isset($_POST["rental_start_date"]) ? $_POST["rental_start_date"] : (isset($arrBoardApplicantsArticle["list"][0]["rental_start_date"]) ? $arrBoardApplicantsArticle["list"][0]["rental_start_date"] : '') ?>">
                             <input type="hidden" id="rental_end_date" name="rental_end_date" value="<?= isset($_POST["rental_end_date"]) ? $_POST["rental_end_date"] : (isset($arrBoardApplicantsArticle["list"][0]["rental_end_date"]) ? $arrBoardApplicantsArticle["list"][0]["rental_end_date"] : '') ?>">
+                            <input type="hidden" id="rental_start_time" name="rental_start_time" value="<?= isset($_POST["rental_start_time"]) ? $_POST["rental_start_time"] : (isset($arrBoardApplicantsArticle["list"][0]["rental_start_time"]) ? $arrBoardApplicantsArticle["list"][0]["rental_start_time"] : '') ?>">
+                            <input type="hidden" id="rental_end_time" name="rental_end_time" value="<?= isset($_POST["rental_end_time"]) ? $_POST["rental_end_time"] : (isset($arrBoardApplicantsArticle["list"][0]["rental_end_time"]) ? $arrBoardApplicantsArticle["list"][0]["rental_end_time"] : '') ?>">
                             <input type="hidden" id="usage_time" name="usage_time" value="<?= isset($_POST["usage_time"]) ? $_POST["usage_time"] : (isset($arrBoardApplicantsArticle["list"][0]["usage_time"]) ? $arrBoardApplicantsArticle["list"][0]["usage_time"] : '') ?>">
                             <input type="hidden" id="usage_day" name="usage_day" value="<?= isset($_POST["usage_day"]) ? $_POST["usage_day"] : (isset($arrBoardApplicantsArticle["list"][0]["usage_day"]) ? $arrBoardApplicantsArticle["list"][0]["usage_day"] : '') ?>">
                             <input type="hidden" id="totalamountInput" name="totalamount" value="<?= isset($arrBoardApplicantsArticle["list"][0]['totalamount']) ? $arrBoardApplicantsArticle["list"][0]['totalamount'] : $_POST["totalamount"] ?>">
@@ -247,12 +261,13 @@
                                 <input type="hidden" name="items[<?=$i?>][category2]" value="<?=$arrBoardList["list"][$i]['category2']?>">
                                 <input type="hidden" name="items[<?=$i?>][rental_start_date]" value="<?=$arrBoardList["list"][$i]['rental_start_date']?>">
                                 <input type="hidden" name="items[<?=$i?>][rental_end_date]" value="<?=$arrBoardList["list"][$i]['rental_end_date']?>">
+                                <input type="hidden" name="items[<?=$i?>][rental_start_time]" value="<?=$arrBoardList["list"][$i]['rental_start_time']?>">
+                                <input type="hidden" name="items[<?=$i?>][rental_end_time]" value="<?=$arrBoardList["list"][$i]['rental_end_time']?>">
                                 <input type="hidden" id="usage_day" name="items[<?=$i?>][usage_day]" value="<?=$arrBoardList["list"][$i]["usage_day"]?>">
                                 <input type="hidden" id="totalamount" name="items[<?=$i?>][totalamount]" value="<?=$arrBoardList["list"][$i]['totalamount']?>">
                                 <input type="hidden" id="totalamountInput" name="totalamountInput" value="<?=$arrBoardList["list"][$i]['totalamount']?>">
                                 <input type="hidden" id="finalamountInput" name="finalamountInput" value="<?=$arrBoardList["list"][$i]['totalamount']?>>">
                                 <input type="hidden" id="discountamountInput" name="discountamountInput" value="0">
-                                <input type="hidden" id="gender" name="gender" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["GENDER"]?>">
                                 <!-- 기타 필요한 제품 정보들 -->
 			                <?php endfor; ?>
 		                <?php endif; ?>
@@ -464,7 +479,7 @@
                     <div class="info">
                         <div class="tit">총 대여금액</div>
                         <div class="txt" id="totalamount" name="totalamount">
-                            <?= isset($arrBoardApplicantsArticle["list"][0]['totalamount']) ? number_format($arrBoardApplicantsArticle["list"][0]['totalamount']) : number_format($_POST["totalamount"]) ?>원
+                            <?= isset($arrBoardApplicantsArticle["list"][0]['totalamount']) ? number_format($arrBoardApplicantsArticle["list"][0]['totalamount']) : (isset($_POST["totalamount"]) ? number_format($_POST["totalamount"]) :number_format($totalAmount)) ?>원
                         </div>
                     </div>
                     <div class="info">
@@ -476,7 +491,7 @@
                     <div class="info last">
                         <div class="tit">최종금액</div>
                         <div class="txt" id="finalamount" name="finalamount">
-                            <?= isset($arrBoardApplicantsArticle["list"][0]['finalamount']) ? number_format($arrBoardApplicantsArticle["list"][0]['finalamount']) : number_format($_POST["totalamount"]) ?>원
+                            <?= isset($arrBoardApplicantsArticle["list"][0]['totalamount']) ? number_format($arrBoardApplicantsArticle["list"][0]['totalamount']) : (isset($_POST["totalamount"]) ? number_format($_POST["totalamount"]) :number_format($totalAmount)) ?>원
                         </div>
                     </div>
                     <a href="javascript:void(0);" class="btnType1" onclick="if (validateForm()) { document.getElementById('enrollmentForm').submit(); }">대여 신청</a>

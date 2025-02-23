@@ -282,7 +282,7 @@ $arrCategory = array(
 			</div>
 			<div class="bdr_right">
                 <div class="btns">
-                    <a href="./board_<?=$arrBoardInfo["list"][0]["boardid"]?>_xls.php?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&sw=<?=$_REQUEST['sw']?>&sk=<?=$_REQUEST['sk']?>&user_level=<?=$_REQUEST['user_level']?>&s_date=<?=$_REQUEST['s_date']?>&e_date=<?=$_REQUEST['e_date']?>&status=<?=$_REQUEST['status']?>&page_size=<?=$_GET['page_size']?>&offset=<?=$_GET['offset']?>" class="excel" download>엑셀파일로 저장<span class="pc_vw"></span></a>
+                    <a href="./board_<?=$arrBoardInfo["list"][0]["boardid"]?>_xls.php?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&sw=<?=$_REQUEST['sw']?>&sk=<?=$_REQUEST['sk']?>&user_level=<?=$_REQUEST['user_level']?>&s_date=<?=$_REQUEST['s_date']?>&e_date=<?=$_REQUEST['e_date']?>&status=<?=$_REQUEST['status']?>&page_size=<?=$arrBoardInfo["list"][0]["scale"]?>&offset=<?=$_GET['offset']?>" class="excel" download>엑셀파일로 저장<span class="pc_vw"></span></a>
                 </div>
 				<div class="count">
 					<select name="page_size" onchange="document.form1.submit()"  style="width:60px;">

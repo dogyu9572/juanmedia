@@ -187,6 +187,10 @@
                                         <span class="tit">대여일/반납일</span>
                                         <span class="txt"><?=$arrBoardList["list"][$i]['rental_start_date']?> ~ <br class="mob" /><?=$arrBoardList["list"][$i]['rental_end_date']?></span>
                                     </div>
+                                    <div class="info">
+                                        <span class="tit">대여시간/반납시간</span>
+                                        <span class="txt"><?=$arrBoardList["list"][$i]['rental_start_time']?> ~ <br class="mob" /><?=$arrBoardList["list"][$i]['rental_end_time']?></span>
+                                    </div>
                                     <div class="info mob">
                                         <span class="tit">장비대여 금액</span>
                                         <span class="txt"><?=number_format($arrBoardList["list"][$i]['fee'])?>원(1일)</span>

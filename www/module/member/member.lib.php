@@ -289,7 +289,7 @@ function getMemberList($jb, $sw, $sk, $scale, $offset=0, $subQuery="", $orderBy=
 
 	if($total_rs > 0) {
 		// offset 유효성 검사
-		if(!isset($offset) || $offset < 0) {
+		if(!isset($offset) || $offset < 0 || $offset === '' || !is_numeric($offset)) {
 			$offset = 0;
 		}
 

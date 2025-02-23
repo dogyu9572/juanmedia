@@ -14,7 +14,7 @@ endif;
 $dblink = SetConn($_conf_db["main_db"]);
 
 $scale=0;
-$arrList = getXlsList($_GET['boardid'],  $_GET['sw'], $_GET['sk'], $_GET['page_size'], $_GET['offset']);
+$arrList = getBoardListBaseNFile($_GET['boardid'], $_GET["category"], $_GET['sw'], $_GET['sk'], $_GET['page_size'], $_GET['offset'],'', "admin");
 
 $arrAllCategory = getCategoryAll();
 

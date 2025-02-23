@@ -11,6 +11,10 @@ switch($thisPHPname){
 		$leftMenuClass[3] = "on";	break;
 	case 'statistic_place.php' :
 		$leftMenuClass[4] = "on";	break;
+    case 'statistic_video.php' :
+        $leftMenuClass[5] = "on";	break;
+    case 'statistic_media.php' :
+        $leftMenuClass[6] = "on";	break;
 }
 ?>
 <div class="aside">
@@ -25,7 +29,8 @@ switch($thisPHPname){
 					<a class="<?=$leftMenuClass[2]?>" href="/backoffice/module/statistic/statistic_edu.php">· 교육통계</a>
 					<a class="<?=$leftMenuClass[3]?>" href="/backoffice/module/statistic/statistic_equ.php">· 장비통계</a>
 					<a class="<?=$leftMenuClass[4]?>" href="/backoffice/module/statistic/statistic_place.php">· 공간통계</a>
-
+                    <a class="<?=$leftMenuClass[5]?>" href="/backoffice/module/statistic/statistic_video.php">· 상영회통계</a>
+                    <a class="<?=$leftMenuClass[6]?>" href="/backoffice/module/statistic/statistic_media.php">· 미디어체험통계</a>
 				</dd>
 			</dl>			
 		</div>

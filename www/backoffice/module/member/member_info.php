@@ -260,7 +260,7 @@ function inNumber(str){
                     <td>
                         <div class="inputs">
                             <label class="radio"><input type="radio" name="gender" value="M" <?=$arrInfo["list"][0]["gender"] == "M"?"checked":""?>><i></i>남</label>
-                            <label class="radio"><input type="radio" name="gender" value="W" <?=$arrInfo["list"][0]["gender"] == "W"?"checked":""?>><i></i>여</label>
+                            <label class="radio"><input type="radio" name="gender" value="F" <?=$arrInfo["list"][0]["gender"] == "F"?"checked":""?>><i></i>여</label>
                         </div>
                     </td>
                 </tr>

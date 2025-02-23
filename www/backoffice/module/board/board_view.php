@@ -59,7 +59,7 @@ include "./menu.php";
 //DB연결
 $dblink = SetConn($_conf_db["main_db"]);
 
-if($arrBoardInfo["total"] > 0){
+if($arrBoardInfo["total"] > 0 || $boardid=="equ_statistic"){
 	//카테고리 정보
 	if($arrBoardInfo["list"][0]["category"] !=""){
 		$arrBoardCategory = explode(",",$arrBoardInfo["list"][0]["category"]);
@@ -158,13 +158,18 @@ if($arrBoardInfo["total"] > 0){
 			if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] || $_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["LEVEL"] >= $arrBoardInfo["list"][0]["readlevel"]){
 				$arrBoardArticle = getBoardArticleView($arrBoardInfo["list"][0]["boardid"], $_GET["category"], $_GET["idx"],"read");
 
-				if($arrBoardArticle["total"] > 0){
+				if($arrBoardArticle["total"] > 0  || $boardid=="equ_statistic"){
 
 					//글잠금이 아니거나, 인증을 했거나, 관리자일 경우 글 보여줌
 					if($arrBoardArticle["list"][0]['uselock']!="Y" || $_SESSION[$_SITE["DOMAIN"]][$boardid."|".$_GET["idx"]]==TRUE || $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"]){
 						//댓글목록 가져오기
 						$arrCommentList = getCommentList($arrBoardInfo["list"][0]["boardid"], $arrBoardArticle["list"][0]['idx'], $scale, $_GET['offset2']);
-						include($_SITE["BOARD_SKIN"].$arrBoardInfo["list"][0]['skin']."/view.php");
+						if ($boardid == "equ_statistic") {
+							$arrBoardArticle = getBoardArticleView("equ", $_GET["category"], $_GET["idx"],"read");
+							include($_SITE["BOARD_SKIN"] . "equ/statistic_view.php");
+						} else {
+							include($_SITE["BOARD_SKIN"] . $arrBoardInfo["list"][0]['skin'] . "/view.php");
+						}
 					}else{
 						$_REQUEST[mode]="unlock";
 						include($_SITE["BOARD_SKIN"].$arrBoardInfo["list"][0]['skin']."/pass.php");
@@ -242,7 +247,12 @@ if($arrBoardInfo["total"] > 0){
 					if($arrBoardInfo["list"][0]["boardid"]=="trmcal"){	## 일정관리
 						$arrDoctorList = getBoardListBase("trmdoctor", "","","",0,0);
 					}
-					include($_SITE["BOARD_SKIN"].$arrBoardInfo["list"][0]['skin']."/list.php");
+					if ($boardid == "equ_statistic") {
+						$arrBoardList = getBoardListBaseNFile("equ", $_GET["category"], $_GET['sw'], $_GET['sk'], $arrBoardInfo["list"][0]["scale"], $_GET['offset'],'', "admin");
+						include($_SITE["BOARD_SKIN"] . "equ/statistic.php");
+					} else {
+						include($_SITE["BOARD_SKIN"] . $arrBoardInfo["list"][0]['skin'] . "/list.php");
+					}
 				 }
 				echo "</div>";
 			}else{

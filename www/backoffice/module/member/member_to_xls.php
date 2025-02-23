@@ -16,7 +16,8 @@ endif;
 // DB연결
 $dblink = SetConn ( $_conf_db ["main_db"] );
 
-$arrList = getMemberList( "",  mysqli_real_escape_string ( $GLOBALS ['dblink'], $_REQUEST ['sw'] ), mysqli_real_escape_string ( $GLOBALS ['dblink'], $_REQUEST ['sk'] ), $_REQUEST ['page_size'], $_REQUEST ['offset'] , $subQuery);
+$arrList = getMemberList( mysqli_real_escape_string ( $GLOBALS ['dblink'], $_REQUEST ['jb'] ),  mysqli_real_escape_string ( $GLOBALS ['dblink'], $_REQUEST ['sw'] ), mysqli_real_escape_string ( $GLOBALS ['dblink'], $_REQUEST ['sk'] ), $_REQUEST ['page_size'], $_REQUEST ['offset'] , "", " order by user_editdt desc, idx desc");
+
 // _DEBUG($arrList);
 
 $arrAllCategory = getCategoryAll();

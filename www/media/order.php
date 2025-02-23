@@ -301,6 +301,7 @@
             <input type="hidden" id="w_user" name="w_user" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]?>">
             <input type="hidden" id="media_idx" name="media_idx" value="<?=$arrBoardArticle["list"][0]['idx']?>">
             <input type="hidden" name="birthdate" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["BIRTH"]?>">
+            <input type="hidden" name="birthdate" value="<?=$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["BIRTH"]?>">
             <input type="hidden" name="usehtml" value="Y">
             <?php if($_REQUEST['mode']=="reply"):?>
                 <input type="hidden" name="evnMode" value="reply">

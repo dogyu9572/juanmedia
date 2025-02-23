@@ -1,169 +1,169 @@
 <?if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoffice/module/board/board_view.php"){
-if(!in_array("biz_manage",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTH"]) && $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]!="ROOT"):
-	jsMsg("권한이 없습니다.");
-	jsHistory("-1");
-endif;
+    if(!in_array("biz_manage",$_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["AUTH"]) && $_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["GRADE"]!="ROOT"):
+        jsMsg("권한이 없습니다.");
+        jsHistory("-1");
+    endif;
 ###################################################### 관리자 페이지 ######################################################?>
-<script language="javascript">
-function fileDownload(boardid,b_idx,idx){
-	obj = window.open("/module/board/download.php?boardid="+boardid+"&b_idx="+b_idx+"&idx="+idx,"urlCheck","width=100,height=100,menubars=0, toolbars=0");
-}
-<?
-//댓글 사용시
-if($arrBoardInfo["list"][0]["usememo"]=="Y"){
-?>
-function checkComment(frm){
-	<?if(!$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]){?>
-	alert("로그인을 하셔야 댓글입력이 가능합니다.");
-	return false;
+    <script language="javascript">
+        function fileDownload(boardid,b_idx,idx){
+            obj = window.open("/module/board/download.php?boardid="+boardid+"&b_idx="+b_idx+"&idx="+idx,"urlCheck","width=100,height=100,menubars=0, toolbars=0");
+        }
+        <?
+        //댓글 사용시
+        if($arrBoardInfo["list"][0]["usememo"]=="Y"){
+        ?>
+        function checkComment(frm){
+            <?if(!$_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["ID"]){?>
+            alert("로그인을 하셔야 댓글입력이 가능합니다.");
+            return false;
 
-	<?}else if($_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["LEVEL"] >= $arrBoardInfo["list"][0]["replylevel"]){?>
-	if (frm.comment.value==""){
-		alert("댓글 내용을 입력해 주세요.");
-		frm.comment.focus();
-		return false;
-	}
-	<?}else{?>
+            <?}else if($_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["LEVEL"] >= $arrBoardInfo["list"][0]["replylevel"]){?>
+            if (frm.comment.value==""){
+                alert("댓글 내용을 입력해 주세요.");
+                frm.comment.focus();
+                return false;
+            }
+            <?}else{?>
 
-	alert("<?=$arrLevelInfo[$arrBoardInfo["list"][0]["replylevel"]]?> 이상 댓글입력이 가능합니다.");
-	return false;
-	<?}?>
-}
-<?
-}
-//댓글 사용시
-?>
-</script>
-<script type="text/javascript">
-<!--
-function boardDel(val){
-	if(confirm("삭제 하시겠습니까?")) {
-		$.post("/module/board/ajax_board_del.php", { evnMode: "delete", g_idx: val, boardid: "<?=$arrBoardInfo["list"][0]["boardid"]?>" },
-		function(data){
-			//alert(data);
-			doLoad();
-		});
-	}
-}
-function doLoad(){
-	location.href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=list&sk=<?=$_GET['sk']?>&sw=<?=$_GET['sw']?>&offset=<?=$_GET['offset']?>&category=<?=$_GET['category']?>";
-}
-//-->
-</script>
-<div id="admin-content">
-	<h2 class="admin-title"><?=$arrBoardInfo["list"][0]["boardname"]?> - View</h2>
-	<table class="viewTable">
-		<colgroup><col width="110px" /><col width="*" /><col width="110px" /><col width="20%" /><col width="110px" /><col width="20%" /></colgroup>
-		<thead>
-		<tr>
-			<th colspan="6"><?=stripslashes($arrBoardArticle["list"][0]['subject'])?></th>
-		</tr>
-		</thead>
-		<tbody>
-			<tr>
-			<th>작성자</th>
-			<td><?=stripslashes($arrBoardArticle["list"][0]['name'])?></td>
-			<th>조회수</th>
-			<td colspan="3"><?=number_format($arrBoardArticle["list"][0]['hit'])?></td>
-		</tr>
-		<tr>
-			<td class="ct" colspan="6">
-                <div style="min-height:100px;"><?=htmlspecialchars_decode($arrBoardArticle["list"][0]['contents'])?></div>
-			</td>
-		</tr>
-		<tr>
-			<th>키워드</th>
-			<td colspan="5">
-			<?=stripslashes($arrBoardArticle["list"][0]['etc_1'])?>
-			</td>
-		</tr>
-			<tr>
-			<th>첨부파일</th>
-			<td colspan="5" class="file">
-			<?for($i=0;$i<$arrBoardArticle["total_files"];$i++){?>
-			<a href="javascript:void(0);" onclick="fileDownload('<?=$arrBoardArticle["files"][$i]['boardid']?>','<?=$arrBoardArticle["files"][$i]['b_idx']?>','<?=$arrBoardArticle["files"][$i]['idx']?>');"><?=$arrBoardArticle["files"][$i]['ori_name']?></a>
-			<?}?>
-			<?if($i<1){?>
-			첨부파일이 없습니다.
-			<?}?>
-			</td>
-		</tr>
-			<tr>
-			<th>등록일시</th>
-			<td><?=$arrBoardArticle["list"][0]['wdate']?></td>
-			<th>등록IP</th>
-			<td colspan="3"><?=stripslashes($arrBoardArticle["list"][0]['ip'])?></td>
-		</tr>
-		</tbody>
-	</table>
-	<p class="btn_l">
-		<a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=list&sk=<?=$_GET['sk']?>&sw=<?=$_GET['sw']?>&offset=<?=$_GET['offset']?>&category=<?=$_GET['category']?>" class="btn_box act_list">목록보기</a>
-	</p>
-	<p class="btn_r">
-		<a href="javascript:void(0);" onclick="boardDel(<?=$arrBoardArticle["list"][0]['idx']?>)" class="btn_box black act_del">삭제</a>
-		<a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=modify&idx=<?=$arrBoardArticle["list"][0]['idx']?>&category=<?=$_GET['category']?>" class="btn_box act_upt">수정</a>
-	</p>
-	<dl class="more_list">
-		<dt>이전글</dt><dd><?if($arrBoardArticle["prev"]["idx"] !=0):?><a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=view&idx=<?=$arrBoardArticle["prev"]["idx"]?>&category=<?=$_GET['category']?>" title="<?=$arrBoardArticle["prev"]["subject"]?>" class="act_view"><?=text_cut($arrBoardArticle["prev"]["subject"],$arrBoardInfo["list"][0]['subjectcut'])?></a><?else:?><a href="javascript:void(0);">이전글이 없습니다.</a><?endif;?></dd>
-		<dt>다음글</dt><dd><?if($arrBoardArticle["next"]["idx"] !=0):?><a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=view&idx=<?=$arrBoardArticle["next"]["idx"]?>&category=<?=$_GET['category']?>" title="<?=$arrBoardArticle["next"]["subject"]?>" class="act_view"><?=text_cut($arrBoardArticle["next"]["subject"],$arrBoardInfo["list"][0]['subjectcut'])?></a><?else:?><a href="javascript:void(0);">다음글이 없습니다.</a><?endif;?></dd>
-	</dl>
-</div>
+            alert("<?=$arrLevelInfo[$arrBoardInfo["list"][0]["replylevel"]]?> 이상 댓글입력이 가능합니다.");
+            return false;
+            <?}?>
+        }
+        <?
+        }
+        //댓글 사용시
+        ?>
+    </script>
+    <script type="text/javascript">
+        <!--
+        function boardDel(val){
+            if(confirm("삭제 하시겠습니까?")) {
+                $.post("/module/board/ajax_board_del.php", { evnMode: "delete", g_idx: val, boardid: "<?=$arrBoardInfo["list"][0]["boardid"]?>" },
+                    function(data){
+                        //alert(data);
+                        doLoad();
+                    });
+            }
+        }
+        function doLoad(){
+            location.href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=list&sk=<?=$_GET['sk']?>&sw=<?=$_GET['sw']?>&offset=<?=$_GET['offset']?>&category=<?=$_GET['category']?>";
+        }
+        //-->
+    </script>
+    <div id="admin-content">
+        <h2 class="admin-title"><?=$arrBoardInfo["list"][0]["boardname"]?> - View</h2>
+        <table class="viewTable">
+            <colgroup><col width="110px" /><col width="*" /><col width="110px" /><col width="20%" /><col width="110px" /><col width="20%" /></colgroup>
+            <thead>
+            <tr>
+                <th colspan="6"><?=stripslashes($arrBoardArticle["list"][0]['subject'])?></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th>작성자</th>
+                <td><?=stripslashes($arrBoardArticle["list"][0]['name'])?></td>
+                <th>조회수</th>
+                <td colspan="3"><?=number_format($arrBoardArticle["list"][0]['hit'])?></td>
+            </tr>
+            <tr>
+                <td class="ct" colspan="6">
+                    <div style="min-height:100px;"><?=htmlspecialchars_decode($arrBoardArticle["list"][0]['contents'])?></div>
+                </td>
+            </tr>
+            <tr>
+                <th>키워드</th>
+                <td colspan="5">
+                    <?=stripslashes($arrBoardArticle["list"][0]['etc_1'])?>
+                </td>
+            </tr>
+            <tr>
+                <th>첨부파일</th>
+                <td colspan="5" class="file">
+                    <?for($i=0;$i<$arrBoardArticle["total_files"];$i++){?>
+                        <a href="javascript:void(0);" onclick="fileDownload('<?=$arrBoardArticle["files"][$i]['boardid']?>','<?=$arrBoardArticle["files"][$i]['b_idx']?>','<?=$arrBoardArticle["files"][$i]['idx']?>');"><?=$arrBoardArticle["files"][$i]['ori_name']?></a>
+                    <?}?>
+                    <?if($i<1){?>
+                        첨부파일이 없습니다.
+                    <?}?>
+                </td>
+            </tr>
+            <tr>
+                <th>등록일시</th>
+                <td><?=$arrBoardArticle["list"][0]['wdate']?></td>
+                <th>등록IP</th>
+                <td colspan="3"><?=stripslashes($arrBoardArticle["list"][0]['ip'])?></td>
+            </tr>
+            </tbody>
+        </table>
+        <p class="btn_l">
+            <a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=list&sk=<?=$_GET['sk']?>&sw=<?=$_GET['sw']?>&offset=<?=$_GET['offset']?>&category=<?=$_GET['category']?>" class="btn_box act_list">목록보기</a>
+        </p>
+        <p class="btn_r">
+            <a href="javascript:void(0);" onclick="boardDel(<?=$arrBoardArticle["list"][0]['idx']?>)" class="btn_box black act_del">삭제</a>
+            <a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=modify&idx=<?=$arrBoardArticle["list"][0]['idx']?>&category=<?=$_GET['category']?>" class="btn_box act_upt">수정</a>
+        </p>
+        <dl class="more_list">
+            <dt>이전글</dt><dd><?if($arrBoardArticle["prev"]["idx"] !=0):?><a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=view&idx=<?=$arrBoardArticle["prev"]["idx"]?>&category=<?=$_GET['category']?>" title="<?=$arrBoardArticle["prev"]["subject"]?>" class="act_view"><?=text_cut($arrBoardArticle["prev"]["subject"],$arrBoardInfo["list"][0]['subjectcut'])?></a><?else:?><a href="javascript:void(0);">이전글이 없습니다.</a><?endif;?></dd>
+            <dt>다음글</dt><dd><?if($arrBoardArticle["next"]["idx"] !=0):?><a href="<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=view&idx=<?=$arrBoardArticle["next"]["idx"]?>&category=<?=$_GET['category']?>" title="<?=$arrBoardArticle["next"]["subject"]?>" class="act_view"><?=text_cut($arrBoardArticle["next"]["subject"],$arrBoardInfo["list"][0]['subjectcut'])?></a><?else:?><a href="javascript:void(0);">다음글이 없습니다.</a><?endif;?></dd>
+        </dl>
+    </div>
 <?}else{###################################################### 사용자 페이지 ######################################################?>
-	<?php
-	$dayTypeMap = [
-		'weekly' => '매주',
-		'biweekly' => '격주',
-		'other' => '기타'
-	];
+    <?php
+    $dayTypeMap = [
+        'weekly' => '매주',
+        'biweekly' => '격주',
+        'other' => '기타'
+    ];
 
-	$arrEquUser = getBoardArticleView("equ_applicants", "", "", "", "  equ_idx = " . $arrBoardArticle["list"][0]['idx']);
+    $arrEquUser = getBoardArticleView("equ_applicants", "", "", "", "  equ_idx = " . $arrBoardArticle["list"][0]['idx']);
 
-	$imgsrc = "/uploaded/board/".$arrBoardInfo["list"][0]["boardid"]."/".$arrBoardArticle["files"][0]['re_name'];
+    $imgsrc = "/uploaded/board/".$arrBoardInfo["list"][0]["boardid"]."/".$arrBoardArticle["files"][0]['re_name'];
 
-	$arrBoardHolidayList = getBoardListBaseNFile("holiday", $_GET["category"], $_GET['sw'], $_GET['sk'], $arrBoardInfo["list"][0]["scale"], $_GET['offset'], $_GET['reply']);
+    $arrBoardHolidayList = getBoardListBaseNFile("holiday", $_GET["category"], $_GET['sw'], $_GET['sk'], $arrBoardInfo["list"][0]["scale"], $_GET['offset'], $_GET['reply']);
 
-	$holidayWeekdays = [];
-	$specificHolidayDates = [];
+    $holidayWeekdays = [];
+    $specificHolidayDates = [];
 
-	foreach ($arrBoardHolidayList['list'] as $holiday) {
-		// 요일 정보 처리
-		if (!empty($holiday['weekdays'])) {
-			$weekdays = explode('|', $holiday['weekdays']);
-			$holidayWeekdays = array_merge($holidayWeekdays, $weekdays);
-		}
+    foreach ($arrBoardHolidayList['list'] as $holiday) {
+        // 요일 정보 처리
+        if (!empty($holiday['weekdays'])) {
+            $weekdays = explode('|', $holiday['weekdays']);
+            $holidayWeekdays = array_merge($holidayWeekdays, $weekdays);
+        }
 
-		// 특정 날짜 범위 처리
-		if (!empty($holiday['holly_start_date']) && !empty($holiday['holly_end_date'])) {
-			$startDate = strtotime($holiday['holly_start_date']);
-			$endDate = strtotime($holiday['holly_end_date']);
+        // 특정 날짜 범위 처리
+        if (!empty($holiday['holly_start_date']) && !empty($holiday['holly_end_date'])) {
+            $startDate = strtotime($holiday['holly_start_date']);
+            $endDate = strtotime($holiday['holly_end_date']);
 
-			for ($date = $startDate; $date <= $endDate; $date = strtotime('+1 day', $date)) {
-				$specificHolidayDates[] = date('Y-m-d', $date);
-			}
-		}
-	}
+            for ($date = $startDate; $date <= $endDate; $date = strtotime('+1 day', $date)) {
+                $specificHolidayDates[] = date('Y-m-d', $date);
+            }
+        }
+    }
 
-	// 중복 제거
-	$holidayWeekdays = array_unique($holidayWeekdays);
-	$specificHolidayDates = array_unique($specificHolidayDates);
+    // 중복 제거
+    $holidayWeekdays = array_unique($holidayWeekdays);
+    $specificHolidayDates = array_unique($specificHolidayDates);
 
-	// JavaScript 배열로 변환
-	$holidayWeekdaysJson = json_encode($holidayWeekdays);
-	$specificHolidayDatesJson = json_encode($specificHolidayDates);
+    // JavaScript 배열로 변환
+    $holidayWeekdaysJson = json_encode($holidayWeekdays);
+    $specificHolidayDatesJson = json_encode($specificHolidayDates);
 
-	// 대여 정보를 JSON으로 변환
-	$rentalData = [];
-	foreach ($arrEquUser["list"] as $rental) {
-		$rentalData[] = [
-			'start_date' => $rental['rental_start_date'],
-			'end_date' => $rental['rental_end_date'],
-			'start_time' => $rental['rental_start_time'],
-			'end_time' => $rental['rental_end_time']
-		];
-	}
-	$rentalDataJson = json_encode($rentalData);
-	$stockQuantity = $arrBoardArticle["list"][0]["stock_quantity"];
-	?>
+    // 대여 정보를 JSON으로 변환
+    $rentalData = [];
+    foreach ($arrEquUser["list"] as $rental) {
+        $rentalData[] = [
+            'start_date' => $rental['rental_start_date'],
+            'end_date' => $rental['rental_end_date'],
+            'start_time' => $rental['rental_start_time'],
+            'end_time' => $rental['rental_end_time']
+        ];
+    }
+    $rentalDataJson = json_encode($rentalData);
+    $stockQuantity = $arrBoardArticle["list"][0]["stock_quantity"];
+    ?>
     <form id="rentalForm"  method="POST">
         <input type="hidden" name="rental_date" id="rental_date">
         <input type="hidden" name="totalamount" id="total_price_hidden">
@@ -172,6 +172,7 @@ function doLoad(){
         <input type="hidden" name="category1" id="category1" value="<?=$arrBoardArticle["list"][0]['category1']?>">
         <input type="hidden" name="category2" id="category2" value="<?=$arrBoardArticle["list"][0]['category2']?>">
         <input type="hidden" name="usage_day" id="usage_time_day">
+        <input type="hidden" name="etc_1" id="etc_1" value="Y">
         <input  type="hidden" name="equ_number" value="<?=$arrBoardArticle["list"][0]['equ_number']?>">
         <input  type="hidden" name="equ_idx" value="<?=$arrBoardArticle["list"][0]["idx"]?>">
         <!--        <input type="hidden" name="boardid" value="equ_applicants_cart">-->
@@ -187,23 +188,23 @@ function doLoad(){
                 <div class="eqDetail detailInfo">
                     <div class="img">
                         <div class="swiper-wrapper">
-							<?php
-							foreach ($arrBoardArticle["files"] as $file) {
-								$imgsrc = "/uploaded/board/" . $arrBoardInfo["list"][0]["boardid"] . "/" . $file['re_name'];
-								echo '<div class="swiper-slide"><img src="' . $imgsrc . '" alt="섬네일"></div>';
-							}
-							?>
+                            <?php
+                            foreach ($arrBoardArticle["files"] as $file) {
+                                $imgsrc = "/uploaded/board/" . $arrBoardInfo["list"][0]["boardid"] . "/" . $file['re_name'];
+                                echo '<div class="swiper-slide"><img src="' . $imgsrc . '" alt="섬네일"></div>';
+                            }
+                            ?>
                         </div>
                         <div class="swiper-pagination"></div>
                     </div>
                     <div class="textCont">
                         <div class="pointBox">
-							<?php if (!empty(getCategoryName($arrBoardArticle["list"][0]['category1']))): ?>
+                            <?php if (!empty(getCategoryName($arrBoardArticle["list"][0]['category1']))): ?>
                                 <div class="tit"><?=getCategoryName($arrBoardArticle["list"][0]['category1'])?></div>
-							<?php endif; ?>
-							<?php if (!empty(getCategoryName($arrBoardArticle["list"][0]['category2']))): ?>
+                            <?php endif; ?>
+                            <?php if (!empty(getCategoryName($arrBoardArticle["list"][0]['category2']))): ?>
                                 <div class="tit"><?=getCategoryName($arrBoardArticle["list"][0]['category2'])?></div>
-							<?php endif; ?>
+                            <?php endif; ?>
                             <div class="tit green"><?=stripslashes($arrBoardArticle["list"][0]['usage_level'])?></div>
                         </div>
                         <div class="title"><?=stripslashes($arrBoardArticle["list"][0]['subject'])?></div>
@@ -217,25 +218,25 @@ function doLoad(){
                                 <li>
                                     <div class="tit">대여 / 반납시간</div>
                                     <div class="txt">
-										<?= $arrSetInfo["list"][0]["equ_rental_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_rental_start_time"] : '00:00' ?>
+                                        <?= $arrSetInfo["list"][0]["equ_rental_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_rental_start_time"] : '00:00' ?>
                                         ~
-										<?= $arrSetInfo["list"][0]["equ_rental_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_rental_end_time"] : '00:00' ?>
+                                        <?= $arrSetInfo["list"][0]["equ_rental_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_rental_end_time"] : '00:00' ?>
                                         /
-										<?= $arrSetInfo["list"][0]["equ_return_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_return_start_time"] : '00:00' ?>
+                                        <?= $arrSetInfo["list"][0]["equ_return_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_return_start_time"] : '00:00' ?>
                                         ~
-										<?= $arrSetInfo["list"][0]["equ_return_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_return_end_time"] : '00:00' ?>
+                                        <?= $arrSetInfo["list"][0]["equ_return_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_return_end_time"] : '00:00' ?>
                                     </div>
                                 </li>
                                 <li>
                                     <div class="tit">점심 / 저녁시간</div>
                                     <div class="txt">
-										<?= $arrSetInfo["list"][0]["equ_lunch_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_lunch_start_time"] : '00:00' ?>
+                                        <?= $arrSetInfo["list"][0]["equ_lunch_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_lunch_start_time"] : '00:00' ?>
                                         ~
-										<?= $arrSetInfo["list"][0]["equ_lunch_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_lunch_end_time"] : '00:00' ?>
+                                        <?= $arrSetInfo["list"][0]["equ_lunch_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_lunch_end_time"] : '00:00' ?>
                                         /
-										<?= $arrSetInfo["list"][0]["equ_dinner_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_dinner_start_time"] : '00:00' ?>
+                                        <?= $arrSetInfo["list"][0]["equ_dinner_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_dinner_start_time"] : '00:00' ?>
                                         ~
-										<?= $arrSetInfo["list"][0]["equ_dinner_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_dinner_end_time"] : '00:00' ?>
+                                        <?= $arrSetInfo["list"][0]["equ_dinner_use"] == 'Y' ? $arrSetInfo["list"][0]["equ_dinner_end_time"] : '00:00' ?>
                                     </div>
                                 </li>
                             </ul>
@@ -279,7 +280,7 @@ function doLoad(){
 
                         <div class="totalPrice">
                             <div class="nameDate">
-								<?=stripslashes($arrBoardArticle["list"][0]['subject'])?> / <?=stripslashes($arrBoardArticle["list"][0]['equ_number'])?>  / 0일
+                                <?=stripslashes($arrBoardArticle["list"][0]['subject'])?> / <?=stripslashes($arrBoardArticle["list"][0]['equ_number'])?>  / 0일
                             </div>
                             <div class="price">0원</div>
                             <a href="javascript:void(0)" class="close"><img src="/images/ico_smClose.svg" alt="닫기"></a>
@@ -733,7 +734,6 @@ function doLoad(){
                     document.getElementById('rental_end_time').focus();
                     return;
                 }
-
 
                 if (!checkAvailability(startDate, endDate, startTime, endTime)) {
                     alert("선택하신 기간에 대여 가능한 수량을 초과하였습니다.");

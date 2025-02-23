@@ -22,7 +22,7 @@ $activeMonths = [];
 for ($i = 12; $i >= 1; $i--) {
 	// 각 월별로 모든 데이터 항목을 검사
 	$hasData = false;
-	$tables = ['edu', 'edu_applicants', 'equ', 'equ_applicants', 'place', 'place_applicants'];
+	$tables = ['edu', 'edu_applicants', 'equ', 'equ_applicants', 'place', 'place_applicants', 'video', 'video_applicants', 'media', 'media_applicants'];
 
 	foreach ($tables as $table) {
 		if (getCount($monthlyCounts, $table, $i) > 0) {
@@ -83,7 +83,7 @@ SetDisConn($dblink);
                         <tbody>
 						<?php foreach ($activeMonths as $i): ?>
                             <tr>
-                                <td rowspan="6"><?= $i ?>월</td>
+                                <td rowspan="10"><?= $i ?>월</td>
                                 <td rowspan="2">교육</td>
                                 <td>프로그램 수(개)</td>
                                 <td><?= getCount($monthlyCounts, 'edu', $i) ?></td>
@@ -94,21 +94,39 @@ SetDisConn($dblink);
                             </tr>
                             <tr>
                                 <td rowspan="2">장비대여</td>
-                                <td>대여건 수(일)</td>
+                                <td>대여건수(일)</td>
                                 <td><?= getCount($monthlyCounts, 'equ', $i) ?></td>
                             </tr>
                             <tr>
-                                <td>장비이용자 수(명)</td>
+                                <td>장비이용자수(명)</td>
                                 <td><?= getCount($monthlyCounts, 'equ_applicants', $i) ?></td>
                             </tr>
                             <tr>
                                 <td rowspan="2">공간대여</td>
-                                <td>대여건 수(일)</td>
+                                <td>대여건수(일)</td>
                                 <td><?= getCount($monthlyCounts, 'place', $i) ?></td>
                             </tr>
                             <tr>
-                                <td>공간이용자 수(명)</td>
+                                <td>공간이용자수(명)</td>
                                 <td><?= getCount($monthlyCounts, 'place_applicants', $i) ?></td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2">상영회</td>
+                                <td>건수</td>
+                                <td><?= getCount($monthlyCounts, 'video', $i) ?></td>
+                            </tr>
+                            <tr>
+                                <td>상영회인원수(명)</td>
+                                <td><?= getCount($monthlyCounts, 'video_applicants', $i) ?></td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2">미디어체험</td>
+                                <td>건수</td>
+                                <td><?= getCount($monthlyCounts, 'media', $i) ?></td>
+                            </tr>
+                            <tr>
+                                <td>체험인원수(명)</td>
+                                <td><?= getCount($monthlyCounts, 'media_applicants', $i) ?></td>
                             </tr>
 						<?php endforeach; ?>
                         <tr>
