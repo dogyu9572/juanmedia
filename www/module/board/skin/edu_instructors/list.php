@@ -208,7 +208,24 @@ function fnCatNo(){
     $("#cat_no").val(cat_no);
 }
 //-->
+function downloadExcel() {
+    var form = document.form1;
+    var params = new URLSearchParams();
+
+    // form의 모든 input 요소를 순회하며 파라미터 수집
+    for(var i = 0; i < form.elements.length; i++) {
+        var element = form.elements[i];
+        if(element.name && element.value) {
+            params.append(element.name, element.value);
+        }
+    }
+
+    // 기존 URL 파라미터와 합치기
+    var baseUrl = './board_<?=$arrBoardInfo["list"][0]["boardid"]?>_xls.php';
+    window.location.href = baseUrl + '?' + params.toString();
+}
 </script>
+
 <?php
 $arrCategory = array(
 	"1" => "신청완료",
@@ -282,7 +299,7 @@ $arrCategory = array(
 			</div>
 			<div class="bdr_right">
                 <div class="btns">
-                    <a href="./board_<?=$arrBoardInfo["list"][0]["boardid"]?>_xls.php?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&sw=<?=$_REQUEST['sw']?>&sk=<?=$_REQUEST['sk']?>&user_level=<?=$_REQUEST['user_level']?>&s_date=<?=$_REQUEST['s_date']?>&e_date=<?=$_REQUEST['e_date']?>&status=<?=$_REQUEST['status']?>&page_size=<?=$arrBoardInfo["list"][0]["scale"]?>&offset=<?=$_GET['offset']?>" class="excel" download>엑셀파일로 저장<span class="pc_vw"></span></a>
+                    <a href="javascript:void(0);" onclick="downloadExcel();" class="excel">엑셀파일로 저장<span class="pc_vw"></span></a>
                 </div>
 				<div class="count">
 					<select name="page_size" onchange="document.form1.submit()"  style="width:60px;">

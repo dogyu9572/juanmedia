@@ -9,50 +9,53 @@ if ($_GET['boardid'] == '') {
 }
 
 if($_GET['boardid'] == 'all') {
-    // 전체 아이템 수 계산을 위해 먼저 모든 데이터 가져오기
-    $allEduList = getBoardListBaseNFile("edu", $_GET["category"], $_GET['sw'], $_GET['sk'], 99999, 0, $_GET['reply']);
-    $allVideoList = getBoardListBaseNFile("video", $_GET["category"], $_GET['sw'], $_GET['sk'], 99999, 0, $_GET['reply']);
+	// 전체 아이템 수 계산을 위해 먼저 모든 데이터 가져오기
+	$allEduList = getBoardListBaseNFile("edu", $_GET["category"], $_GET['sw'], $_GET['sk'], $scale, $offset, $_GET['reply']);
+	$allVideoList = getBoardListBaseNFile("video", $_GET["category"], $_GET['sw'], $_GET['sk'], $scale, $offset, $_GET['reply']);
 
-    // numeric key만 추출
-    $eduItems = array_filter($allEduList["list"], 'is_numeric', ARRAY_FILTER_USE_KEY);
-    $videoItems = array_filter($allVideoList["list"], 'is_numeric', ARRAY_FILTER_USE_KEY);
+	// 배열 초기화
+	$combinedList = [];
 
-    // 타입 추가
-    foreach($eduItems as &$item) $item['type'] = 'edu';
-    foreach($videoItems as &$item) $item['type'] = 'video';
-
-	// 전체 리스트 합치기 및 정렬
-	if (!empty($eduItems) && !empty($videoItems)) {
-		$allItems = array_merge($eduItems, $videoItems);
-	} elseif (!empty($eduItems)) {
-		$allItems = $eduItems;
-	} elseif (!empty($videoItems)) {
-		$allItems = $videoItems;
-	} else {
-		$allItems = array();
+	// 교육 데이터 처리
+	if (!empty($allEduList["list"]) && is_array($allEduList["list"])) {
+		foreach ($allEduList["list"] as $key => $item) {
+			if (is_numeric($key)) {  // 숫자 키만 처리
+				$item['type'] = 'edu';
+				$combinedList[] = $item;
+			}
+		}
 	}
 
-    usort($allItems, function($a, $b) {
-        return strtotime($b['wdate']) - strtotime($a['wdate']);
-    });
+	// 상영회 데이터 처리
+	if (!empty($allVideoList["list"]) && is_array($allVideoList["list"])) {
+		foreach ($allVideoList["list"] as $key => $item) {
+			if (is_numeric($key)) {  // 숫자 키만 처리
+				$item['type'] = 'video';
+				$combinedList[] = $item;
+			}
+		}
+	}
 
-    // 전체 아이템 수
-    $totalItems = count($allItems);
+	// 날짜 기준으로 정렬
+	usort($combinedList, function($a, $b) {
+		return strtotime($b['wdate']) - strtotime($a['wdate']);
+	});
 
-    // 현재 페이지용 아이템 추출
-    $combinedList = array_slice($allItems, $offset, $scale);
+	// 전체 아이템 수 계산
+	$totalItems = count($combinedList);
 } else {
-    // 기존 개별 게시판 리스트 가져오기
-    $arrBoardEduList = getBoardListBaseNFile("edu", $_GET["category"], $_GET['sw'], $_GET['sk'], $scale, $offset, $_GET['reply']);
-    $arrBoardVideoList = getBoardListBaseNFile("video", $_GET["category"], $_GET['sw'], $_GET['sk'], $scale, $offset, $_GET['reply']);
+	// 기존 개별 게시판 리스트 가져오기
+	$arrBoardEduList = getBoardListBaseNFile("edu", $_GET["category"], $_GET['sw'], $_GET['sk'], $scale, $offset, $_GET['reply']);
+	$arrBoardVideoList = getBoardListBaseNFile("video", $_GET["category"], $_GET['sw'], $_GET['sk'], $scale, $offset, $_GET['reply']);
 }
 
+// 총 개수 계산
 if ($_GET['boardid'] == 'all') {
-    $totalCount = $totalItems;
+	$totalCount = $totalItems;
 } elseif ($_GET['boardid'] == 'edu') {
-    $totalCount = $arrBoardEduList["list"]["total"] ;
+	$totalCount = $arrBoardEduList["list"]["total"];
 } elseif ($_GET['boardid'] == 'video') {
-    $totalCount = $arrBoardVideoList['list']['total'];
+	$totalCount = $arrBoardVideoList['list']['total'];
 }
 
 $arrBoardHolidayList = getBoardListBaseNFile("holiday", $_GET["category"], $_GET['sw'], $_GET['sk'], $arrBoardInfo["list"][0]["scale"], $_GET['offset'], $_GET['reply']); // 휴관일 리스트 가져오기

@@ -163,6 +163,7 @@
     }
     $rentalDataJson = json_encode($rentalData);
     $stockQuantity = $arrBoardArticle["list"][0]["stock_quantity"];
+
     ?>
     <form id="rentalForm"  method="POST">
         <input type="hidden" name="rental_date" id="rental_date">
@@ -487,57 +488,6 @@
                 }
             });
 
-            // 대여 정보와 재고 수량
-            const rentalData = <?= $rentalDataJson ?>;
-            const stockQuantity = <?= $stockQuantity ?>;
-
-            // 날짜 범위가 겹치는지 확인하는 함수
-            function isDateOverlap(start1, end1, start2, end2) {
-                return start1 <= end2 && end1 >= start2;
-            }
-
-            // 특정 기간 동안의 대여 수량을 확인하는 함수
-            function checkAvailability(startDate, endDate, startTime, endTime) {
-                let maxOverlap = 0;
-
-                // 선택한 날짜들을 배열로 생성
-                const selectedDates = [];
-                let currentDate = new Date(startDate);
-                while (currentDate <= new Date(endDate)) {
-                    // 휴관일이 아닌 경우만 포함
-                    if (!isHoliday(currentDate)[0]) {
-                        selectedDates.push(new Date(currentDate));
-                    }
-                    currentDate.setDate(currentDate.getDate() + 1);
-                }
-
-                // 각 날짜별로 겹치는 대여 건수 확인
-                selectedDates.forEach(date => {
-                    let overlapCount = 0;
-                    const dateStr = date.toLocaleDateString('en-CA');
-
-                    rentalData.forEach(rental => {
-                        if (isDateOverlap(
-                            dateStr,
-                            dateStr,
-                            rental.start_date,
-                            rental.end_date
-                        )) {
-                            // 시간이 겹치는지 확인
-                            if (
-                                (startTime <= rental.end_time && endTime >= rental.start_time) ||
-                                (rental.start_time <= endTime && rental.end_time >= startTime)
-                            ) {
-                                overlapCount++;
-                            }
-                        }
-                    });
-                    maxOverlap = Math.max(maxOverlap, overlapCount);
-                });
-
-                return maxOverlap < stockQuantity;
-            }
-
             function updateTotalPrice() {
                 const rentalStartDate = $("#st1").datepicker("getDate");
                 const rentalEndDate = $("#ed").datepicker("getDate");
@@ -545,22 +495,6 @@
                 const rentalEndTime = $("#rental_end_time").val();
 
                 if (rentalStartDate && rentalEndDate && rentalStartTime && rentalEndTime) {
-                    // 재고 수량 체크
-                    const isAvailable = checkAvailability(
-                        rentalStartDate.toLocaleDateString('en-CA'),
-                        rentalEndDate.toLocaleDateString('en-CA'),
-                        rentalStartTime,
-                        rentalEndTime
-                    );
-
-                    if (!isAvailable) {
-                        alert("선택하신 기간에 대여 가능한 수량을 초과하였습니다.");
-                        $("#ed").datepicker("setDate", null);
-                        $("#rental_start_time").val("");
-                        $("#rental_end_time").val("");
-                        return;
-                    }
-
                     // 시작 날짜와 시간을 결합
                     const startDateTime = new Date(rentalStartDate);
                     const [startHour] = rentalStartTime.split(':').map(Number);
@@ -590,10 +524,6 @@
                         currentDate.setDate(currentDate.getDate() + 1);
                     }
 
-                    // 24시간 기준으로 올림 계산
-                    const timeDiff = Math.abs(endDateTime.getTime() - startDateTime.getTime());
-                    const totalDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
                     // 실제 대여 가능 일수가 0이면 경고
                     if (rentalDays === 0) {
                         alert("선택한 기간에 대여 가능한 날짜가 없습니다.");
@@ -616,47 +546,95 @@
                 }
             }
 
-            // 대여 가능 여부를 확인하는 함수
             function checkRentalAvailability(newStartDate, newEndDate, newStartTime, newEndTime, existingRentals, stockQuantity) {
-                // 새로운 대여 시작/종료 시간 생성
-                const newStart = new Date(`${newStartDate}T${newStartTime}`);
-                const newEnd = new Date(`${newEndDate}T${newEndTime}`);
+                // 기존 예약 데이터 가공
+                const simplifiedRentals = [];
 
-                // 각 날짜별 대여 수량을 추적하는 맵 생성
-                const rentalCountByDate = new Map();
+                if (Array.isArray(existingRentals)) {
+                    for (const rental of existingRentals) {
+                        // 필요한 데이터만 추출
+                        if (rental && rental.rental_start_date && rental.rental_end_date &&
+                            rental.rental_start_time && rental.rental_end_time) {
 
-                // 새로운 대여 기간의 각 날짜에 대해
-                const currentDate = new Date(newStart);
-                while (currentDate <= newEnd) {
-                    const dateStr = currentDate.toISOString().split('T')[0];
-                    rentalCountByDate.set(dateStr, 0);
-                    currentDate.setDate(currentDate.getDate() + 1);
-                }
-
-                // 기존 대여 정보를 확인하여 각 날짜별 대여 수량 계산
-                for (const rental of existingRentals) {
-                    const rentalStart = new Date(`${rental.rental_start_date}T${rental.rental_start_time}`);
-                    const rentalEnd = new Date(`${rental.rental_end_date}T${rental.rental_end_time}`);
-
-                    // 기존 대여가 새로운 대여 기간과 겹치는지 확인
-                    if (!(rentalEnd < newStart || rentalStart > newEnd)) {
-                        const current = new Date(rentalStart);
-                        while (current <= rentalEnd) {
-                            const dateStr = current.toISOString().split('T')[0];
-                            if (rentalCountByDate.has(dateStr)) {
-                                rentalCountByDate.set(dateStr, rentalCountByDate.get(dateStr) + 1);
-                            }
-                            current.setDate(current.getDate() + 1);
+                            simplifiedRentals.push({
+                                start_date: rental.rental_start_date,
+                                end_date: rental.rental_end_date,
+                                start_time: rental.rental_start_time,
+                                end_time: rental.rental_end_time
+                            });
                         }
                     }
                 }
 
-                // 각 날짜에 대해 재고 수량을 초과하는지 확인
-                for (const [date, count] of rentalCountByDate) {
-                    if (count >= stockQuantity) {
+                // 새로운 대여 시작/종료 시간 생성
+                const newStart = new Date(`${newStartDate}T${newStartTime}`);
+                const newEnd = new Date(`${newEndDate}T${newEndTime}`);
+
+                // 각 시간대별 대여 수량을 저장할 객체
+                const timeSlots = {};
+
+                // 새 예약 기간의 모든 시간대 초기화
+                let currentTime = new Date(newStart);
+                while (currentTime < newEnd) {
+                    const dateStr = currentTime.toISOString().split('T')[0];
+                    const hourStr = currentTime.getHours().toString().padStart(2, '0') + ":00";
+                    const timeKey = `${dateStr}_${hourStr}`;
+
+                    // 각 시간대별 대여 카운트 초기화
+                    timeSlots[timeKey] = 0;
+
+                    // 1시간 추가
+                    currentTime = new Date(currentTime.getTime() + 60 * 60 * 1000);
+                }
+
+                // 모든 기존 예약에 대해 - 가공된 데이터 사용
+                for (const rental of simplifiedRentals) {
+                    try {
+                        const rentalStart = new Date(`${rental.start_date}T${rental.start_time}`);
+                        const rentalEnd = new Date(`${rental.end_date}T${rental.end_time}`);
+
+                        // 날짜가 유효한지 확인
+                        if (isNaN(rentalStart.getTime()) || isNaN(rentalEnd.getTime())) {
+                            console.log('유효하지 않은 날짜/시간 형식:', rental);
+                            continue;
+                        }
+
+                        // 기존 예약과 새 예약이 겹치는지 확인
+                        if (!(rentalEnd <= newStart || rentalStart >= newEnd)) {
+                            // 시간대별로 처리
+                            let checkTime = new Date(Math.max(rentalStart.getTime(), newStart.getTime()));
+                            const endCheckTime = new Date(Math.min(rentalEnd.getTime(), newEnd.getTime()));
+
+                            while (checkTime < endCheckTime) {
+                                const dateStr = checkTime.toISOString().split('T')[0];
+                                const hourStr = checkTime.getHours().toString().padStart(2, '0') + ":00";
+                                const timeKey = `${dateStr}_${hourStr}`;
+
+                                // 해당 시간대의 대여 카운트 증가
+                                if (timeKey in timeSlots) {
+                                    timeSlots[timeKey]++;
+                                } else {
+                                    console.log(`시간대 ${timeKey}가 초기화되지 않았습니다.`);
+                                }
+
+                                // 1시간 추가
+                                checkTime = new Date(checkTime.getTime() + 60 * 60 * 1000);
+                            }
+                        }
+                    } catch (error) {
+                        console.error('예약 처리 중 오류 발생:', error, rental);
+                        continue;
+                    }
+                }
+
+
+                // 각 시간대별로 재고 초과 여부 확인
+                for (const timeKey in timeSlots) {
+                    if (timeSlots[timeKey] >= stockQuantity) {
+                        const [date, time] = timeKey.split('_');
                         return {
                             available: false,
-                            message: `${date} 날짜에 대여 가능한 수량(${stockQuantity}개)을 초과했습니다.`
+                            message: `${date} ${time}에 대여 가능한 수량(${stockQuantity}개)이 없습니다.`
                         };
                     }
                 }
@@ -667,14 +645,40 @@
                 };
             }
 
-// 폼 제출 전 유효성 검사 함수
-            function validateRentalForm() {
+            // submitRentalForm 함수 수정
+            window.submitRentalForm = function(mode) {
+                // 로그인/권한 체크
+                if (<?= $_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["LEVEL"] ?> == 6) {
+                    alert("정지 회원은 신청 불가능 합니다.");
+                    return;
+                }
+
+                // 필수 입력값 체크
                 const startDate = document.getElementById('st1').value;
                 const endDate = document.getElementById('ed').value;
                 const startTime = document.getElementById('rental_start_time').value;
                 const endTime = document.getElementById('rental_end_time').value;
 
-                // PHP에서 전달받은 기존 대여 정보와 재고 수량을 JavaScript 변수로 변환
+                if (!startDate) {
+                    alert('대여일을 선택해 주세요.');
+                    return;
+                }
+                if (!endDate) {
+                    alert('반납일을 선택해 주세요.');
+                    return;
+                }
+                if (!startTime) {
+                    alert('대여 방문시간을 선택해 주세요.');
+                    document.getElementById('rental_start_time').focus();
+                    return;
+                }
+                if (!endTime) {
+                    alert('반납 방문시간을 선택해 주세요.');
+                    document.getElementById('rental_end_time').focus();
+                    return;
+                }
+
+                // 대여 가능 여부 체크
                 const existingRentals = <?= json_encode($arrEquUser['list'] ?? []) ?>;
                 const stockQuantity = <?= $arrBoardArticle["list"][0]["stock_quantity"] ?>;
 
@@ -689,64 +693,15 @@
 
                 if (!availability.available) {
                     alert(availability.message);
-                    return false;
-                }
-
-                return true;
-            }
-
-            // 폼 제출 관련 함수
-            window.submitRentalForm = function(mode) {
-                // 대여/반납 시간 체크
-                const startTime = document.getElementById('rental_start_time').value;
-                const endTime = document.getElementById('rental_end_time').value;
-                const startDate = document.getElementById('st1').value;
-                const endDate = document.getElementById('ed').value;
-
-                if (!validateRentalForm()) {
-                    return;
-                }
-                /* if (<?= $arrEduUser["total"] ?> >= <?= $arrSetInfo["list"][0]["equ_max_rental_count"] ?>) {
-                    alert("최대 대여 개수를 초과 하였습니다.");
-                    return;
-                }*/
-                if (<?= $_SESSION[$_SITE["DOMAIN"]]["MEMBER"]["LEVEL"] ?> == 6 ) {
-                    alert("정지 회원은 신청 불가능 합니다.");
-                    return;
-                }
-                if (!document.getElementById('st1').value) {
-                    alert('대여일을 선택해 주세요.');
-                    return;
-                }
-                if (!document.getElementById('ed').value) {
-                    alert('반납일을 선택해 주세요.');
                     return;
                 }
 
-                if (!startTime) {
-                    alert('대여 방문시간을 선택해 주세요.');
-                    document.getElementById('rental_start_time').focus();
-                    return;
-                }
-
-                if (!endTime) {
-                    alert('반납 방문시간을 선택해 주세요.');
-                    document.getElementById('rental_end_time').focus();
-                    return;
-                }
-
-                if (!checkAvailability(startDate, endDate, startTime, endTime)) {
-                    alert("선택하신 기간에 대여 가능한 수량을 초과하였습니다.");
-                    return;
-                }
-
+                // 폼 제출
                 const form = document.getElementById('rentalForm');
-                if (mode === 'cart_write') {
-                    actionUrl = `<?=$_SERVER["PHP_SELF"]?>?boardid=equ_applicants_cart&mode=${mode}`;
-                }
-                else {
-                    actionUrl = `<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=${mode}&idx=<?=$arrBoardArticle["list"][0]['idx']?>`;
-                }
+                const actionUrl = mode === 'cart_write'
+                    ? `<?=$_SERVER["PHP_SELF"]?>?boardid=equ_applicants_cart&mode=${mode}`
+                    : `<?=$_SERVER["PHP_SELF"]?>?boardid=<?=$arrBoardInfo["list"][0]["boardid"]?>&mode=${mode}&idx=<?=$arrBoardArticle["list"][0]['idx']?>`;
+
                 form.action = actionUrl;
                 form.submit();
             };

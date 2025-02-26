@@ -54,9 +54,12 @@ $arrCategory = array(
 );
 
 $arrEtc_3 = array(
-    "edu" => "교육",
-    "equ" => "장비",
-    "place" => "공간",
+	"edu" => "교육",
+	"equ" => "장비",
+	"place" => "공간",
+	"video" => "상영회",
+	"media" => "미디어체험",
+	"member" => "회원관리",
 );
 
 for ($i = 0; $i < $arrList["list"]["total"]; $i++) {
