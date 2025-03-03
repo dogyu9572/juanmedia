@@ -717,6 +717,10 @@
             }
         });
 
+        if (totalMembers >= 10) {
+            document.getElementById('exp5').disabled = true;
+        }
+
         // 체크박스 이벤트 설정
         checkboxes.forEach(checkbox => {
             checkbox.onclick = function() {

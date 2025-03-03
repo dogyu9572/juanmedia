@@ -105,15 +105,21 @@ foreach ($rentalData as $rental) {
                 $slot_start = trim($slot_start);
                 $slot_end = trim($slot_end);
 
+                // 시작일과 종료일이 같은 경우 (당일 대여)
+                if ($start_date->format('Y-m-d') === $end_date->format('Y-m-d')) {
+                    if ($slot_start >= $start_time && $slot_start < $end_time) {
+                        $rentalCount[$day][$time]--;
+                    }
+                }
                 // 첫째 날인 경우
-                if ($current_date->format('Y-m-d') === $start_date->format('Y-m-d')) {
+                else if ($current_date->format('Y-m-d') === $start_date->format('Y-m-d')) {
                     if ($slot_start >= $start_time) {
                         $rentalCount[$day][$time]--;
                     }
                 }
                 // 마지막 날인 경우
                 else if ($current_date->format('Y-m-d') === $end_date->format('Y-m-d')) {
-                    if ($slot_start < $end_time || $slot_end <= $end_time) {
+                    if ($slot_start < $end_time) {
                         $rentalCount[$day][$time]--;
                     }
                 }

@@ -45,7 +45,7 @@ $EXCEL_TXT = "
     <td>등록일</td>
 </tr>";
 
-for ($i = 0; $i < $arrList["total"]; $i++) {
+for ($i = 0; $i < $arrList["list"]["total"]; $i++) {
     $dayTypeMap = [
         'weekly' => '매주',
         'biweekly' => '격주',

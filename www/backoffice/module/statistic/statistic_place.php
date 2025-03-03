@@ -187,13 +187,37 @@ $statistics = getPlaceStatistics($year);
 										<td><?= number_format($monthData['소계']['amounts']['할인']) ?></td>
 										<td><?= number_format($monthData['소계']['amounts']['유료+지원']) ?></td>
 									</tr>
-									<tr class="month-total">
-										<td colspan="2">합</td>
-										<td colspan="5"><?= array_sum($monthData['소계']['counts']) ?>건</td>
-										<td colspan="5"><?= array_sum($monthData['소계']['times']) ?>시간</td>
-										<td colspan="5"><?= array_sum($monthData['소계']['people']) ?>명</td>
-										<td colspan="5"><?= number_format(array_sum($monthData['소계']['amounts'])) ?>원</td>
-									</tr>
+                                    <tr class="month-total">
+                                        <td colspan="2">합</td>
+                                        <td colspan="5"><?=
+                                            $monthData['소계']['counts']['유료'] +
+                                            $monthData['소계']['counts']['교육'] +
+                                            $monthData['소계']['counts']['지원'] +
+                                            $monthData['소계']['counts']['할인'] +
+                                            $monthData['소계']['counts']['유료+지원']
+                                            ?>건</td>
+                                        <td colspan="5"><?=
+                                            $monthData['소계']['times']['유료'] +
+                                            $monthData['소계']['times']['교육'] +
+                                            $monthData['소계']['times']['지원'] +
+                                            $monthData['소계']['times']['할인'] +
+                                            $monthData['소계']['times']['유료+지원']
+                                            ?>시간</td>
+                                        <td colspan="5"><?=
+                                            $monthData['소계']['people']['유료'] +
+                                            $monthData['소계']['people']['교육'] +
+                                            $monthData['소계']['people']['지원'] +
+                                            $monthData['소계']['people']['할인'] +
+                                            $monthData['소계']['people']['유료+지원']
+                                            ?>명</td>
+                                        <td colspan="5"><?= number_format(
+                                                $monthData['소계']['amounts']['유료'] +
+                                                $monthData['소계']['amounts']['교육'] +
+                                                $monthData['소계']['amounts']['지원'] +
+                                                $monthData['소계']['amounts']['할인'] +
+                                                $monthData['소계']['amounts']['유료+지원']
+                                            ) ?>원</td>
+                                    </tr>
 								<?php endif;
 							endif;
 						endfor;
@@ -205,13 +229,37 @@ $statistics = getPlaceStatistics($year);
 				<?php if (isset($statistics['연간총계'])): ?>
 					<div class="bdr_list tac mt-20">
 						<table>
-							<tr class="year-total">
-								<td colspan="4"><?= $year ?>년 총합</td>
-								<td colspan="5"><?= array_sum($statistics['연간총계']['counts']) ?>건</td>
-								<td colspan="5"><?= array_sum($statistics['연간총계']['times']) ?>시간</td>
-								<td colspan="5"><?= array_sum($statistics['연간총계']['people']) ?>명</td>
-								<td colspan="5"><?= number_format(array_sum($statistics['연간총계']['amounts'])) ?>원</td>
-							</tr>
+                            <tr class="year-total">
+                                <td colspan="4"><?= $year ?>년 총합</td>
+                                <td colspan="5"><?=
+                                    $statistics['연간총계']['counts']['유료'] +
+                                    $statistics['연간총계']['counts']['교육'] +
+                                    $statistics['연간총계']['counts']['지원'] +
+                                    $statistics['연간총계']['counts']['할인'] +
+                                    $statistics['연간총계']['counts']['유료+지원']
+                                    ?>건</td>
+                                <td colspan="5"><?=
+                                    $statistics['연간총계']['times']['유료'] +
+                                    $statistics['연간총계']['times']['교육'] +
+                                    $statistics['연간총계']['times']['지원'] +
+                                    $statistics['연간총계']['times']['할인'] +
+                                    $statistics['연간총계']['times']['유료+지원']
+                                    ?>시간</td>
+                                <td colspan="5"><?=
+                                    $statistics['연간총계']['people']['유료'] +
+                                    $statistics['연간총계']['people']['교육'] +
+                                    $statistics['연간총계']['people']['지원'] +
+                                    $statistics['연간총계']['people']['할인'] +
+                                    $statistics['연간총계']['people']['유료+지원']
+                                    ?>명</td>
+                                <td colspan="5"><?= number_format(
+                                        $statistics['연간총계']['amounts']['유료'] +
+                                        $statistics['연간총계']['amounts']['교육'] +
+                                        $statistics['연간총계']['amounts']['지원'] +
+                                        $statistics['연간총계']['amounts']['할인'] +
+                                        $statistics['연간총계']['amounts']['유료+지원']
+                                    ) ?>원</td>
+                            </tr>
 						</table>
 					</div>
 				<?php endif; ?>

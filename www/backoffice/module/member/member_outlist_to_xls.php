@@ -51,7 +51,7 @@ $EXCEL_TXT = "
 </tr>
 ";
 
-for ($i = 0; $i < $arrList["total"]; $i++) {
+for ($i = 0; $i < $arrList["list"]["total"]; $i++) {
     if ($arrList['list'][$i]['before'] == 'Y') {
         $user_name = base64_decode($arrList['list'][$i]['user_name']);
         $mobile = '="' . base64_decode($arrList['list'][$i]['mobile']) . '"';

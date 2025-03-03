@@ -178,7 +178,7 @@ $imgsrc = "/uploaded/board/video/".$arrBoardvideoArticle["files"][0]['re_name'];
             <div class="popTit">취소사유</div>
             <form name="form1" method="post" action="/module/board/board_evn.php" >
                 <input type="hidden" name="boardid" value="<?=$arrBoardInfo["list"][0]["boardid"]?>">
-                <input type="hidden" name="returnURL" value="/mypage/detailvideo.php?idx=<?=$arrBoardArticle["list"][0]["idx"]?>">
+                <input type="hidden" name="returnURL" value="/mypage/detailVideo.php?idx=<?=$arrBoardArticle["list"][0]["idx"]?>">
                 <input type="hidden" name="idx" value="<?=$arrBoardArticle["list"][0]["idx"]?>">
                 <input type="hidden" name="evnMode" value="cancel">
                 <div class="cancelBox">
@@ -199,7 +199,7 @@ $imgsrc = "/uploaded/board/video/".$arrBoardvideoArticle["files"][0]['re_name'];
 <!-- 결제금액팝업 -->
 <form name="form2"  method="post" action="/module/board/board_evn.php" ENCTYPE="multipart/form-data" onsubmit="return frmSubmit(this);">
     <input type="hidden" name="boardid" value="payment">
-    <input type="hidden" name="returnURL" value="/mypage/detailvideo.php?idx=<?=$arrBoardArticle["list"][0]["idx"]?>">
+    <input type="hidden" name="returnURL" value="/mypage/detailVideo.php?idx=<?=$arrBoardArticle["list"][0]["idx"]?>">
     <input type="hidden" name="evnMode" value="write">
     <input type="hidden" name="board_type" value="video">
     <input type="hidden" name="type_idx" value="<?=$arrBoardArticle["list"][0]["idx"]?>">

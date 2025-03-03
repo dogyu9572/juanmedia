@@ -50,7 +50,7 @@ $EXCEL_TXT = "
     <td>등록일</td>
 ";
 
-for ($i = 0; $i < $arrList["total"]; $i++) {
+for ($i = 0; $i < $arrList["list"]["total"]; $i++) {
     $categories = explode('|', $arrList["list"][$i]['category']);
     $categoryNames = array_map(function($categoryId) use ($arrAllCategory) {
         return htmlspecialchars($arrAllCategory[$categoryId], ENT_QUOTES, 'UTF-8');
@@ -83,7 +83,7 @@ for ($i = 0; $i < $arrList["total"]; $i++) {
 </tr>
 ";
 
-    for ($i = 0; $i < $arrList["total"]; $i++) {
+    for ($i = 0; $i < $arrList["list"]["total"]; $i++) {
         $user_level = $arrayLevel[$arrList["list"][$i]['user_level']];
         $EXCEL_TXT .= "
     <tr>

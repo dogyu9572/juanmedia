@@ -51,7 +51,7 @@ $EXCEL_TXT = "
     <th>비고</th>
 ";
 
-for ($i = 0; $i < $arrList["total"]; $i++) {
+for ($i = 0; $i < $arrList["list"]["total"]; $i++) {
     $categories = explode('|', $arrList["list"][$i]['category']);
     $categoryNames = array_map(function($categoryId) use ($arrAllCategory) {
         return htmlspecialchars($arrAllCategory[$categoryId], ENT_QUOTES, 'UTF-8');

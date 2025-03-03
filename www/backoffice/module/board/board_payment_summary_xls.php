@@ -49,7 +49,7 @@ $EXCEL_TXT = "
 </tr>
 ";
 
-for ($i = 0; $i < $arrList["total"]; $i++) {
+for ($i = 0; $i < $arrList["list"]["total"]; $i++) {
     $EXCEL_TXT .= "
     <tr>
         <td>" . ($i + 1) . "</td>

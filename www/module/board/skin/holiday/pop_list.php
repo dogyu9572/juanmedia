@@ -259,6 +259,7 @@ if($_SESSION[$_SITE["DOMAIN"]]["ADMIN"]["ID"] && $_SERVER["PHP_SELF"]=="/backoff
                             }
                             $categoryString = implode(', ', $categoryNames);
 
+                            $weekdays = "";
                             if ($arrBoardList["list"][$i]['weekdays'])$weekdays = "매주 ";
 	                        $weekdays .= str_replace('|', '/', $arrBoardList["list"][$i]['weekdays']);
 

@@ -22,7 +22,7 @@ switch($thisPHPname){
 	<div class="in_scroll">
 		<div class="menu">			
 			<dl class="on">
-				<dt>접속통계 <i></i></dt>
+				<dt>통계 <i></i></dt>
 				<dd style="display:block;"><!-- 열려있는 페이지에는 dd에 display:block 해주세요. -->
 					<a class="<?=$leftMenuClass[0]?>" href="/backoffice/module/statistic/statistic_total.php">· 전체통계</a>
 					<a class="<?=$leftMenuClass[1]?>" href="/backoffice/module/statistic/statistic_gender.php">· 성별/나이통계</a>

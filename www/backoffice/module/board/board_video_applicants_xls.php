@@ -51,7 +51,7 @@ $EXCEL_TXT = "
 </tr>
 ";
 
-for ($i = 0; $i < $arrList["total"]; $i++) {
+for ($i = 0; $i < $arrList["list"]["total"]; $i++) {
     $user_level = $arrayLevel[$arrList["list"][$i]['user_level']];
     $EXCEL_TXT .= "
     <tr>

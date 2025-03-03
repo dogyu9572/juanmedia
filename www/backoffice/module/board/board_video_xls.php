@@ -42,7 +42,7 @@ $EXCEL_TXT = "
     <td>등록일</td>
 ";
 
-for ($i = 0; $i < $arrList["total"]; $i++) {
+for ($i = 0; $i < $arrList["list"]["total"]; $i++) {
 
     $EXCEL_TXT .= "
     <tr>

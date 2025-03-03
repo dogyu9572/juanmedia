@@ -162,12 +162,30 @@ $statistics = getEquipmentStatistics($year);
 										<td><?= $monthData['소계']['people']['할인'] ?></td>
 										<td><?= $monthData['소계']['people']['유료+지원'] ?></td>
 									</tr>
-									<tr class="month-total">
-										<td colspan="3">합</td>
-										<td colspan="5"><?= array_sum($monthData['소계']['counts']) ?>건</td>
-										<td colspan="5"><?= array_sum($monthData['소계']['days']) ?>일</td>
-										<td colspan="5"><?= array_sum($monthData['소계']['people']) ?>명</td>
-									</tr>
+                                    <tr class="month-total">
+                                        <td colspan="2">합</td>
+                                        <td colspan="5"><?=
+                                            $monthData['소계']['counts']['유료'] +
+                                            $monthData['소계']['counts']['교육'] +
+                                            $monthData['소계']['counts']['지원'] +
+                                            $monthData['소계']['counts']['할인'] +
+                                            $monthData['소계']['counts']['유료+지원']
+                                            ?>건</td>
+                                        <td colspan="5"><?=
+                                            $monthData['소계']['days']['유료'] +
+                                            $monthData['소계']['days']['교육'] +
+                                            $monthData['소계']['days']['지원'] +
+                                            $monthData['소계']['days']['할인'] +
+                                            $monthData['소계']['days']['유료+지원']
+                                            ?>일</td>
+                                        <td colspan="5"><?=
+                                            $monthData['소계']['people']['유료'] +
+                                            $monthData['소계']['people']['교육'] +
+                                            $monthData['소계']['people']['지원'] +
+                                            $monthData['소계']['people']['할인'] +
+                                            $monthData['소계']['people']['유료+지원']
+                                            ?>명</td>
+                                    </tr>
 								<?php endif;
 							endif;
 						endfor;
@@ -179,12 +197,30 @@ $statistics = getEquipmentStatistics($year);
 				<?php if (isset($statistics['연간총계'])): ?>
 					<div class="bdr_list tac mt-20">
 						<table>
-							<tr class="year-total">
-								<td colspan="3"><?= $year ?>년 총합</td>
-								<td colspan="5"><?= array_sum($statistics['연간총계']['counts']) ?>건</td>
-								<td colspan="5"><?= array_sum($statistics['연간총계']['days']) ?>일</td>
-								<td colspan="5"><?= array_sum($statistics['연간총계']['people']) ?>명</td>
-							</tr>
+                            <tr class="year-total">
+                                <td colspan="3"><?= $year ?>년 총합</td>
+                                <td colspan="5"><?=
+                                    $statistics['연간총계']['counts']['유료'] +
+                                    $statistics['연간총계']['counts']['교육'] +
+                                    $statistics['연간총계']['counts']['지원'] +
+                                    $statistics['연간총계']['counts']['할인'] +
+                                    $statistics['연간총계']['counts']['유료+지원']
+                                    ?>건</td>
+                                <td colspan="5"><?=
+                                    $statistics['연간총계']['days']['유료'] +
+                                    $statistics['연간총계']['days']['교육'] +
+                                    $statistics['연간총계']['days']['지원'] +
+                                    $statistics['연간총계']['days']['할인'] +
+                                    $statistics['연간총계']['days']['유료+지원']
+                                    ?>일</td>
+                                <td colspan="5"><?=
+                                    $statistics['연간총계']['people']['유료'] +
+                                    $statistics['연간총계']['people']['교육'] +
+                                    $statistics['연간총계']['people']['지원'] +
+                                    $statistics['연간총계']['people']['할인'] +
+                                    $statistics['연간총계']['people']['유료+지원']
+                                    ?>명</td>
+                            </tr>
 						</table>
 					</div>
 				<?php endif; ?>
