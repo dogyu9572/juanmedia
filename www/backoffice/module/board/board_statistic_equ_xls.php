@@ -122,12 +122,30 @@ for ($month = 12; $month >= 1; $month--) {
 
 			// 월별 합계
 			$EXCEL_TXT .= "
-            <tr>
-                <td colspan='3' style='background-color:#eee; font-weight:bold;'>합</td>
-                <td colspan='5' style='background-color:#eee; font-weight:bold;'>" . array_sum($statistics[$month]['소계']['counts']) . "건</td>
-                <td colspan='5' style='background-color:#eee; font-weight:bold;'>" . array_sum($statistics[$month]['소계']['days']) . "일</td>
-                <td colspan='5' style='background-color:#eee; font-weight:bold;'>" . array_sum($statistics[$month]['소계']['people']) . "명</td>
-            </tr>";
+	        <tr>
+	            <td colspan='3' style='background-color:#eee; font-weight:bold;'>합</td>
+	            <td colspan='5' style='background-color:#eee; font-weight:bold;'>" . (
+						$statistics[$month]['소계']['counts']['유료'] +
+						$statistics[$month]['소계']['counts']['교육'] +
+						$statistics[$month]['소계']['counts']['지원'] +
+						$statistics[$month]['소계']['counts']['할인'] +
+						$statistics[$month]['소계']['counts']['유료+지원']
+					) . "건</td>
+	            <td colspan='5' style='background-color:#eee; font-weight:bold;'>" . (
+						$statistics[$month]['소계']['days']['유료'] +
+						$statistics[$month]['소계']['days']['교육'] +
+						$statistics[$month]['소계']['days']['지원'] +
+						$statistics[$month]['소계']['days']['할인'] +
+						$statistics[$month]['소계']['days']['유료+지원']
+					) . "일</td>
+	            <td colspan='5' style='background-color:#eee; font-weight:bold;'>" . (
+						$statistics[$month]['소계']['people']['유료'] +
+						$statistics[$month]['소계']['people']['교육'] +
+						$statistics[$month]['소계']['people']['지원'] +
+						$statistics[$month]['소계']['people']['할인'] +
+						$statistics[$month]['소계']['people']['유료+지원']
+					) . "명</td>
+	        </tr>";
 		}
 	}
 }
@@ -137,9 +155,27 @@ if (isset($statistics['연간총계'])) {
 	$EXCEL_TXT .= "
     <tr>
         <td colspan='3' style='background-color:#e0e0e0; font-weight:bold;'>{$year}년 총합</td>
-        <td colspan='5' style='background-color:#e0e0e0; font-weight:bold;'>" . array_sum($statistics['연간총계']['counts']) . "건</td>
-        <td colspan='5' style='background-color:#e0e0e0; font-weight:bold;'>" . array_sum($statistics['연간총계']['days']) . "일</td>
-        <td colspan='5' style='background-color:#e0e0e0; font-weight:bold;'>" . array_sum($statistics['연간총계']['people']) . "명</td>
+        <td colspan='5' style='background-color:#e0e0e0; font-weight:bold;'>" . (
+			$statistics['연간총계']['counts']['유료'] +
+			$statistics['연간총계']['counts']['교육'] +
+			$statistics['연간총계']['counts']['지원'] +
+			$statistics['연간총계']['counts']['할인'] +
+			$statistics['연간총계']['counts']['유료+지원']
+		) . "건</td>
+        <td colspan='5' style='background-color:#e0e0e0; font-weight:bold;'>" . (
+			$statistics['연간총계']['days']['유료'] +
+			$statistics['연간총계']['days']['교육'] +
+			$statistics['연간총계']['days']['지원'] +
+			$statistics['연간총계']['days']['할인'] +
+			$statistics['연간총계']['days']['유료+지원']
+		) . "일</td>
+        <td colspan='5' style='background-color:#e0e0e0; font-weight:bold;'>" . (
+			$statistics['연간총계']['people']['유료'] +
+			$statistics['연간총계']['people']['교육'] +
+			$statistics['연간총계']['people']['지원'] +
+			$statistics['연간총계']['people']['할인'] +
+			$statistics['연간총계']['people']['유료+지원']
+		) . "명</td>
     </tr>";
 }
 

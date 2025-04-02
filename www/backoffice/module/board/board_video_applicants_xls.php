@@ -60,7 +60,7 @@ for ($i = 0; $i < $arrList["list"]["total"]; $i++) {
         <td>" . htmlspecialchars($arrList["list"][$i]['name'], ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars($user_level, ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars($arrList["list"][$i]['w_user'], ENT_QUOTES, 'UTF-8') . "</td>
-        <td>" . htmlspecialchars('="' . $arrList["list"][$i]['tel'] . '"', ENT_QUOTES, 'UTF-8') . "</td>
+        <td>'" . htmlspecialchars($arrList["list"][$i]['tel'], ENT_QUOTES, 'UTF-8') . "</td>
         <td>" . htmlspecialchars($arrList["list"][$i]['birthdate'], ENT_QUOTES, 'UTF-8') . "</td>     
         <td>" . htmlspecialchars(getCategoryName($arrList["list"][$i]['category1']), ENT_QUOTES, 'UTF-8') . "</td>   
         <td>" . htmlspecialchars($arrList["list"][$i]['subject'], ENT_QUOTES, 'UTF-8') . "</td>

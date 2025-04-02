@@ -113,13 +113,37 @@ for ($month = 12; $month >= 1; $month--) {
 
 			// 월별 합계
 			$EXCEL_TXT .= "
-            <tr>
-                <td colspan='3' style='background-color:#eee; font-weight:bold;'>합</td>
-                <td colspan='5' style='background-color:#eee; font-weight:bold;'>" . array_sum($statistics[$month]['소계']['counts']) . "건</td>
-                <td colspan='5' style='background-color:#eee; font-weight:bold;'>" . array_sum($statistics[$month]['소계']['times']) . "시간</td>
-                <td colspan='5' style='background-color:#eee; font-weight:bold;'>" . array_sum($statistics[$month]['소계']['people']) . "명</td>
-                <td colspan='5' style='background-color:#eee; font-weight:bold;'>" . number_format(array_sum($statistics[$month]['소계']['amounts'])) . "원</td>
-            </tr>";
+        <tr>
+            <td colspan='3' style='background-color:#eee; font-weight:bold;'>합</td>
+            <td colspan='5' style='background-color:#eee; font-weight:bold;'>" . (
+					$statistics[$month]['소계']['counts']['유료'] +
+					$statistics[$month]['소계']['counts']['교육'] +
+					$statistics[$month]['소계']['counts']['지원'] +
+					$statistics[$month]['소계']['counts']['할인'] +
+					$statistics[$month]['소계']['counts']['유료+지원']
+				) . "건</td>
+            <td colspan='5' style='background-color:#eee; font-weight:bold;'>" . (
+					$statistics[$month]['소계']['times']['유료'] +
+					$statistics[$month]['소계']['times']['교육'] +
+					$statistics[$month]['소계']['times']['지원'] +
+					$statistics[$month]['소계']['times']['할인'] +
+					$statistics[$month]['소계']['times']['유료+지원']
+				) . "시간</td>
+            <td colspan='5' style='background-color:#eee; font-weight:bold;'>" . (
+					$statistics[$month]['소계']['people']['유료'] +
+					$statistics[$month]['소계']['people']['교육'] +
+					$statistics[$month]['소계']['people']['지원'] +
+					$statistics[$month]['소계']['people']['할인'] +
+					$statistics[$month]['소계']['people']['유료+지원']
+				) . "명</td>
+            <td colspan='5' style='background-color:#eee; font-weight:bold;'>" . number_format(
+					$statistics[$month]['소계']['amounts']['유료'] +
+					$statistics[$month]['소계']['amounts']['교육'] +
+					$statistics[$month]['소계']['amounts']['지원'] +
+					$statistics[$month]['소계']['amounts']['할인'] +
+					$statistics[$month]['소계']['amounts']['유료+지원']
+				) . "원</td>
+        </tr>";
 		}
 	}
 }
@@ -129,10 +153,34 @@ if (isset($statistics['연간총계'])) {
 	$EXCEL_TXT .= "
     <tr>
         <td colspan='3' style='background-color:#e0e0e0; font-weight:bold;'>{$year}년 총합</td>
-        <td colspan='5' style='background-color:#e0e0e0; font-weight:bold;'>" . array_sum($statistics['연간총계']['counts']) . "건</td>
-        <td colspan='5' style='background-color:#e0e0e0; font-weight:bold;'>" . array_sum($statistics['연간총계']['times']) . "시간</td>
-        <td colspan='5' style='background-color:#e0e0e0; font-weight:bold;'>" . array_sum($statistics['연간총계']['people']) . "명</td>
-        <td colspan='5' style='background-color:#e0e0e0; font-weight:bold;'>" . number_format(array_sum($statistics['연간총계']['amounts'])) . "원</td>
+        <td colspan='5' style='background-color:#e0e0e0; font-weight:bold;'>" . (
+			$statistics['연간총계']['counts']['유료'] +
+			$statistics['연간총계']['counts']['교육'] +
+			$statistics['연간총계']['counts']['지원'] +
+			$statistics['연간총계']['counts']['할인'] +
+			$statistics['연간총계']['counts']['유료+지원']
+		) . "건</td>
+        <td colspan='5' style='background-color:#e0e0e0; font-weight:bold;'>" . (
+			$statistics['연간총계']['times']['유료'] +
+			$statistics['연간총계']['times']['교육'] +
+			$statistics['연간총계']['times']['지원'] +
+			$statistics['연간총계']['times']['할인'] +
+			$statistics['연간총계']['times']['유료+지원']
+		) . "시간</td>
+        <td colspan='5' style='background-color:#e0e0e0; font-weight:bold;'>" . (
+			$statistics['연간총계']['people']['유료'] +
+			$statistics['연간총계']['people']['교육'] +
+			$statistics['연간총계']['people']['지원'] +
+			$statistics['연간총계']['people']['할인'] +
+			$statistics['연간총계']['people']['유료+지원']
+		) . "명</td>
+        <td colspan='5' style='background-color:#e0e0e0; font-weight:bold;'>" . number_format(
+			$statistics['연간총계']['amounts']['유료'] +
+			$statistics['연간총계']['amounts']['교육'] +
+			$statistics['연간총계']['amounts']['지원'] +
+			$statistics['연간총계']['amounts']['할인'] +
+			$statistics['연간총계']['amounts']['유료+지원']
+		) . "원</td>
     </tr>";
 }
 

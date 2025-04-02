@@ -384,18 +384,29 @@ $arrCategory = array(
 							$imgsrc[$i] = "/uploaded/board/".$arrBoardInfo["list"][0]["boardid"]."/".$arrBoardList["list"][$i]['re_name'];
 							############################ 파일 확인 #############################
 							$arrBoardArticle = getBoardArticleView($arrBoardInfo["list"][0]["boardid"], "", $arrBoardList["list"][$i]['idx'],"list");
+
 							for($j=0;$j<$arrBoardArticle["total_files"];$j++){
 								if(substr($arrBoardArticle["files"][$j]['re_name'],0,2) != "l_"){
 									$fileImg[$i] = '<img src="/backoffice/pub_old/images/file.png">';
 								}
 							}
-                            $categories = explode('|', $arrBoardList["list"][$i]['category']);
-                            $categoryNames = [];
-                            foreach ($categories as $category) {
-                                $categoryNames[] = $arrAllCategory[$category];
-                            }
-                            $categoryString = implode(', ', $categoryNames);
+							// 페이지 상단에 배열 정의 추가
+							$arrCategory01 = [
+								115 => '상설',
+								116 => '공동체',
+								37 => '미디어 체험'
+							];
 
+                            // 기존 코드를 아래 코드로 대체
+							$categories = explode('|', $arrBoardList["list"][$i]['category']);
+							$categoryNames = [];
+							foreach ($categories as $category) {
+								// 정의된 배열에 있는 경우만 추가
+								if(isset($arrCategory01[$category])) {
+									$categoryNames[] = $arrCategory01[$category];
+								}
+							}
+							$categoryString = implode(', ', $categoryNames);
 					?>
 						<tr data-order="<?=$arrBoardList['list'][$i]['idx']?>">
 							<td style="width:5%;"><label class="check notxt"><input type="checkbox" value="<?=$arrBoardList["list"][$i]['idx']?>" name="chk_list"><i></i></label></td>

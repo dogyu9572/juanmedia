@@ -26,7 +26,7 @@ $messages = "[" . $clean_title . "]\n" . $clean_contents;
 $mtype = strlen($messages) > 90?"lms":"sms";
 
 foreach ($phones as $phone) {
-    $smsRS = munja_send($mtype, "Recipient Name", $phone, $messages, "010-2740-4458", "", "", "", "", "");
+    $smsRS = munja_send($mtype, "Recipient Name", $phone, $messages, "032-872-2622", "", "", "", "", "");
     $results[] = $smsRS;
 }
 

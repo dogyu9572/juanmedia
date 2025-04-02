@@ -2,9 +2,46 @@
 <?php $gNum = "04"; $sNum = "02"; $gName = "미디어 체험"; $sName = "체험신청";?>
 <?php
     include_once $_SERVER['DOCUMENT_ROOT'] . "/module/board/board.lib.php";
+
+    function sanitizeInput($input) {
+        global $dblink;
+
+        if (is_array($input)) {
+            return array_map('sanitizeInput', $input);
+        }
+
+        // SQL 인젝션 방지를 위한 이스케이프 처리
+        if (isset($dblink) && $dblink) {
+            return mysqli_real_escape_string($dblink, htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8'));
+        }
+
+        return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
+    }
+
+    // POST 데이터 필터링
+    $_POST = sanitizeInput($_POST);
     $dblink = SetConn($_conf_db["main_db"]);
 
-    $arrBoardHolidayList = getBoardListBaseNFile("holiday", $_GET["category"], $_GET['sw'], $_GET['sk'], $arrBoardInfo["list"][0]["scale"], $_GET['offset'], $_GET['reply']); // 휴관일 리스트 가져오기
+    // GET 파라미터 필터링
+    $_GET = sanitizeInput($_GET);
+    // 또는 개별 처리
+    $category = isset($_GET["category"]) ? sanitizeInput($_GET["category"]) : '';
+    $sw = isset($_GET['sw']) ? sanitizeInput($_GET['sw']) : '';
+    $sk = isset($_GET['sk']) ? sanitizeInput($_GET['sk']) : '';
+    $offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0;
+    $reply = isset($_GET['reply']) ? sanitizeInput($_GET['reply']) : '';
+    // 숫자 필드 정수형 변환 (integer로 확실하게 타입 변환)
+    $offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0;
+    $total_members = isset($_POST['total_members']) ? intval($_POST['total_members']) : 0;
+
+    // 이메일 필드 검증
+    $email = isset($_POST['email']) ? filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) : '';
+    if ($email === false) {
+        // 오류 처리: 잘못된 이메일 형식
+        die("올바른 이메일 형식이 아닙니다");
+    }
+
+    $arrBoardHolidayList = getBoardListBaseNFile("holiday", $category, $sw, $sk, $arrBoardInfo["list"][0]["scale"], $offset, $reply);
     $holidayWeekdays = [];
     $specificHolidayDates = [];
 

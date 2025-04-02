@@ -15,12 +15,26 @@ $emailCount = count($emails);
 $results = [];
 
 $arrBoardMailArticle = getBoardArticleView("mailsms", "email", $_REQUEST["idx"], "read", "and etc_3='" . $_REQUEST["etc_3"] . "'");
-//$arrBoardMailArticle = getBoardArticleView("mailsms", "email", 11, "read", "and etc_3='" . "member" . "'");
-//$emailCount = 11;
 
 $title = $arrBoardMailArticle["list"][0]['etc_4'];
 $subject = $arrBoardMailArticle["list"][0]['subject'];
 $contents = $arrBoardMailArticle["list"][0]['contents'];
+
+// 이미지 경로를 상대 경로에서 절대 URL로 변환
+$domain = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https://" : "http://") . $_SERVER['HTTP_HOST'];
+$pattern = '/<img[^>]*src=["\']([^"\']+)["\'][^>]*>/i';
+
+$contents = preg_replace_callback($pattern, function($matches) use ($domain) {
+    $src = $matches[1];
+    // 이미 절대 URL인 경우 그대로 반환
+    if (strpos($src, 'http://') === 0 || strpos($src, 'https://') === 0) {
+        return $matches[0];
+    }
+
+    // 상대 경로를 절대 URL로 변환
+    $absoluteSrc = rtrim($domain, '/') . '/' . ltrim($src, '/');
+    return str_replace($src, $absoluteSrc, $matches[0]);
+}, $contents);
 
 // Read the HTML template
 $htmlTemplate = file_get_contents($_SERVER['DOCUMENT_ROOT'] . "/_mailform/mailform_member.html");
